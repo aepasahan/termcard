@@ -23,3 +23,13 @@ termcard treats every config value as untrusted:
 - **HTML output** escapes all content, embeds data safely in scripts and ships with a
   restrictive Content Security Policy.
 - **No runtime dependencies**, which keeps the supply chain to this repository.
+- **Verified releases** — packages are published from GitHub Actions with
+  [npm provenance](https://docs.npmjs.com/generating-provenance-statements), so anyone can
+  check that a release was built from this repository.
+
+## Card packages
+
+A card can only be published by the npm account that owns its name. Copies under other
+names are possible with any public package, but they can never replace the original.
+Cards created with `npm create termcard` are licensed "all rights reserved" by default:
+visitors may run them, not reuse their content.

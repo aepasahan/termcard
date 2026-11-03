@@ -1,0 +1,7 @@
+# termcard has no npm dependencies; keep the GitHub Actions used in CI up to date.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

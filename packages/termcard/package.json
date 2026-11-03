@@ -1,6 +1,6 @@
 {
   "name": "termcard",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Interactive business cards for the terminal — npx yourname",
   "type": "module",
   "exports": {

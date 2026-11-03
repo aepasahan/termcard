@@ -33,30 +33,45 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
       - run: npm install --no-audit --no-fund
+      - run: npx termcard validate
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: \${{ secrets.NPM_TOKEN }}
 `;
 
-const readme = (pkg, name) => `# ${pkg}
+// README.md is what visitors see on npm: a short introduction, not technical notes.
+const publicReadme = (pkg, config) => `# ${config.name}
 
-${name}'s business card for the terminal.
+${[config.title, config.tagline].filter((v) => typeof v === 'string').join(' · ')}
+
+Say hello from your terminal:
 
 \`\`\`bash
 npx ${pkg}
 \`\`\`
 
+An interactive business card. Use the arrow keys to get in touch, save my contact
+details, or visit my website and profiles — in your own language.
+
+<sub>Made with [termcard](https://www.npmjs.com/package/termcard).</sub>
+`;
+
+// .github/README.md is shown on GitHub instead of README.md: notes for the card's owner.
+const ownerReadme = (pkg) => `# ${pkg} — maintainer notes
+
+This repository publishes the npm package \`${pkg}\`. Visitors run \`npx ${pkg}\`;
+the root \`README.md\` is the public page they see on npm.
+
 ## Editing the card
 
-Everything lives in [\`card.config.json\`](card.config.json): contact details, which
-fields the card shows, menu items, template, colors and languages. See the
-[configuration reference](https://github.com/aepasahan/termcard/blob/main/docs/configuration.md).
+Everything — details, which fields appear, menu, template, theme, icons, languages —
+lives in \`card.config.json\`. See the
+[configuration guide](https://github.com/aepasahan/termcard/blob/main/docs/configuration.md).
 
 \`\`\`bash
 npm install
-npm start               # interactive preview
-npm run validate        # check the config
-npm run build           # web page, vCard and curl files in dist/
+npm start               # preview the card
+npm run validate        # check card.config.json
 \`\`\`
 
 ## Publishing an update
@@ -66,30 +81,28 @@ npm version patch
 npm publish
 \`\`\`
 
-Made with [termcard](https://github.com/aepasahan/termcard).
+Only the npm account that owns \`${pkg}\` can publish it. Keep two-factor authentication
+on, and use a granular access token if you publish from CI.
+
+## Optional: your card on your own website
+
+\`npx termcard build\` exports a web page, vCards and plain-text versions into \`dist/\`,
+plus code that makes \`curl yourdomain.com\` print the card. The curl code reads the text
+files from this npm package, so to use it add \`"dist"\` to \`files\` and
+\`"prepublishOnly": "termcard build"\` to \`scripts\` in \`package.json\`.
 `;
 
-const mit = (name, year) => `MIT License
+// The card's content is personal: visitors may run it, not reuse it. (termcard itself is MIT.)
+const allRightsReserved = (name, year) => `Copyright (c) ${year} ${name}. All rights reserved.
 
-Copyright (c) ${year} ${name}
+This package contains a personal business card. You may install and run it (for example
+with "npx") to view the card and use its contact features.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+You may not copy, modify, republish or redistribute this package or its content, in whole
+or in part, without the prior written permission of the copyright holder.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+The card is rendered by termcard (https://www.npmjs.com/package/termcard), which is
+licensed separately under the MIT License.
 `;
 
 export class TargetNotEmptyError extends Error {
@@ -113,24 +126,22 @@ export function createProject({ dir, packageName, config, termcardVersion, workf
       description: `${config.name}'s business card — npx ${packageName}`,
       type: 'module',
       bin: { [binName(packageName)]: 'bin/card.js' },
-      files: ['bin', 'card.config.json', 'dist'],
+      files: ['bin', 'card.config.json'],
       scripts: {
         start: 'node bin/card.js',
         validate: 'termcard validate',
-        build: 'termcard build',
-        // dist/ holds the web page and the files curl integrations fetch from npm.
-        prepublishOnly: 'termcard build',
       },
       dependencies: { termcard: `^${termcardVersion}` },
       engines: { node: '>=18.18' },
       keywords: ['business-card', 'termcard', 'npx'],
       author: config.email ? `${config.name} <${config.email}>` : config.name,
-      license: 'MIT',
+      license: 'SEE LICENSE IN LICENSE',
     }),
     'card.config.json': json(config),
     'bin/card.js': binScript,
-    'README.md': readme(packageName, config.name),
-    LICENSE: mit(config.name, year),
+    'README.md': publicReadme(packageName, config),
+    '.github/README.md': ownerReadme(packageName),
+    LICENSE: allRightsReserved(config.name, year),
     '.gitignore': 'node_modules/\ndist/\n*.tgz\n',
     ...(withWorkflow ? { '.github/workflows/publish.yml': workflow } : {}),
   };

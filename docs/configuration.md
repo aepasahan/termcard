@@ -192,10 +192,11 @@ Everyone running your card can use:
 | `index.html` | A self-contained web version with a language switcher. |
 | `integrations/*.js` | Snippets for Cloudflare Workers, Next.js/Vercel and Netlify that make `curl yourdomain.com` print the card. |
 
-The integrations read the text files from your published npm package through
-jsDelivr, so your site picks up new card versions without being redeployed. Card
-packages created with `npm create termcard` run the build automatically before every
-`npm publish` and include `dist/` in the package.
+This is an optional tool for card owners — visitors never see it, and by default nothing
+from `dist/` is published. The curl integrations read the text files from your published
+npm package through jsDelivr, so your site picks up new card versions without being
+redeployed. To use them, add `"dist"` to `files` and `"prepublishOnly": "termcard build"`
+to `scripts` in your card's `package.json`.
 
 For safety, `build` only replaces a folder it created itself (marked with a
 `.termcard-build` file); it refuses to write into any other non-empty folder.

@@ -4,7 +4,21 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org); until 1.0.0, minor versions may contain
 breaking changes to the config format.
 
-## 0.2.0 — Unreleased
+## termcard 0.2.1, create-termcard 0.3.0 — 2026-11-03
+
+### create-termcard
+- Card packages publish only the card itself: `dist/` is no longer included or built on
+  publish (enable it manually for curl integrations).
+- Two READMEs: `README.md` is a short public introduction for the npm page,
+  `.github/README.md` holds the owner's maintenance notes on GitHub.
+- Card content is licensed "all rights reserved" by default (visitors may run the card,
+  not reuse it). termcard itself stays MIT.
+
+### All packages
+- New READMEs with a demo, badges and clearer explanations.
+- Releases are published with npm provenance once the repository is public.
+
+## 0.2.0 — 2026-11-03
 
 ### termcard
 - **Themes:** eight seasonal themes — `thaw`, `bloom`, `blossom`, `solstice` (default),

@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write # npm provenance: proves each release was built from this repository
 
 jobs:
   publish:
@@ -25,6 +26,8 @@ jobs:
       - name: Publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # Provenance requires a public repository.
+          PROVENANCE: ${{ github.event.repository.private && '' || '--provenance' }}
         run: |
           for pkg in termcard create-termcard; do
             name=$(node -p "require('./packages/$pkg/package.json').name")
@@ -32,6 +35,6 @@ jobs:
             if npm view "$name@$version" version >/dev/null 2>&1; then
               echo "$name@$version is already published, skipping"
             else
-              npm publish --workspace "packages/$pkg" --access public
+              npm publish --workspace "packages/$pkg" --access public $PROVENANCE
             fi
           done

@@ -37,11 +37,10 @@ export function npm(args, { cwd, quiet = false } = {}) {
   });
 }
 
-/** Logs in if needed, installs termcard (the build runs before publishing) and publishes. */
+/** Logs in if needed and publishes. */
 export async function publish(cwd) {
   if ((await npm(['whoami'], { cwd, quiet: true })) !== 0) {
     if ((await npm(['login'], { cwd })) !== 0) return false;
   }
-  if ((await npm(['install', '--no-audit', '--no-fund'], { cwd })) !== 0) return false;
   return (await npm(['publish', '--access', 'public'], { cwd })) === 0;
 }
