@@ -2,10 +2,11 @@
 
 import readline from 'node:readline';
 import { createTranslator, languageName } from '../i18n/index.js';
-import { layoutCard } from '../render/card.js';
+import { layoutCard, layoutHeader } from '../render/card.js';
 import { toAnsi, createPainter } from '../render/format.js';
 import { displayWidth, stripAnsi } from '../text.js';
 import { buildMenu } from './actions.js';
+import * as system from '../system.js';
 import { Screen } from './screen.js';
 
 export function runInteractive(config, { lang: initialLang, depth, stdin, stdout }) {
@@ -19,8 +20,9 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
 
   const load = () => {
     t = createTranslator(state.lang, config.strings);
-    menu = buildMenu(config, state.lang, t);
-    card = ['', ...toAnsi(layoutCard(config, state.lang), config.theme, depth).split('\n')];
+    menu = buildMenu(config, state.lang, t, system);
+    const top = config.card.enabled ? layoutCard(config, state.lang) : layoutHeader(config, state.lang);
+    card = ['', ...toAnsi(top, config.theme, depth).split('\n')];
   };
 
   const ruleWidth = () => Math.max(40, ...card.map((l) => displayWidth(stripAnsi(l)) - 2));
@@ -52,6 +54,7 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
   const menuLines = () => {
     const list = entries();
     const current = list[state.index];
+    const iconWidth = Math.max(0, ...list.map((e) => displayWidth(e.icon ?? '')));
     const keys = [['↑↓', t('keys.navigate')], ['enter', t('keys.select')], ...(state.view === 'language' ? [['esc', t('keys.back')]] : []), ['q', t('keys.quit')]]
       .map(([key, word]) => `${paint('muted', key)} ${paint('faint', word)}`)
       .join(paint('faint', '   ·   '));
@@ -60,7 +63,10 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
       : paint('faint', fit(current?.hint ?? ''));
     return [
       '',
-      ...list.map((e, i) => (i === state.index ? `  ${paint('accent', '›')} ${paint('strong', e.label)}` : `    ${paint('muted', e.label)}`)),
+      ...list.map((e, i) => {
+        const glyph = iconWidth ? paint('accent', (e.icon ?? '') + ' '.repeat(iconWidth - displayWidth(e.icon ?? '') + 1)) : '';
+        return i === state.index ? `  ${paint('accent', '›')} ${glyph}${paint('strong', e.label)}` : `    ${glyph}${paint('muted', e.label)}`;
+      }),
       '',
       `  ${paint('faint', '─'.repeat(ruleWidth()))}`,
       `  ${status}`,

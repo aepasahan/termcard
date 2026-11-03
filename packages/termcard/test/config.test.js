@@ -19,6 +19,9 @@ test('a name alone is a valid config with defaults applied', () => {
   assert.deepEqual(config.language, { default: 'auto', available: ['en'] });
   assert.equal(config.menu.enabled, true);
   assert.equal(config.theme.accent, '#d7af5f');
+  assert.equal(config.theme.text, 'default');
+  assert.equal(config.icons, 'none');
+  assert.equal(config.card.enabled, true);
   assert.ok(Object.isFrozen(config));
 });
 
@@ -72,10 +75,30 @@ test('languages: custom languages need strings, default must be available', () =
   assert.ok(problems({ name: 'A', language: { default: 'de', available: ['en'] } }).length);
 });
 
-test('theme accepts presets and hex overrides only', () => {
-  assert.equal(make({ theme: 'ocean' }).theme.accent, '#5fafd7');
-  assert.equal(make({ theme: { preset: 'mono', accent: '#FF0000' } }).theme.accent, '#ff0000');
+test('theme accepts the seasonal presets, hex overrides and "default"', () => {
+  assert.equal(make({ theme: 'frost' }).theme.accent, '#87afd7');
+  assert.equal(make({ theme: { preset: 'thaw', accent: '#FF0000', text: '#ffffff' } }).theme.accent, '#ff0000');
+  assert.equal(make({ theme: { text: 'default' } }).theme.text, 'default');
   assert.ok(problems({ name: 'A', theme: { accent: 'red' } }).length);
+  assert.ok(problems({ name: 'A', theme: 'ocean' }).length);
+});
+
+test('description is limited to 280 characters', () => {
+  assert.equal(make({ description: 'x'.repeat(280) }).description.length, 280);
+  assert.ok(problems({ name: 'A', description: 'x'.repeat(281) })[0].startsWith('description:'));
+  assert.ok(problems({ name: 'A', description: { en: 'ok', tr: 'y'.repeat(300) } })[0].startsWith('description.tr:'));
+});
+
+test('icons: known sets only; link icons must be a single symbol', () => {
+  assert.equal(make({ icons: 'nerd' }).icons, 'nerd');
+  assert.ok(problems({ name: 'A', icons: 'fancy' })[0].startsWith('icons:'));
+  assert.equal(make({ links: [{ url: 'https://a.org', icon: '★' }] }).links[0].icon, '★');
+  assert.ok(problems({ name: 'A', links: [{ url: 'https://a.org', icon: 'abc' }] })[0].includes('single symbol'));
+});
+
+test('card: false keeps the menu; turning both off is an error', () => {
+  assert.equal(make({ card: false }).card.enabled, false);
+  assert.ok(problems({ name: 'A', card: false, menu: false })[0].startsWith('card:'));
 });
 
 test('a name of only spaces or control characters is rejected', () => {

@@ -83,3 +83,31 @@ export function slugify(text) {
 
 /** Removes ANSI SGR sequences (used to measure already-painted lines). */
 export const stripAnsi = (text) => text.replace(/\x1b\[[0-9;]*m/g, '');
+
+/** Word-wraps text to lines of at most `width` columns; overlong words are split. */
+export function wrap(text, width) {
+  const lines = [];
+  let line = '';
+  for (const word of text.split(/\s+/).filter(Boolean)) {
+    let rest = word;
+    while (displayWidth(rest) > width) {
+      let head = '';
+      for (const ch of rest) {
+        if (displayWidth(head + ch) > width) break;
+        head += ch;
+      }
+      if (line) lines.push(line);
+      lines.push(head);
+      line = '';
+      rest = rest.slice(head.length);
+    }
+    const candidate = line ? `${line} ${rest}` : rest;
+    if (displayWidth(candidate) <= width) line = candidate;
+    else {
+      lines.push(line);
+      line = rest;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}

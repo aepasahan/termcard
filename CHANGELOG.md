@@ -4,6 +4,26 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org); until 1.0.0, minor versions may contain
 breaking changes to the config format.
 
+## 0.2.0 — Unreleased
+
+### termcard
+- **Themes:** eight seasonal themes — `thaw`, `bloom`, `blossom`, `solstice` (default),
+  `ember`, `harvest`, `frost`, `midwinter` — replacing the previous presets. Text now
+  uses the terminal's own color, so cards read well on light backgrounds too.
+- **Icons:** `icons` option with `symbols`, `emoji` and `nerd` (Nerd Font) sets, shown on
+  card rows, the location and menu entries; per-link `icon`.
+- **Description:** `description` (up to 280 characters, localizable) replaces `about`
+  and wraps to the card width.
+- **Menu-only cards:** `"card": false` shows just a header and the menu.
+- `termcard/browser` entry point without Node.js built-ins, for web tools.
+
+### Website
+- `site/index.html`: project page with a live demo and a browser-based config builder
+  (live preview in every language, validation, download, import of existing configs).
+
+### create-termcard
+- Asks for a description; lets you pick icons and the new themes in the preview.
+
 ## 0.1.0 — 2026-11-03
 
 First version.

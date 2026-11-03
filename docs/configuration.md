@@ -23,13 +23,13 @@ See [`examples/full.json`](../examples/full.json) for a config that uses every o
 | `name`         | string             | **Required.** At most 80 characters. |
 | `title`        | localized string   | Role, shown under the name. |
 | `tagline`      | localized string   | Company, handle or slogan, shown in the accent color. |
-| `about`        | localized string   | One short line. |
+| `description`  | localized string   | A few sentences about you, up to 280 characters. Wrapped to the card width. |
 | `organization` | string             | Used in the vCard only. |
 | `email`        | string             | Enables the *Get in touch* and *Copy email* actions. Characters that would change a `mailto:` link (`? & # % /`) are not allowed. |
 | `phone`        | string             | Digits, spaces and `+ ( ) - .` only. |
 | `website`      | URL                | `https://` or `http://`. |
 | `location`     | localized string   | Shown at the bottom of the card. |
-| `links`        | array              | URLs, or `{ "url", "label"?, "id"? }`. |
+| `links`        | array              | URLs, or `{ "url", "label"?, "id"?, "icon"? }`. |
 
 A **localized string** is either plain text or an object keyed by language:
 `{ "en": "Designer", "tr": "Tasarımcı" }`. Missing languages fall back to English,
@@ -40,7 +40,7 @@ Dribbble, YouTube, Medium, Bluesky, and more) get their label and `id`
 automatically. Other links use the domain; set `label` to change it. The `id` is
 how you refer to the link in `card.fields` and `menu.items`.
 
-Text is limited to 120 characters per field. Control characters and
+Text is limited to 120 characters per field (280 for `description`). Control characters and
 text-direction overrides are removed automatically.
 
 ## Languages
@@ -86,19 +86,52 @@ under `strings`; untranslated keys fall back to English.
 
 ### `theme`
 
-A preset name — `gold` (default), `ocean`, `sage`, `rose`, `violet`, `mono` — or an
-object that starts from a preset and overrides individual colors:
+Eight themes named after the seasons and the turns between them:
+
+| Theme       | Season                     | Accent    |
+| ----------- | -------------------------- | --------- |
+| `thaw`      | late winter → spring       | `#5fafaf` |
+| `bloom`     | spring                     | `#87af5f` |
+| `blossom`   | spring → summer            | `#d787af` |
+| `solstice`  | summer — **default**       | `#d7af5f` |
+| `ember`     | summer → autumn            | `#d7875f` |
+| `harvest`   | autumn                     | `#af875f` |
+| `frost`     | autumn → winter            | `#87afd7` |
+| `midwinter` | winter                     | `#8787af` |
+
+Only the accent changes between themes. Main text uses the terminal's own color and
+the grays are mid-tones, so every theme stays readable on dark **and** light terminal
+backgrounds. Accents are exact xterm-256 colors, so they look the same everywhere.
+
+Start from a theme and override any role (`accent`, `text`, `muted`, `faint`) with a
+hex color, or `"default"` for the terminal's own color:
 
 ```json
-"theme": { "preset": "mono", "accent": "#ff8700" }
+"theme": { "preset": "frost", "accent": "#ff8700" }
 ```
 
-Roles: `accent`, `text`, `muted`, `faint`. Colors are hex values; terminals without
-24-bit color get the closest of the 256 standard colors. `NO_COLOR` is respected.
+Terminals without 24-bit color get the closest of the 256 standard colors. `NO_COLOR`
+is respected.
+
+### `icons`
+
+| Value     | |
+| --------- | --- |
+| `none`    | Default. Text only. |
+| `symbols` | Simple symbols every terminal font has: ✉ ⌂ ☎ ◎ ↗ |
+| `emoji`   | Colorful emoji, best on macOS and modern terminals. |
+| `nerd`    | Brand icons (GitHub, LinkedIn, X …). Visitors need a [Nerd Font](https://www.nerdfonts.com); the web page falls back to `symbols`. |
+
+Icons appear before the contact rows, the location and menu entries. Any link can set
+its own: `{ "url": "https://example.com", "icon": "★" }`.
 
 ### `card`
 
-Every option overrides the template's value.
+Set `"card": false` to hide the card and show only the menu, with a one-line header
+(name, tagline, description). When the menu cannot be shown — output piped to a file,
+or `--card` — the details are printed in the `minimal` layout instead.
+
+Otherwise, every option below overrides the template's value.
 
 | Key             | Values | |
 | --------------- | ------ | --- |

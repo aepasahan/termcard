@@ -20,7 +20,7 @@ export function createVCard(config, lang) {
     config.phone && `TEL;TYPE=CELL:${esc(config.phone)}`,
     config.website && `URL:${esc(config.website)}`,
     ...config.links.map((l) => `X-SOCIALPROFILE;TYPE=${esc(l.id)}:${esc(l.url)}`),
-    config.about && `NOTE:${esc(localize(config.about, lang))}`,
+    config.description && `NOTE:${esc(localize(config.description, lang))}`,
     'END:VCARD',
     '',
   ];

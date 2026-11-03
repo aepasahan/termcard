@@ -6,7 +6,7 @@
  * listing every problem found. Renderers only ever see normalized configs.
  */
 
-import { sanitize, slugify } from '../text.js';
+import { sanitize, slugify, displayWidth } from '../text.js';
 import { themes, DEFAULT_THEME, THEME_ROLES } from './themes.js';
 import { templates, DEFAULT_TEMPLATE, CARD_OPTIONS, DEFAULT_MENU, MENU_ACTIONS } from './templates.js';
 import { identifyService } from './services.js';
@@ -21,8 +21,8 @@ export class ConfigError extends Error {
 }
 
 const TOP_LEVEL_KEYS = [
-  '$schema', 'name', 'title', 'tagline', 'about', 'organization', 'email', 'phone', 'website',
-  'location', 'links', 'language', 'strings', 'template', 'theme', 'card', 'menu',
+  '$schema', 'name', 'title', 'tagline', 'description', 'organization', 'email', 'phone', 'website',
+  'location', 'links', 'language', 'strings', 'template', 'theme', 'icons', 'card', 'menu',
 ];
 const LANG_CODE = /^[a-z]{2,3}(-[a-z0-9]{2,8})?$/i;
 // Deliberately stricter than RFC 5322: no characters that change the meaning of a mailto: URL (? & # % /).
@@ -30,6 +30,8 @@ const EMAIL = /^[a-z0-9.!$'*+=^_`{|}~-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/i
 const PHONE = /^\+?[0-9][0-9 ().-]{3,24}$/;
 const HEX = /^#[0-9a-f]{6}$/i;
 const MAX_TEXT = 120;
+export const DESCRIPTION_LIMIT = 280;
+export const ICON_SETS = ['none', 'symbols', 'emoji', 'nerd'];
 
 /** Why a string is not an acceptable link, or undefined if it is. */
 export function urlProblem(value) {
@@ -64,14 +66,14 @@ function createChecker() {
     return clean;
   };
 
-  const localized = (path, value) => {
-    if (value == null || typeof value === 'string') return text(path, value);
+  const localized = (path, value, options) => {
+    if (value == null || typeof value === 'string') return text(path, value, options);
     if (!isObject(value)) return fail(path, 'must be a string or an object of language → text');
     const out = {};
     for (const [lang, entry] of Object.entries(value)) {
       if (!LANG_CODE.test(lang)) fail(`${path}.${lang}`, 'is not a valid language code');
       else {
-        const clean = text(`${path}.${lang}`, entry);
+        const clean = text(`${path}.${lang}`, entry, options);
         if (clean) out[lang.toLowerCase()] = clean;
       }
     }
@@ -110,7 +112,7 @@ function normalizeLinks(c, raw) {
     const path = `links[${i}]`;
     if (typeof entry === 'string') entry = { url: entry };
     if (!isObject(entry)) return c.fail(path, 'must be a URL or { url, label?, id? }'), [];
-    c.unknownKeys(path, entry, ['url', 'label', 'id']);
+    c.unknownKeys(path, entry, ['url', 'label', 'id', 'icon']);
     const href = c.url(`${path}.url`, entry.url, { required: true });
     if (!href) return [];
     const service = identifyService(href);
@@ -126,7 +128,9 @@ function normalizeLinks(c, raw) {
       for (let n = 2; seen.has(id) || explicitIds.has(id); n++) id = `${auto}-${n}`;
     }
     seen.add(id);
-    return [{ id, label: c.text(`${path}.label`, entry.label, { max: 40 }) ?? service.label, url: href }];
+    const icon = c.text(`${path}.icon`, entry.icon, { max: 8 });
+    if (icon && displayWidth(icon) > 2) c.fail(`${path}.icon`, 'must be a single symbol (at most 2 columns wide)');
+    return [{ id, label: c.text(`${path}.label`, entry.label, { max: 40 }) ?? service.label, url: href, service: service.id, ...(icon && { icon }) }];
   });
 }
 
@@ -180,18 +184,21 @@ function normalizeTheme(c, raw) {
   for (const role of THEME_ROLES) {
     if (value[role] === undefined) continue;
     if (typeof value[role] === 'string' && HEX.test(value[role])) theme[role] = value[role].toLowerCase();
-    else c.fail(`theme.${role}`, 'must be a hex color like "#d7af5f"');
+    else if (value[role] === 'default') theme[role] = 'default';
+    else c.fail(`theme.${role}`, 'must be a hex color like "#d7af5f" or "default" (the terminal\'s own color)');
   }
   return theme;
 }
 
 function normalizeCard(c, raw, template, fieldIds) {
-  const value = raw ?? {};
-  if (!isObject(value)) return c.fail('card', 'must be an object'), { ...templates[template], fields: fieldIds };
+  // "card": false shows only the menu (with a one-line header).
+  if (raw === false) return { ...templates[template], enabled: false, fields: fieldIds };
+  const value = raw === undefined || raw === true ? {} : raw;
+  if (!isObject(value)) return c.fail('card', 'must be false or an object'), { ...templates[template], enabled: true, fields: fieldIds };
   const options = Object.keys(templates.classic);
   c.unknownKeys('card', value, [...options, 'fields']);
 
-  const card = { ...templates[template] };
+  const card = { ...templates[template], enabled: true };
   for (const [key, allowed] of Object.entries(CARD_OPTIONS)) card[key] = c.oneOf(`card.${key}`, value[key], allowed, card[key]);
   for (const key of ['splitName', 'accentRule', 'labels']) {
     if (value[key] === undefined) continue;
@@ -258,7 +265,7 @@ export function normalizeConfig(raw) {
     name: c.text('name', raw.name, { required: true, max: 80 }),
     title: c.localized('title', raw.title),
     tagline: c.localized('tagline', raw.tagline),
-    about: c.localized('about', raw.about),
+    description: c.localized('description', raw.description, { max: DESCRIPTION_LIMIT }),
     organization: c.text('organization', raw.organization),
     email: c.text('email', raw.email, { max: 254 }),
     phone: c.text('phone', raw.phone, { max: 30 }),
@@ -273,6 +280,7 @@ export function normalizeConfig(raw) {
   config.language = normalizeLanguage(c, raw.language, config.strings);
   config.template = c.oneOf('template', raw.template, Object.keys(templates), DEFAULT_TEMPLATE);
   config.theme = normalizeTheme(c, raw.theme);
+  config.icons = c.oneOf('icons', raw.icons, ICON_SETS, 'none');
 
   const fieldIds = [
     ...(config.website ? ['website'] : []),
@@ -283,6 +291,7 @@ export function normalizeConfig(raw) {
   ];
   config.card = normalizeCard(c, raw.card, config.template, fieldIds);
   config.menu = normalizeMenu(c, raw.menu, config.links.map((l) => l.id));
+  if (!config.card.enabled && !config.menu.enabled) c.fail('card', 'cannot be false while the menu is off too');
 
   if (c.problems.length) throw new ConfigError(c.problems);
   return Object.freeze(config);

@@ -47,8 +47,9 @@ npx yourname
 - **Interactive menu** — email draft, add to contacts (vCard), open profiles, copy details.
 - **Multilingual** — English, Turkish, German, Spanish and French built in; detects the
   visitor's system language and lets them switch from the menu. Add your own languages.
-- **Fully customizable** — three templates, six color themes or your own colors, border
-  and name styles, which fields to show, menu items and their order, every text.
+- **Fully customizable** — three templates, eight seasonal color themes or your own
+  colors, icons (symbols, emoji or Nerd Font), a description, border and name styles,
+  which fields to show, menu items and their order, every text — or the menu alone.
 - **Beyond the terminal** — a web version, vCards and drop-in code so `curl yourdomain.com`
   prints your card.
 - **Zero dependencies, no tracking** — nothing is collected about the people who run your
@@ -65,6 +66,9 @@ Your card is one JSON file. A minimal one:
   "links": ["https://github.com/janedoe"]
 }
 ```
+
+Prefer a form? The [web builder](site/) creates the same file in your browser with a live
+preview; then run `npm create termcard@latest -- --config card.config.json`.
 
 Everything else — templates, colors, fields, menu, languages — is described in the
 [configuration reference](docs/configuration.md). [`examples/full.json`](examples/full.json)

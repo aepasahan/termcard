@@ -5,9 +5,11 @@
  * renderer replaces with CSS. Formatters live in ./format.js.
  */
 
-import { displayWidth, localize, stripProtocol, upper } from '../text.js';
+import { displayWidth, localize, stripProtocol, upper, wrap } from '../text.js';
 import { createTranslator } from '../i18n/index.js';
 import { borders } from './borders.js';
+import { iconFor } from './icons.js';
+import { templates } from '../config/templates.js';
 
 const INDENT = '  ';
 const seg = (text, role, href) => ({ text, role, href });
@@ -25,18 +27,36 @@ function nameLines(name, { nameStyle, splitName }, lang) {
 }
 
 /** The contact rows the card shows, in the configured order. */
-export function contactRows(config, t) {
+export function contactRows(config, t, iconSet = config.icons) {
   const rows = {
-    website: config.website && { label: t('label.website'), value: stripProtocol(config.website), href: config.website },
-    email: config.email && { label: t('label.email'), value: config.email, href: `mailto:${config.email}` },
-    phone: config.phone && { label: t('label.phone'), value: config.phone, href: `tel:${config.phone.replace(/[^\d+]/g, '')}` },
+    website: config.website && { label: t('label.website'), value: stripProtocol(config.website), href: config.website, icon: iconFor(iconSet, 'website') },
+    email: config.email && { label: t('label.email'), value: config.email, href: `mailto:${config.email}`, icon: iconFor(iconSet, 'email') },
+    phone: config.phone && { label: t('label.phone'), value: config.phone, href: `tel:${config.phone.replace(/[^\d+]/g, '')}`, icon: iconFor(iconSet, 'phone') },
   };
-  for (const link of config.links) rows[link.id] = { label: link.label, value: stripProtocol(link.url), href: link.url };
+  for (const link of config.links) {
+    rows[link.id] = { label: link.label, value: stripProtocol(link.url), href: link.url, icon: iconFor(iconSet, 'link', link) };
+  }
   return config.card.fields.filter((f) => f !== 'location').map((f) => rows[f]).filter(Boolean);
 }
 
-export function layoutCard(config, lang) {
-  const { card } = config;
+/** Width that the description wraps to: the card's inner width, or a comfortable default. */
+const descriptionWidth = (card, box) => (typeof card.width === 'number' && box ? card.width - 2 - card.padding * 2 : 46);
+
+/** Options for `layoutCard`: { iconSet } overrides config.icons (the web page uses this). */
+/** One-line header shown above the menu when the card itself is turned off. */
+export function layoutHeader(config, lang) {
+  const text = (value) => localize(value, lang);
+  const first = [seg(config.name, 'name')];
+  if (config.tagline) first.push(seg('  ·  ', 'faint'), seg(text(config.tagline), 'accent'));
+  const lines = [first];
+  if (config.title) lines.push([seg(text(config.title), 'muted')]);
+  if (config.description) for (const line of wrap(text(config.description), 60)) lines.push([seg(line, 'muted')]);
+  return lines.map((line) => [frame(INDENT), ...line]);
+}
+
+export function layoutCard(config, lang, { iconSet = config.icons } = {}) {
+  // With "card": false the card is still printed where no menu can be shown (pipes, --card).
+  const card = config.card.enabled ? config.card : { ...config.card, ...templates.minimal };
   const t = createTranslator(lang, config.strings);
   const text = (value) => localize(value, lang);
   const relaxed = card.spacing === 'relaxed';
@@ -49,22 +69,27 @@ export function layoutCard(config, lang) {
   const brand = [];
   if (config.tagline) brand.push([seg(text(config.tagline), 'accent')]);
   if (card.accentRule) brand.push([seg('───', 'accent')]);
-  if (config.about) brand.push([seg(text(config.about), 'muted')]);
+  if (config.description) {
+    for (const line of wrap(text(config.description), descriptionWidth(card, borders[card.border]))) brand.push([seg(line, 'muted')]);
+  }
 
   if (relaxed) sections.push(head, brand);
   else sections.push([...head, ...brand]);
 
-  const rows = contactRows(config, t);
+  const rows = contactRows(config, t, iconSet);
   const labelWidth = Math.max(0, ...rows.map((r) => displayWidth(r.label))) + 2;
+  const iconWidth = Math.max(0, ...rows.map((r) => displayWidth(r.icon)), displayWidth(iconFor(iconSet, 'location')));
+  const icon = (glyph) => (iconWidth ? [seg(glyph + ' '.repeat(iconWidth - displayWidth(glyph) + 1), 'accent')] : []);
   sections.push(
-    rows.map((r) =>
-      card.labels
-        ? [seg(r.label + ' '.repeat(labelWidth - displayWidth(r.label)), 'muted'), seg(r.value, 'text', r.href)]
-        : [seg(r.value, 'text', r.href)],
-    ),
+    rows.map((r) => [
+      ...icon(r.icon),
+      ...(card.labels ? [seg(r.label + ' '.repeat(labelWidth - displayWidth(r.label)), 'muted')] : []),
+      seg(r.value, 'text', r.href),
+    ]),
   );
 
-  const location = card.fields.includes('location') && config.location ? [seg(text(config.location), 'muted')] : null;
+  const location =
+    card.fields.includes('location') && config.location ? [...icon(iconFor(iconSet, 'location')), seg(text(config.location), 'muted')] : null;
   const body = sections.filter((s) => s.length).flatMap((s, i) => (i ? [[], ...s] : s));
   if (location) body.push([], { right: card.locationAlign === 'right', segments: location });
 

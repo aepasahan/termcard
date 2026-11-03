@@ -1,6 +1,7 @@
 /** Standalone, dependency-free web version of the card (one HTML file). */
 
 import { layoutCard } from '../render/card.js';
+import { webIconSet } from '../render/icons.js';
 import { toHtml, escapeHtml } from '../render/format.js';
 import { createTranslator, languageName } from '../i18n/index.js';
 import { localize } from '../text.js';
@@ -12,7 +13,7 @@ export function renderWebPage(config, { command }) {
   const data = Object.fromEntries(
     langs.map((lang) => {
       const t = createTranslator(lang, config.strings);
-      return [lang, { card: toHtml(layoutCard(config, lang)), save: t('action.save'), vcf: `contact.${lang}.vcf` }];
+      return [lang, { card: toHtml(layoutCard(config, lang, { iconSet: webIconSet(config.icons) })), save: t('action.save'), vcf: `contact.${lang}.vcf` }];
     }),
   );
   const description = [config.name, localize(config.title, fallback), localize(config.tagline, fallback)].filter(Boolean).join(' — ');
@@ -32,7 +33,7 @@ export function renderWebPage(config, { command }) {
 <meta property="og:description" content="${escapeHtml(description)}">
 <meta name="color-scheme" content="dark">
 <style>
-:root{--bg:#0e0e0e;--window:#161616;--line:#262626;--text:${theme.text};--muted:${theme.muted};--faint:${theme.faint};--accent:${theme.accent}}
+:root{--bg:#0e0e0e;--window:#161616;--line:#262626;--text:${theme.text === 'default' ? '#eeeeee' : theme.text};--muted:${theme.muted};--faint:${theme.faint};--accent:${theme.accent}}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text)}
 body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;

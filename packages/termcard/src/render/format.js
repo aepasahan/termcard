@@ -8,8 +8,12 @@ const ROLE_COLOR = { name: 'text', text: 'text', muted: 'muted', faint: 'faint',
 export function createPainter(theme, depth) {
   return (role, text) => {
     if (!depth || !role) return text;
-    const bold = role === 'name' || role === 'strong' ? '1;' : '';
-    return `\x1b[${bold}${foreground(theme[ROLE_COLOR[role] ?? 'text'], depth)}m${text}\x1b[0m`;
+    const color = theme[ROLE_COLOR[role] ?? 'text'];
+    const codes = [
+      ...(role === 'name' || role === 'strong' ? ['1'] : []),
+      ...(color && color !== 'default' ? [foreground(color, depth)] : []),
+    ];
+    return codes.length ? `\x1b[${codes.join(';')}m${text}\x1b[0m` : text;
   };
 }
 
