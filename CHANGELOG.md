@@ -17,6 +17,8 @@ breaking changes to the config format.
 ### All packages
 - New READMEs with a demo, badges and clearer explanations.
 - Releases are published with npm provenance once the repository is public.
+- The website and browser config builder (`site/`) moved out of this repository; the
+  `termcard/browser` entry point it uses remains part of termcard.
 
 ## 0.2.0 — 2026-11-03
 
