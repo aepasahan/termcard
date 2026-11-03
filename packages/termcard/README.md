@@ -52,12 +52,26 @@ Flags such as `--lang tr`, `--card` (no menu) and `--vcard` work on every card.
 - **Your own wording and languages** — every text can be changed and new languages added.
 - **Zero dependencies, no tracking.** Values are validated and sanitized, links are restricted to web, email and phone, and no command ever runs through a shell.
 
+## Ask your AI assistant
+
+termcard includes an MCP server, so AI assistants such as Claude can look up any termcard
+card by name, save the person as a contact or draft an email — read-only, nothing is sent
+on your behalf.
+
+```bash
+claude mcp add termcard -- npx -y termcard mcp
+```
+
+Claude Desktop extension and setup for Cursor, VS Code and other clients:
+[termcard for AI assistants](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md).
+
 ## For card owners
 
 ```bash
 npx termcard preview     # see your card exactly as visitors will
 npx termcard validate    # check card.config.json and explain any mistakes
 npx termcard build       # optional: web page, vCards and curl files for your own website
+npx termcard mcp         # MCP server for AI assistants
 ```
 
 Using termcard in your own package takes two lines:

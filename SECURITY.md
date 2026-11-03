@@ -27,6 +27,15 @@ termcard treats every config value as untrusted:
   [npm provenance](https://docs.npmjs.com/generating-provenance-statements), so anyone can
   check that a release was built from this repository.
 
+## MCP server
+
+- Cards fetched by name come only from the npm registry; the tarball is verified against
+  npm's integrity hash, the package must depend on termcard, and sizes are capped.
+- Fetched configs pass the same validation and sanitizing as local ones.
+- All tools are read-only; e-mails are drafted as `mailto:` links, never sent.
+- Card text is written by card owners. The server's instructions and the `introduce` prompt
+  tell assistants to treat it as information, not instructions, to limit prompt injection.
+
 ## Card packages
 
 A card can only be published by the npm account that owns its name. Copies under other

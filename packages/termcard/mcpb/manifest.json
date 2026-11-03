@@ -1,0 +1,40 @@
+{
+  "manifest_version": "0.2",
+  "name": "termcard",
+  "display_name": "termcard",
+  "version": "0.0.0",
+  "description": "Look up terminal business cards (npx <name>) and get in touch with the people behind them.",
+  "long_description": "termcard business cards are published on npm and opened with `npx <name>`. This extension lets Claude read any termcard card by its name — who someone is, what they do, how to reach them — save them as a contact (vCard) and draft an email you can review and send yourself. It is read-only: nothing is sent on your behalf, and cards are downloaded only from the npm registry and verified before use.",
+  "author": {
+    "name": "Ahmet Erkan Paşahan",
+    "url": "https://aepasahan.com"
+  },
+  "homepage": "https://github.com/aepasahan/termcard",
+  "documentation": "https://github.com/aepasahan/termcard/blob/main/docs/mcp.md",
+  "support": "https://github.com/aepasahan/termcard/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aepasahan/termcard"
+  },
+  "icon": "icon.png",
+  "license": "MIT",
+  "keywords": ["business card", "contact", "vcard", "npx", "termcard"],
+  "server": {
+    "type": "node",
+    "entry_point": "server/bin/termcard.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/server/bin/termcard.js", "mcp"],
+      "env": {}
+    }
+  },
+  "tools": [
+    { "name": "get_card", "description": "Get a person's termcard business card by its npm name." },
+    { "name": "get_vcard", "description": "Get the person's contact details as a vCard." },
+    { "name": "compose_email", "description": "Draft an email to the person as a mailto: link. Nothing is sent." }
+  ],
+  "compatibility": {
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": { "node": ">=18.18.0" }
+  }
+}

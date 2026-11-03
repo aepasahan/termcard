@@ -4,6 +4,20 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org); until 1.0.0, minor versions may contain
 breaking changes to the config format.
 
+## termcard 0.4.0, create-termcard 0.4.0 — 2026-11-03
+
+### termcard
+- **MCP server for AI assistants.** `termcard mcp` lets Claude and other MCP clients look up
+  any termcard card by its npm name; `npx <card> --mcp` serves a single card offline.
+  Tools: `get_card`, `get_vcard`, `compose_email` (draft only); prompt: `introduce`.
+- Cards are fetched only from the npm registry and verified against npm's integrity hash.
+- New `mcp` option (default `true`) lets card owners opt out.
+- Claude Desktop extension (`termcard.mcpb`) attached to each GitHub release, and an entry
+  in the official MCP Registry (`io.github.aepasahan/termcard`).
+
+### create-termcard
+- Generated READMEs mention that the card works with AI assistants.
+
 ## termcard 0.3.0, create-termcard 0.3.1 — 2026-11-03
 
 ### termcard

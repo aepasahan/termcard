@@ -53,6 +53,9 @@ npx ${pkg}
 An interactive business card. Use the arrow keys to get in touch, save my contact
 details, or visit my website and profiles — in your own language.
 
+Using an AI assistant? With [termcard's MCP server](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md)
+you can simply ask it about \`${pkg}\`.
+
 <sub>Made with [termcard](https://www.npmjs.com/package/termcard).</sub>
 `;
 

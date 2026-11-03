@@ -7,6 +7,7 @@ import { loadConfig } from './config/load.js';
 import { ConfigError } from './config/schema.js';
 import { run } from './run.js';
 import { buildCard, UnsafeOutputError } from './build/index.js';
+import { serveMcp } from './mcp/server.js';
 
 const VERSION = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
 const DEFAULT_CONFIG = 'card.config.json';
@@ -17,6 +18,7 @@ Usage:
   termcard preview [config]          Show the card (accepts the same flags as the card itself)
   termcard validate [config]         Check a config and list any problems
   termcard build [config] [--out d]  Write terminal, web, vCard and curl files (default: dist)
+  termcard mcp                       Run the MCP server that lets AI assistants read any termcard card
 
 Create a new card:
   npm create termcard@latest
@@ -38,6 +40,7 @@ export async function cli(argv, io = { stdout: process.stdout, stderr: process.s
   const [command, ...rest] = argv;
   if (!command || command === 'help' || command === '--help' || command === '-h') return io.stdout.write(`${HELP}\n`), 0;
   if (command === '--version' || command === '-v') return io.stdout.write(`${VERSION}\n`), 0;
+  if (command === 'mcp') return await serveMcp(), 0;
 
   const positional = rest[0] && !rest[0].startsWith('-') ? rest[0] : undefined;
   const configPath = positional ?? DEFAULT_CONFIG;

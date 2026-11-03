@@ -1,6 +1,9 @@
 /** Entry point used by every generated card package: `npx <name>`. */
 
 import { parseArgs } from 'node:util';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { loadConfig } from './config/load.js';
 import { ConfigError } from './config/schema.js';
 import { detectLanguage, createTranslator } from './i18n/index.js';
@@ -10,6 +13,7 @@ import { colorDepth } from './render/color.js';
 import { createVCard } from './vcard.js';
 import { runInteractive } from './tui/app.js';
 import { buildMenu } from './tui/actions.js';
+import { serveMcp } from './mcp/server.js';
 
 const HELP = `Usage: npx <card> [options]
 
@@ -19,6 +23,7 @@ Options:
   --vcard         Print the contact card in vCard format
   --json          Print the card details as JSON
   --no-color      Disable colors
+  --mcp           Run as an MCP server for AI assistants (stdio)
   -h, --help      Show this help`;
 
 /** Public, display-only view of the config (what the card already shows). */
@@ -31,7 +36,7 @@ const publicProfile = (config) => {
  * Runs a card from a normalized config.
  * @returns {Promise<number>} process exit code
  */
-export async function run(config, { argv = process.argv.slice(2), env = process.env, stdin = process.stdin, stdout = process.stdout, stderr = process.stderr } = {}) {
+export async function run(config, { argv = process.argv.slice(2), env = process.env, stdin = process.stdin, stdout = process.stdout, stderr = process.stderr, packageName } = {}) {
   let flags;
   try {
     ({ values: flags } = parseArgs({
@@ -42,6 +47,7 @@ export async function run(config, { argv = process.argv.slice(2), env = process.
         vcard: { type: 'boolean' },
         json: { type: 'boolean' },
         'no-color': { type: 'boolean' },
+        mcp: { type: 'boolean' },
         help: { type: 'boolean', short: 'h' },
       },
       strict: true,
@@ -52,6 +58,11 @@ export async function run(config, { argv = process.argv.slice(2), env = process.
   }
 
   if (flags.help) return stdout.write(`${HELP}\n`), 0;
+  if (flags.mcp) {
+    if (!config.mcp) return stderr.write('This card is not shared with AI assistants ("mcp": false).\n'), 1;
+    await serveMcp({ pinned: { config, packageName } });
+    return 0;
+  }
   const lang = detectLanguage(config.language, { flag: flags.lang, env });
   if (flags.json) return stdout.write(`${JSON.stringify(publicProfile(config), null, 2)}\n`), 0;
   if (flags.vcard) return stdout.write(createVCard(config, lang)), 0;
@@ -68,10 +79,20 @@ export async function run(config, { argv = process.argv.slice(2), env = process.
 }
 
 /** Loads a JSON config file and runs it; prints readable errors instead of stack traces. */
+/** npm package name of the card, read from the package.json next to its config. */
+function packageNameFor(configFile) {
+  try {
+    const path = configFile instanceof URL ? fileURLToPath(configFile) : configFile;
+    return JSON.parse(readFileSync(join(dirname(path), 'package.json'), 'utf8')).name;
+  } catch {
+    return undefined;
+  }
+}
+
 export async function start(configFile, options = {}) {
   const stderr = options.stderr ?? process.stderr;
   try {
-    process.exitCode = await run(loadConfig(configFile), options);
+    process.exitCode = await run(loadConfig(configFile), { packageName: packageNameFor(configFile), ...options });
   } catch (error) {
     if (!(error instanceof ConfigError)) throw error;
     stderr.write(`${error.message}\n`);

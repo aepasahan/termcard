@@ -55,8 +55,22 @@ on npm and publishes the card for you.
 - **Fourteen languages built in** — the world's most spoken languages plus Turkish, German and French, including right-to-left Arabic and Urdu — and you can add your own.
 - **Eight seasonal color themes**, from *thaw* to *midwinter*, designed to look calm on both dark and light terminals.
 - **Three layouts, optional icons and a short description**; choose which details appear, in what order, or show only the menu.
+- **Ready for AI assistants.** A built-in MCP server lets Claude and other assistants read cards and draft emails.
 - **Updates reach everyone.** Cards depend on termcard, so improvements arrive without republishing your card.
 - **Private and safe by design.** Zero dependencies, no tracking, and every value in a card is validated and sanitized before it reaches anyone's terminal.
+
+## Ask your AI assistant
+
+termcard also speaks the [Model Context Protocol](https://modelcontextprotocol.io), so AI
+assistants like Claude can look up any termcard card by name, save the person as a contact
+or draft an email to them — read-only, nothing is ever sent on your behalf.
+
+```bash
+claude mcp add termcard -- npx -y termcard mcp
+```
+
+For Claude Desktop there's a one-click extension, and any MCP client works — see
+[termcard for AI assistants](docs/mcp.md). Card owners can opt out with `"mcp": false`.
 
 ## Customizing your card
 
@@ -86,6 +100,7 @@ termcard also ships a small tool for card owners. Visitors never see or need it.
 | ------- | ------------ |
 | `npx termcard preview` | Opens your card locally, exactly as visitors will see it. |
 | `npx termcard validate` | Checks your config and explains any mistakes. |
+| `npx termcard mcp` | Runs the MCP server for AI assistants (see [docs/mcp.md](docs/mcp.md)). |
 | `npx termcard build` | Optional. Exports your card for use outside the terminal: a web page, vCards and plain-text versions, plus ready-made code so that `curl yourdomain.com` prints your card. |
 
 ## Requirements

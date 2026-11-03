@@ -180,6 +180,16 @@ menu. Set `"menu": false` to always print the card only.
 | `exit`        | Closes the card. |
 | `{ "label", "url", "hint"? }` | Custom entry that opens a URL. `label` and `hint` can be localized. |
 
+## AI assistants
+
+```json
+"mcp": true
+```
+
+Cards can be read by AI assistants through termcard's MCP server (see [mcp.md](mcp.md)).
+This is on by default and shares only what the card already shows. Set `"mcp": false` to
+opt out.
+
 ## Command-line flags
 
 Everyone running your card can use:
@@ -191,6 +201,7 @@ Everyone running your card can use:
 | `--vcard`       | Print the vCard. |
 | `--json`        | Print the card details as JSON. |
 | `--no-color`    | Disable colors. |
+| `--mcp`         | Run the card as an MCP server for AI assistants. |
 
 ## Beyond the terminal
 

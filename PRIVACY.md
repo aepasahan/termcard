@@ -31,6 +31,17 @@ termcard's control and covered by the [npm privacy policy](https://docs.npmjs.co
   (`npm unpublish <name>` within npm's policy limits, otherwise `npm deprecate`) and
   delete the files and any copies (e.g. the generated web page).
 
+## AI assistants (MCP)
+
+- The MCP server only answers questions an assistant sends it, on the user's own machine.
+  It has no tracking and stores nothing.
+- To look up a card by name, it contacts **only** `registry.npmjs.org`, sending the package
+  name, the same request `npx` makes. A card run as `npx <name> --mcp` makes no network
+  requests at all.
+- It shares only what the card already shows publicly. Card owners can opt out with
+  `"mcp": false`.
+- Drafted emails are returned to the user as `mailto:` links and are never sent.
+
 ## Web page and curl integrations
 
 The generated `index.html` loads no external resources, sets a restrictive Content

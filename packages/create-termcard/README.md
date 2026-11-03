@@ -44,6 +44,10 @@ npx yourname
 
 To change anything later, edit `card.config.json` in the created folder and publish again.
 
+Your card is also ready for AI assistants: anyone using the
+[termcard MCP server](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md) can ask
+about you by name. Set `"mcp": false` in `card.config.json` to opt out.
+
 ## Without the wizard
 
 Already have a `card.config.json`? Create the package from it directly:
