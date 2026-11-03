@@ -1,0 +1,41 @@
+{
+  "name": "Jane Doe",
+  "title": { "en": "Product Designer", "tr": "Ürün Tasarımcısı", "de": "Produktdesignerin" },
+  "tagline": "@studio",
+  "about": { "en": "Design systems and calm interfaces.", "tr": "Tasarım sistemleri ve sade arayüzler.", "de": "Designsysteme und ruhige Oberflächen." },
+  "organization": "Studio",
+  "email": "jane@example.com",
+  "phone": "+49 30 1234567",
+  "website": "https://jane.example.com",
+  "location": { "en": "Berlin · Germany", "tr": "Berlin · Almanya", "de": "Berlin · Deutschland" },
+  "links": [
+    "https://www.linkedin.com/in/janedoe",
+    "https://github.com/janedoe",
+    { "url": "https://dribbble.com/janedoe", "label": "Dribbble" },
+    { "url": "https://blog.example.com", "label": "Blog", "id": "blog" }
+  ],
+  "language": { "default": "auto", "available": ["en", "tr", "de"] },
+  "strings": {
+    "en": { "action.contact": "Start a project" },
+    "tr": { "action.contact": "Proje başlat" },
+    "de": { "action.contact": "Projekt starten" }
+  },
+  "template": "classic",
+  "theme": { "preset": "ocean", "accent": "#5fafd7" },
+  "card": {
+    "border": "rounded",
+    "fields": ["website", "email", "linkedin", "github", "dribbble", "location"]
+  },
+  "menu": {
+    "items": [
+      "contact",
+      { "label": { "en": "Book a call", "tr": "Görüşme planla", "de": "Termin buchen" }, "url": "https://cal.com/janedoe" },
+      "save",
+      "website",
+      "links",
+      "copy-email",
+      "language",
+      "exit"
+    ]
+  }
+}

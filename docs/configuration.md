@@ -1,0 +1,160 @@
+# Configuration reference
+
+A card is a single `card.config.json` file. Only `name` is required; everything
+else is optional and has a sensible default. Run `npx termcard validate` to check
+a config — every problem is listed with its path.
+
+JSON is the only accepted format on purpose: a config can never execute code.
+
+```json
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "links": ["https://github.com/janedoe"]
+}
+```
+
+See [`examples/full.json`](../examples/full.json) for a config that uses every option.
+
+## Profile
+
+| Key            | Type               | Notes |
+| -------------- | ------------------ | ----- |
+| `name`         | string             | **Required.** At most 80 characters. |
+| `title`        | localized string   | Role, shown under the name. |
+| `tagline`      | localized string   | Company, handle or slogan, shown in the accent color. |
+| `about`        | localized string   | One short line. |
+| `organization` | string             | Used in the vCard only. |
+| `email`        | string             | Enables the *Get in touch* and *Copy email* actions. |
+| `phone`        | string             | Digits, spaces and `+ ( ) - .` only. |
+| `website`      | URL                | `https://` or `http://`. |
+| `location`     | localized string   | Shown at the bottom of the card. |
+| `links`        | array              | URLs, or `{ "url", "label"?, "id"? }`. |
+
+A **localized string** is either plain text or an object keyed by language:
+`{ "en": "Designer", "tr": "Tasarımcı" }`. Missing languages fall back to English,
+then to the first entry.
+
+**Links** for well-known services (LinkedIn, GitHub, X, Instagram, Behance,
+Dribbble, YouTube, Medium, Bluesky, and more) get their label and `id`
+automatically. Other links use the domain; set `label` to change it. The `id` is
+how you refer to the link in `card.fields` and `menu.items`.
+
+Text is limited to 120 characters per field. Control characters and
+text-direction overrides are removed automatically.
+
+## Languages
+
+```json
+"language": { "default": "auto", "available": ["en", "tr"] }
+```
+
+- `available` — languages the card supports. Built in: `en`, `tr`, `de`, `es`, `fr`.
+- `default` — `"auto"` (detect) or a language code that is always used.
+
+With `"auto"`, the language is chosen from: the `--lang` flag, the
+`TERMCARD_LANG` environment variable, the system locale (`LC_ALL`,
+`LC_MESSAGES`, `LANG`, `LANGUAGE`, then the OS locale), and finally English.
+When more than one language is available, visitors can switch from the menu.
+
+### Custom text and new languages
+
+Every interface text can be overridden per language under `strings`. The keys are
+listed in [`packages/termcard/src/i18n/locales/en.js`](../packages/termcard/src/i18n/locales/en.js).
+
+```json
+"strings": {
+  "en": { "action.contact": "Start a project" },
+  "ja": { "meta.name": "日本語", "action.exit": "終了" }
+}
+```
+
+A language that is not built in can be added to `available` once it has an entry
+under `strings`; untranslated keys fall back to English.
+
+## Look
+
+### `template`
+
+| Template  | Description |
+| --------- | ----------- |
+| `classic` | Default. Letter-spaced name on two lines, generous spacing, location on the right. |
+| `compact` | Name on one line, tighter spacing. Good for long names. |
+| `minimal` | No frame and no labels. |
+
+### `theme`
+
+A preset name — `gold` (default), `ocean`, `sage`, `rose`, `violet`, `mono` — or an
+object that starts from a preset and overrides individual colors:
+
+```json
+"theme": { "preset": "mono", "accent": "#ff8700" }
+```
+
+Roles: `accent`, `text`, `muted`, `faint`. Colors are hex values; terminals without
+24-bit color get the closest of the 256 standard colors. `NO_COLOR` is respected.
+
+### `card`
+
+Every option overrides the template's value.
+
+| Key             | Values | |
+| --------------- | ------ | --- |
+| `fields`        | array of field ids | What the card shows, in order: `website`, `email`, `phone`, link ids, `location`. Defaults to everything you filled in. |
+| `border`        | `rounded` `square` `double` `heavy` `none` | |
+| `nameStyle`     | `spaced` `uppercase` `plain` | |
+| `splitName`     | boolean | Last name on its own line. |
+| `spacing`       | `relaxed` `compact` | |
+| `accentRule`    | boolean | Short accent line under the tagline. |
+| `labels`        | boolean | Show `Email`, `GitHub` … before values. |
+| `locationAlign` | `left` `right` | |
+| `padding`       | 0–8 | Spaces inside the frame. |
+| `width`         | `"auto"` or 20–120 | Minimum outer width. |
+
+## Menu
+
+```json
+"menu": { "items": ["contact", "save", "website", "links", "copy-email", "language", "exit"] }
+```
+
+That list is the default. Items without the data they need (for example `contact`
+without an `email`) are skipped. Set `"menu": false` to print the card only.
+
+| Item          | Action |
+| ------------- | ------ |
+| `contact`     | Opens a new email draft. |
+| `save`        | Opens the contact card (vCard) in the address book. |
+| `website`     | Opens the website. |
+| `links`       | One entry per link. |
+| `link:<id>`   | A single link, e.g. `link:github`. |
+| `copy-email`  | Copies the email address. |
+| `copy-phone`  | Copies the phone number. |
+| `language`    | Language picker (only with 2+ languages). |
+| `exit`        | Closes the card. |
+| `{ "label", "url", "hint"? }` | Custom entry that opens a URL. `label` and `hint` can be localized. |
+
+## Command-line flags
+
+Everyone running your card can use:
+
+| Flag            | |
+| --------------- | --- |
+| `--lang <code>` | Show a specific language. |
+| `--card`        | Print the card without the menu (also automatic when output is piped). |
+| `--vcard`       | Print the vCard. |
+| `--json`        | Print the card details as JSON. |
+| `--no-color`    | Disable colors. |
+
+## Beyond the terminal
+
+`npx termcard build` (or `npm run build` in your card package) writes to `dist/`:
+
+| File | |
+| ---- | --- |
+| `card.<lang>.ansi` / `card.<lang>.txt` | The card with / without colors. |
+| `contact.<lang>.vcf` | vCard per language. |
+| `index.html` | A self-contained web version with a language switcher. |
+| `integrations/*.js` | Snippets for Cloudflare Workers, Next.js/Vercel and Netlify that make `curl yourdomain.com` print the card. |
+
+The integrations read the text files from your published npm package through
+jsDelivr, so your site picks up new card versions without being redeployed.

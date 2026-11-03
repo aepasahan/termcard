@@ -1,0 +1,143 @@
+/** Interactive card: the card itself plus a keyboard-driven menu below it. */
+
+import readline from 'node:readline';
+import { createTranslator, languageName } from '../i18n/index.js';
+import { layoutCard } from '../render/card.js';
+import { toAnsi, createPainter } from '../render/format.js';
+import { displayWidth } from '../text.js';
+import { buildMenu } from './actions.js';
+import { Screen } from './screen.js';
+
+export function runInteractive(config, { lang: initialLang, depth, stdin, stdout }) {
+  const paint = createPainter(config.theme, depth);
+  const screen = new Screen(stdout);
+  const state = { lang: initialLang, view: 'main', index: 0, status: null };
+  let card = [];
+  let t;
+  let menu;
+
+  const load = () => {
+    t = createTranslator(state.lang, config.strings);
+    menu = buildMenu(config, state.lang, t);
+    card = ['', ...toAnsi(layoutCard(config, state.lang), config.theme, depth).split('\n')];
+  };
+
+  const ruleWidth = () => Math.max(40, ...card.map((l) => displayWidth(l.replace(/\x1b\[[0-9;]*m/g, '')) - 2));
+
+  const entries = () =>
+    state.view === 'language'
+      ? [
+          ...config.language.available.map((code) => ({
+            label: `${languageName(code, config.strings)}${code === state.lang ? `  ${paint('accent', '✓')}` : ''}`,
+            hint: '',
+            code,
+          })),
+          { label: t('action.back'), hint: t('hint.back'), back: true },
+        ]
+      : menu;
+
+  const menuLines = () => {
+    const list = entries();
+    const current = list[state.index];
+    const keys = [['↑↓', t('keys.navigate')], ['enter', t('keys.select')], ...(state.view === 'language' ? [['esc', t('keys.back')]] : []), ['q', t('keys.quit')]]
+      .map(([key, word]) => `${paint('muted', key)} ${paint('faint', word)}`)
+      .join(paint('faint', '   ·   '));
+    const status = state.status
+      ? `${paint(state.status.ok ? 'accent' : 'muted', state.status.ok ? '✓' : '•')} ${paint('muted', state.status.text)}`
+      : paint('faint', current?.hint ?? '');
+    return [
+      '',
+      ...list.map((e, i) => (i === state.index ? `  ${paint('accent', '›')} ${paint('strong', e.label)}` : `    ${paint('muted', e.label)}`)),
+      '',
+      `  ${paint('faint', '─'.repeat(ruleWidth()))}`,
+      `  ${status}`,
+      `  ${keys}`,
+    ];
+  };
+
+  const render = () => screen.paint(menuLines());
+
+  /** Switches language and redraws the card in place (or from the top if it no longer fits). */
+  const switchLanguage = (code) => {
+    const painted = card.length + screen.height;
+    state.lang = code;
+    load();
+    showMain({ ok: true, text: t('status.language') });
+    stdout.write(!stdout.rows || painted < stdout.rows ? `\x1b[${painted}A\r\x1b[J` : '\x1b[2J\x1b[H');
+    screen.height = 0;
+    stdout.write(`${card.join('\n')}\n`);
+    render();
+  };
+
+  const showMain = (status = null) => {
+    state.view = 'main';
+    state.index = Math.max(0, menu.findIndex((e) => e.id === 'language'));
+    state.status = status;
+  };
+
+  return new Promise((resolve) => {
+    let busy = false;
+
+    const cleanup = () => {
+      stdin.off('keypress', onKey);
+      if (stdin.isTTY) stdin.setRawMode(false);
+      stdin.pause();
+      screen.showCursor();
+    };
+    const quit = () => {
+      screen.clear();
+      stdout.write('\n');
+      cleanup();
+      resolve();
+    };
+
+    const select = async () => {
+      const entry = entries()[state.index];
+      if (state.view === 'language') {
+        if (entry.code && entry.code !== state.lang) return switchLanguage(entry.code);
+        showMain();
+        return render();
+      }
+      busy = true;
+      const outcome = await entry.run();
+      busy = false;
+      if (outcome.quit) return quit();
+      if (outcome.view) {
+        state.view = outcome.view;
+        state.index = Math.max(0, config.language.available.indexOf(state.lang));
+        state.status = null;
+        return render();
+      }
+      state.status = { ok: outcome.ok, text: outcome.status };
+      render();
+    };
+
+    async function onKey(str, key = {}) {
+      if (busy) return;
+      const count = entries().length;
+      if ((key.ctrl && key.name === 'c') || key.name === 'q') return quit();
+      if (key.name === 'escape' || key.name === 'backspace' || key.name === 'left') {
+        if (state.view === 'main') return key.name === 'escape' ? quit() : undefined;
+        showMain();
+        return render();
+      }
+      if (key.name === 'up' || key.name === 'k') state.index = (state.index - 1 + count) % count;
+      else if (key.name === 'down' || key.name === 'j' || key.name === 'tab') state.index = (state.index + 1) % count;
+      else if (/^[1-9]$/.test(str ?? '') && Number(str) <= count) state.index = Number(str) - 1;
+      else if (key.name === 'return' || key.name === 'space' || key.name === 'right') return select();
+      else return;
+      state.status = null;
+      render();
+    }
+
+    load();
+    readline.emitKeypressEvents(stdin);
+    stdin.setRawMode(true);
+    stdin.resume();
+    screen.hideCursor();
+    process.once('exit', () => screen.showCursor());
+    stdout.write(`${card.join('\n')}\n`);
+    render();
+    stdin.on('keypress', onKey);
+  });
+}

@@ -1,0 +1,15 @@
+{
+  "name": "termcard-monorepo",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "npm test --workspaces",
+    "check": "npm test && node packages/termcard/bin/termcard.js validate examples/full.json && node packages/termcard/bin/termcard.js validate examples/minimal.json"
+  },
+  "engines": {
+    "node": ">=18.18"
+  }
+}
