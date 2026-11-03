@@ -51,6 +51,12 @@ test('custom menu items and explicit link items', async () => {
   assert.deepEqual(sys.calls, [['open', 'https://cal.com/jane']]);
 });
 
+test('vCard file name is transliterated', async () => {
+  const sys = fakeSystem();
+  await menu(make({ name: 'Ahmet Erkan Paşahan' }), sys).find((e) => e.id === 'save').run();
+  assert.equal(sys.calls[0][1], 'ahmet-erkan-pasahan.vcf');
+});
+
 test('openExternal refuses anything that is not a web/mail/tel URL or absolute path', async () => {
   assert.equal(await openExternal('--version'), false);
   assert.equal(await openExternal('javascript:alert(1)'), false);

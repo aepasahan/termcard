@@ -3,12 +3,13 @@
 import { parseArgs } from 'node:util';
 import { loadConfig } from './config/load.js';
 import { ConfigError } from './config/schema.js';
-import { detectLanguage } from './i18n/index.js';
+import { detectLanguage, createTranslator } from './i18n/index.js';
 import { layoutCard } from './render/card.js';
 import { toAnsi } from './render/format.js';
 import { colorDepth } from './render/color.js';
 import { createVCard } from './vcard.js';
 import { runInteractive } from './tui/app.js';
+import { buildMenu } from './tui/actions.js';
 
 const HELP = `Usage: npx <card> [options]
 
@@ -56,7 +57,8 @@ export async function run(config, { argv = process.argv.slice(2), env = process.
   if (flags.vcard) return stdout.write(createVCard(config, lang)), 0;
 
   const depth = flags['no-color'] ? 0 : colorDepth(stdout, env);
-  const interactive = config.menu.enabled && !flags.card && stdin.isTTY && stdout.isTTY && typeof stdin.setRawMode === 'function';
+  const hasMenu = config.menu.enabled && buildMenu(config, lang, createTranslator(lang, config.strings)).length > 0;
+  const interactive = hasMenu && !flags.card && stdin.isTTY && stdout.isTTY && typeof stdin.setRawMode === 'function';
   if (!interactive) {
     stdout.write(`\n${toAnsi(layoutCard(config, lang), config.theme, depth)}\n\n`);
     return 0;

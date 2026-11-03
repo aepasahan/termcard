@@ -4,7 +4,7 @@ import readline from 'node:readline';
 import { createTranslator, languageName } from '../i18n/index.js';
 import { layoutCard } from '../render/card.js';
 import { toAnsi, createPainter } from '../render/format.js';
-import { displayWidth } from '../text.js';
+import { displayWidth, stripAnsi } from '../text.js';
 import { buildMenu } from './actions.js';
 import { Screen } from './screen.js';
 
@@ -13,6 +13,7 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
   const screen = new Screen(stdout);
   const state = { lang: initialLang, view: 'main', index: 0, status: null };
   let card = [];
+  let cardRows = 0;
   let t;
   let menu;
 
@@ -22,7 +23,19 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
     card = ['', ...toAnsi(layoutCard(config, state.lang), config.theme, depth).split('\n')];
   };
 
-  const ruleWidth = () => Math.max(40, ...card.map((l) => displayWidth(l.replace(/\x1b\[[0-9;]*m/g, '')) - 2));
+  const ruleWidth = () => Math.max(40, ...card.map((l) => displayWidth(stripAnsi(l)) - 2));
+
+  /** Keeps a line of plain text within the terminal width so it never wraps. */
+  const fit = (text) => {
+    const max = (stdout.columns || 80) - 4;
+    if (displayWidth(text) <= max) return text;
+    let out = '';
+    for (const ch of text) {
+      if (displayWidth(out + ch) > max - 1) break;
+      out += ch;
+    }
+    return `${out}…`;
+  };
 
   const entries = () =>
     state.view === 'language'
@@ -43,8 +56,8 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
       .map(([key, word]) => `${paint('muted', key)} ${paint('faint', word)}`)
       .join(paint('faint', '   ·   '));
     const status = state.status
-      ? `${paint(state.status.ok ? 'accent' : 'muted', state.status.ok ? '✓' : '•')} ${paint('muted', state.status.text)}`
-      : paint('faint', current?.hint ?? '');
+      ? `${paint(state.status.ok ? 'accent' : 'muted', state.status.ok ? '✓' : '•')} ${paint('muted', fit(state.status.text))}`
+      : paint('faint', fit(current?.hint ?? ''));
     return [
       '',
       ...list.map((e, i) => (i === state.index ? `  ${paint('accent', '›')} ${paint('strong', e.label)}` : `    ${paint('muted', e.label)}`)),
@@ -59,13 +72,11 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
 
   /** Switches language and redraws the card in place (or from the top if it no longer fits). */
   const switchLanguage = (code) => {
-    const painted = card.length + screen.height;
+    screen.clear(cardRows);
     state.lang = code;
     load();
     showMain({ ok: true, text: t('status.language') });
-    stdout.write(!stdout.rows || painted < stdout.rows ? `\x1b[${painted}A\r\x1b[J` : '\x1b[2J\x1b[H');
-    screen.height = 0;
-    stdout.write(`${card.join('\n')}\n`);
+    cardRows = screen.print(card);
     render();
   };
 
@@ -77,6 +88,7 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
 
   return new Promise((resolve) => {
     let busy = false;
+    let closed = false;
 
     const cleanup = () => {
       stdin.off('keypress', onKey);
@@ -85,6 +97,8 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
       screen.showCursor();
     };
     const quit = () => {
+      if (closed) return;
+      closed = true;
       screen.clear();
       stdout.write('\n');
       cleanup();
@@ -101,6 +115,7 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
       busy = true;
       const outcome = await entry.run();
       busy = false;
+      if (closed) return;
       if (outcome.quit) return quit();
       if (outcome.view) {
         state.view = outcome.view;
@@ -113,9 +128,9 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
     };
 
     async function onKey(str, key = {}) {
+      if ((key.ctrl && key.name === 'c') || key.name === 'q') return quit();
       if (busy) return;
       const count = entries().length;
-      if ((key.ctrl && key.name === 'c') || key.name === 'q') return quit();
       if (key.name === 'escape' || key.name === 'backspace' || key.name === 'left') {
         if (state.view === 'main') return key.name === 'escape' ? quit() : undefined;
         showMain();
@@ -136,7 +151,7 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
     stdin.resume();
     screen.hideCursor();
     process.once('exit', () => screen.showCursor());
-    stdout.write(`${card.join('\n')}\n`);
+    cardRows = screen.print(card);
     render();
     stdin.on('keypress', onKey);
   });

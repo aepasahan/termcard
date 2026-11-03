@@ -10,6 +10,8 @@ import { tmpdir } from 'node:os';
 import { isAbsolute, join } from 'node:path';
 
 const SAFE_URL = /^(https?:\/\/|mailto:|tel:)/i;
+// Openers normally exit within milliseconds; one still running after this is treated as success.
+const OPENER_GRACE_MS = 1500;
 
 function openerFor(platform) {
   if (platform === 'darwin') return ['open', []];
@@ -23,10 +25,18 @@ export function openExternal(target, platform = process.platform) {
   const [command, args] = openerFor(platform);
   return new Promise((resolve) => {
     const child = spawn(command, [...args, target], { stdio: 'ignore', detached: true, shell: false });
-    child.once('error', () => resolve(false));
-    child.once('spawn', () => {
+    const timer = setTimeout(() => {
       child.unref();
       resolve(true);
+    }, OPENER_GRACE_MS);
+    timer.unref();
+    child.once('error', () => {
+      clearTimeout(timer);
+      resolve(false);
+    });
+    child.once('exit', (code) => {
+      clearTimeout(timer);
+      resolve(code === 0);
     });
   });
 }

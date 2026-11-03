@@ -1,18 +1,6 @@
-/** Package name helpers (npm naming rules) and name → slug conversion. */
+/** Package name helpers (npm naming rules). */
 
-const SPECIAL = { ı: 'i', ß: 'ss', ø: 'o', æ: 'ae', œ: 'oe', ł: 'l', đ: 'd', þ: 'th' };
-
-/** "Ahmet Erkan Paşahan" → "ahmet-erkan-pasahan" */
-export function slugify(name) {
-  return name
-    .toLowerCase()
-    .replace(/[ıßøæœłđþ]/g, (ch) => SPECIAL[ch])
-    .normalize('NFKD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 50);
-}
+export { slugify } from 'termcard';
 
 /** Returns an error message, or undefined if the name is a valid new npm package name. */
 export function validatePackageName(name) {

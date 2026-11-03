@@ -1,9 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { buildCard } from '../src/index.js';
+import { buildCard, UnsafeOutputError } from '../src/index.js';
 import { make } from './helpers.js';
 
 test('build writes every format per language plus web page and integrations', (t) => {
@@ -22,4 +22,18 @@ test('build writes every format per language plus web page and integrations', (t
 
   const worker = readFileSync(join(outDir, 'integrations/cloudflare-worker.js'), 'utf8');
   assert.match(worker, /cdn\.jsdelivr\.net\/npm\/jane@latest\/dist/);
+});
+
+test('build never empties a folder it did not create', (t) => {
+  const dir = mkdtempSync(join(tmpdir(), 'termcard-test-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  writeFileSync(join(dir, 'card.config.json'), '{}');
+  assert.throws(() => buildCard(make(), { outDir: dir }), UnsafeOutputError);
+  assert.ok(existsSync(join(dir, 'card.config.json')));
+
+  const out = join(dir, 'dist');
+  buildCard(make(), { outDir: out });
+  writeFileSync(join(out, 'stale.txt'), 'old');
+  buildCard(make(), { outDir: out }); // a previous build may be replaced
+  assert.ok(!existsSync(join(out, 'stale.txt')));
 });

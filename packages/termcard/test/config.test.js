@@ -77,3 +77,35 @@ test('theme accepts presets and hex overrides only', () => {
   assert.equal(make({ theme: { preset: 'mono', accent: '#FF0000' } }).theme.accent, '#ff0000');
   assert.ok(problems({ name: 'A', theme: { accent: 'red' } }).length);
 });
+
+test('a name of only spaces or control characters is rejected', () => {
+  assert.ok(problems({ name: '   ' }).includes('name: is required'));
+  assert.ok(problems({ name: '\u001b\u0007' }).includes('name: is required'));
+});
+
+test('emails that would alter a mailto: link are rejected', () => {
+  for (const email of ['a?body=x@x.com', 'a&cc=b@x.com', 'a%0A@x.com', 'a/b@x.com', 'a#b@x.com']) {
+    assert.ok(problems({ name: 'A', email }).includes('email: is not a valid email address'), email);
+  }
+  assert.equal(make({ email: 'first.last+tag@sub.example.co' }).email, 'first.last+tag@sub.example.co');
+});
+
+test('language shorthand and case-insensitive codes', () => {
+  assert.deepEqual(normalizeConfig({ name: 'A', language: 'de' }).language, { default: 'de', available: ['de'] });
+  assert.deepEqual(normalizeConfig({ name: 'A', language: { default: 'DE', available: ['de'] } }).language, { default: 'de', available: ['de'] });
+});
+
+test('an empty menu is rejected', () => {
+  assert.ok(problems({ name: 'A', menu: { items: [] } })[0].startsWith('menu.items:'));
+});
+
+test('explicit link ids are never renamed; generated ids avoid them', () => {
+  const config = make({ links: ['https://github.com/a', { url: 'https://example.org', id: 'github-2' }, 'https://github.com/b'] });
+  assert.deepEqual(config.links.map((l) => l.id), ['github', 'github-2', 'github-3']);
+  assert.ok(problems({ name: 'A', links: [{ url: 'https://a.org', id: 'x' }, { url: 'https://b.org', id: 'x' }] })[0].includes('already used'));
+});
+
+test('unusual hosts still get a usable generated id', () => {
+  const ids = make({ links: ['https://[::1]/', 'https://my_site.example/'] }).links.map((l) => l.id);
+  for (const id of ids) assert.match(id, /^[a-z0-9-]+$/);
+});

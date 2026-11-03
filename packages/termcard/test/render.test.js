@@ -29,7 +29,7 @@ test('uppercasing is locale-aware (Turkish dotted İ)', () => {
 });
 
 test('wide characters keep the frame aligned', () => {
-  const plain = toPlain(layoutCard(make({ name: '山田 太郎', tagline: '🚀 shipping' }), 'en'));
+  const plain = toPlain(layoutCard(make({ name: '山田 太郎', tagline: '🚀 shipping ☕', template: 'compact' }), 'en'));
   assert.equal(new Set(widths(plain)).size, 1, plain);
 });
 
@@ -70,7 +70,8 @@ test('color depth honors NO_COLOR, FORCE_COLOR and TTY', () => {
 test('vCard escapes special characters', () => {
   const vcard = createVCard(make({ name: 'Jane Doe', organization: 'A, B; C' }), 'en');
   assert.match(vcard, /^BEGIN:VCARD\r\nVERSION:3\.0\r\nN:Doe;Jane;;;\r\n/);
-  assert.match(vcard, /ORG:A\\, B\; C\r\n/);
+  assert.ok(vcard.includes('ORG:A\\, B\\; C\r\n'), vcard);
+  assert.ok(createVCard(make({ name: 'Ann;Lee Doe' }), 'en').includes('N:Doe;Ann\\;Lee;;;\r\n'));
   assert.match(vcard, /TITLE:Designer/);
   assert.match(vcard, /X-SOCIALPROFILE;TYPE=github:https:\/\/github\.com\/jane/);
 });

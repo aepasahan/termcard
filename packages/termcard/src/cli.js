@@ -6,7 +6,7 @@ import { parseArgs } from 'node:util';
 import { loadConfig } from './config/load.js';
 import { ConfigError } from './config/schema.js';
 import { run } from './run.js';
-import { buildCard } from './build/index.js';
+import { buildCard, UnsafeOutputError } from './build/index.js';
 
 const VERSION = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
 const DEFAULT_CONFIG = 'card.config.json';
@@ -67,7 +67,7 @@ export async function cli(argv, io = { stdout: process.stdout, stderr: process.s
       return 0;
     }
   } catch (error) {
-    if (error instanceof ConfigError || error.code === 'ERR_PARSE_ARGS_UNKNOWN_OPTION') {
+    if (error instanceof ConfigError || error instanceof UnsafeOutputError || error.code?.startsWith('ERR_PARSE_ARGS')) {
       io.stderr.write(`${error.message}\n`);
       return 1;
     }

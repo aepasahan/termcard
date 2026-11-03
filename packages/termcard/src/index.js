@@ -7,7 +7,7 @@
 
 export { start, run } from './run.js';
 export { loadConfig } from './config/load.js';
-export { normalizeConfig, ConfigError } from './config/schema.js';
+export { normalizeConfig, ConfigError, isEmail, urlProblem, TEXT_LIMIT } from './config/schema.js';
 export { templates, DEFAULT_TEMPLATE } from './config/templates.js';
 export { themes, DEFAULT_THEME } from './config/themes.js';
 export { BUILT_IN_LANGUAGES, detectLanguage, languageName } from './i18n/index.js';
@@ -15,4 +15,5 @@ export { layoutCard } from './render/card.js';
 export { toAnsi, toPlain, toHtml } from './render/format.js';
 export { colorDepth } from './render/color.js';
 export { createVCard } from './vcard.js';
-export { buildCard } from './build/index.js';
+export { buildCard, UnsafeOutputError } from './build/index.js';
+export { slugify } from './text.js';

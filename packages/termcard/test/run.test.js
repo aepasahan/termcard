@@ -31,3 +31,9 @@ test('unknown flags exit with code 2 and show usage', async () => {
   assert.equal(await run(make(), options), 2);
   assert.match(options.stderr.output, /Usage:/);
 });
+
+test('a menu whose items all lack data falls back to the plain card', async () => {
+  const options = { argv: [], env: {}, stdin: { isTTY: true, setRawMode() { throw new Error('should not go interactive'); } }, stdout: sink({ isTTY: true }), stderr: sink() };
+  assert.equal(await run(make({ email: undefined, menu: { items: ['contact', 'copy-email'] } }), options), 0);
+  assert.match(options.stdout.output, /J A N E/);
+});

@@ -3,7 +3,7 @@
 import { localize } from './text.js';
 
 // Escape per RFC 2426 §5: backslash, comma, semicolon and newlines.
-const esc = (value) => String(value).replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\;').replace(/\r?\n/g, '\\n');
+const esc = (value) => String(value).replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;').replace(/\r?\n/g, '\\n');
 
 export function createVCard(config, lang) {
   const words = config.name.split(/\s+/);

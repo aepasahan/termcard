@@ -33,7 +33,6 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
       - run: npm install --no-audit --no-fund
-      - run: npx termcard validate
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: \${{ secrets.NPM_TOKEN }}
@@ -114,11 +113,13 @@ export function createProject({ dir, packageName, config, termcardVersion, workf
       description: `${config.name}'s business card — npx ${packageName}`,
       type: 'module',
       bin: { [binName(packageName)]: 'bin/card.js' },
-      files: ['bin', 'card.config.json'],
+      files: ['bin', 'card.config.json', 'dist'],
       scripts: {
         start: 'node bin/card.js',
         validate: 'termcard validate',
         build: 'termcard build',
+        // dist/ holds the web page and the files curl integrations fetch from npm.
+        prepublishOnly: 'termcard build',
       },
       dependencies: { termcard: `^${termcardVersion}` },
       engines: { node: '>=18.18' },

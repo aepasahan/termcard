@@ -6,7 +6,7 @@
  * listing every problem found. Renderers only ever see normalized configs.
  */
 
-import { sanitize } from '../text.js';
+import { sanitize, slugify } from '../text.js';
 import { themes, DEFAULT_THEME, THEME_ROLES } from './themes.js';
 import { templates, DEFAULT_TEMPLATE, CARD_OPTIONS, DEFAULT_MENU, MENU_ACTIONS } from './templates.js';
 import { identifyService } from './services.js';
@@ -25,10 +25,27 @@ const TOP_LEVEL_KEYS = [
   'location', 'links', 'language', 'strings', 'template', 'theme', 'card', 'menu',
 ];
 const LANG_CODE = /^[a-z]{2,3}(-[a-z0-9]{2,8})?$/i;
-const EMAIL = /^[^\s@<>"(),;:\\]+@[^\s@<>"(),;:\\]+\.[^\s@<>"(),;:\\]{2,}$/;
+// Deliberately stricter than RFC 5322: no characters that change the meaning of a mailto: URL (? & # % /).
+const EMAIL = /^[a-z0-9.!$'*+=^_`{|}~-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/i;
 const PHONE = /^\+?[0-9][0-9 ().-]{3,24}$/;
 const HEX = /^#[0-9a-f]{6}$/i;
 const MAX_TEXT = 120;
+
+/** Why a string is not an acceptable link, or undefined if it is. */
+export function urlProblem(value) {
+  let parsed;
+  try {
+    parsed = new URL(value);
+  } catch {
+    return 'must be a full URL, e.g. https://example.com';
+  }
+  if (!['https:', 'http:'].includes(parsed.protocol)) return 'must start with https:// or http://';
+  if (parsed.username || parsed.password) return 'must not contain credentials';
+  return undefined;
+}
+
+export const isEmail = (value) => value.length <= 254 && EMAIL.test(value);
+export const TEXT_LIMIT = MAX_TEXT;
 
 const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 
@@ -40,14 +57,11 @@ function createChecker() {
   };
 
   const text = (path, value, { required = false, max = MAX_TEXT } = {}) => {
-    if (value == null || value === '') {
-      if (required) fail(path, 'is required');
-      return undefined;
-    }
-    if (typeof value !== 'string') return fail(path, 'must be a string');
-    const clean = sanitize(value);
+    if (value != null && typeof value !== 'string') return fail(path, 'must be a string');
+    const clean = value == null ? '' : sanitize(value);
+    if (!clean) return required ? fail(path, 'is required') : undefined;
     if (clean.length > max) return fail(path, `must be at most ${max} characters`);
-    return clean || undefined;
+    return clean;
   };
 
   const localized = (path, value) => {
@@ -67,15 +81,8 @@ function createChecker() {
   const url = (path, value, { required = false } = {}) => {
     const raw = text(path, value, { required, max: 2048 });
     if (!raw) return undefined;
-    let parsed;
-    try {
-      parsed = new URL(raw);
-    } catch {
-      return fail(path, 'must be a full URL, e.g. https://example.com');
-    }
-    if (!['https:', 'http:'].includes(parsed.protocol)) return fail(path, 'must start with https:// or http://');
-    if (parsed.username || parsed.password) return fail(path, 'must not contain credentials');
-    return parsed.href;
+    const problem = urlProblem(raw);
+    return problem ? fail(path, problem) : new URL(raw).href;
   };
 
   const oneOf = (path, value, allowed, fallback) => {
@@ -97,6 +104,8 @@ function normalizeLinks(c, raw) {
   if (raw === undefined) return [];
   if (!Array.isArray(raw)) return c.fail('links', 'must be an array'), [];
   const seen = new Set();
+  // Ids set by the author win; generated ids step around them.
+  const explicitIds = new Set(raw.filter((e) => isObject(e) && typeof e.id === 'string').map((e) => e.id));
   return raw.flatMap((entry, i) => {
     const path = `links[${i}]`;
     if (typeof entry === 'string') entry = { url: entry };
@@ -105,16 +114,25 @@ function normalizeLinks(c, raw) {
     const href = c.url(`${path}.url`, entry.url, { required: true });
     if (!href) return [];
     const service = identifyService(href);
-    let id = c.text(`${path}.id`, entry.id, { max: 40 }) ?? service.id;
-    if (!/^[a-z0-9-]+$/i.test(id)) return c.fail(`${path}.id`, 'may only contain letters, digits and dashes'), [];
-    for (let n = 2; seen.has(id); n++) id = `${service.id}-${n}`;
+    const explicit = c.text(`${path}.id`, entry.id, { max: 40 });
+    let id;
+    if (explicit) {
+      if (!/^[a-z0-9-]+$/i.test(explicit)) return c.fail(`${path}.id`, 'may only contain letters, digits and dashes'), [];
+      if (seen.has(explicit)) return c.fail(`${path}.id`, `"${explicit}" is already used by another link`), [];
+      id = explicit;
+    } else {
+      const auto = slugify(service.id) || 'link';
+      id = auto;
+      for (let n = 2; seen.has(id) || explicitIds.has(id); n++) id = `${auto}-${n}`;
+    }
     seen.add(id);
     return [{ id, label: c.text(`${path}.label`, entry.label, { max: 40 }) ?? service.label, url: href }];
   });
 }
 
 function normalizeLanguage(c, raw, strings) {
-  const value = raw === undefined ? {} : typeof raw === 'string' ? { default: raw } : raw;
+  // "language": "de" is shorthand for a card that is only in German.
+  const value = raw === undefined ? {} : typeof raw === 'string' ? { default: raw, available: [raw] } : raw;
   if (!isObject(value)) return c.fail('language', 'must be a language code or { default, available }'), { default: 'auto', available: ['en'] };
   c.unknownKeys('language', value, ['default', 'available']);
 
@@ -130,7 +148,7 @@ function normalizeLanguage(c, raw, strings) {
       c.fail('language.available', `"${lang}" has no built-in translation; add it under "strings.${lang}"`);
     }
   }
-  const def = value.default ?? 'auto';
+  const def = String(value.default ?? 'auto').toLowerCase();
   if (def !== 'auto' && !available.includes(def)) c.fail('language.default', 'must be "auto" or one of language.available');
   return { default: def, available: [...new Set(available)] };
 }
@@ -227,6 +245,7 @@ function normalizeMenu(c, raw, linkIds) {
     if (!label) c.fail(`${path}.label`, 'is required');
     return label && href ? [{ label, url: href, hint: c.localized(`${path}.hint`, item.hint) }] : [];
   });
+  if (!items.length) c.fail('menu.items', 'must contain at least one item (or set "menu": false)');
   return { enabled: true, items };
 }
 
@@ -247,7 +266,7 @@ export function normalizeConfig(raw) {
     location: c.localized('location', raw.location),
     links: normalizeLinks(c, raw.links),
   };
-  if (config.email && !EMAIL.test(config.email)) c.fail('email', 'is not a valid email address');
+  if (config.email && !isEmail(config.email)) c.fail('email', 'is not a valid email address');
   if (config.phone && !PHONE.test(config.phone)) c.fail('phone', 'may only contain digits, spaces, + ( ) - .');
 
   config.strings = normalizeStrings(c, raw.strings);

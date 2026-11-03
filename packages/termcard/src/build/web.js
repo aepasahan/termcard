@@ -73,8 +73,9 @@ a:hover span{text-decoration:underline;text-underline-offset:3px}
   const data = ${json};
   const langs = Object.keys(data);
   const $ = (id) => document.getElementById(id);
+  const has = (lang) => Object.prototype.hasOwnProperty.call(data, lang);
   const set = (lang) => {
-    if (!data[lang]) lang = langs.includes('${fallback}') ? '${fallback}' : langs[0];
+    if (!has(lang)) lang = langs.includes('${fallback}') ? '${fallback}' : langs[0];
     document.documentElement.lang = lang;
     $('card').innerHTML = data[lang].card;
     $('vcf').textContent = data[lang].save;
@@ -89,7 +90,7 @@ a:hover span{text-decoration:underline;text-underline-offset:3px}
     try { await navigator.clipboard.writeText($('copy').previousElementSibling.textContent); $('copy').textContent = '✓'; setTimeout(() => { $('copy').textContent = 'Copy'; }, 1500); } catch {}
   });
   const param = new URLSearchParams(location.search).get('lang');
-  const browser = (navigator.languages || [navigator.language]).map((l) => String(l).slice(0, 2).toLowerCase()).find((l) => data[l]);
+  const browser = (navigator.languages || [navigator.language]).map((l) => String(l).slice(0, 2).toLowerCase()).find(has);
   set(param || browser);
 })();
 </script>

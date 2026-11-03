@@ -25,7 +25,7 @@ See [`examples/full.json`](../examples/full.json) for a config that uses every o
 | `tagline`      | localized string   | Company, handle or slogan, shown in the accent color. |
 | `about`        | localized string   | One short line. |
 | `organization` | string             | Used in the vCard only. |
-| `email`        | string             | Enables the *Get in touch* and *Copy email* actions. |
+| `email`        | string             | Enables the *Get in touch* and *Copy email* actions. Characters that would change a `mailto:` link (`? & # % /`) are not allowed. |
 | `phone`        | string             | Digits, spaces and `+ ( ) - .` only. |
 | `website`      | URL                | `https://` or `http://`. |
 | `location`     | localized string   | Shown at the bottom of the card. |
@@ -51,6 +51,8 @@ text-direction overrides are removed automatically.
 
 - `available` — languages the card supports. Built in: `en`, `tr`, `de`, `es`, `fr`.
 - `default` — `"auto"` (detect) or a language code that is always used.
+
+`"language": "de"` is shorthand for a card that exists in German only.
 
 With `"auto"`, the language is chosen from: the `--lang` flag, the
 `TERMCARD_LANG` environment variable, the system locale (`LC_ALL`,
@@ -118,7 +120,8 @@ Every option overrides the template's value.
 ```
 
 That list is the default. Items without the data they need (for example `contact`
-without an `email`) are skipped. Set `"menu": false` to print the card only.
+without an `email`) are skipped; if nothing is left, the card is printed without a
+menu. Set `"menu": false` to always print the card only.
 
 | Item          | Action |
 | ------------- | ------ |
@@ -157,4 +160,9 @@ Everyone running your card can use:
 | `integrations/*.js` | Snippets for Cloudflare Workers, Next.js/Vercel and Netlify that make `curl yourdomain.com` print the card. |
 
 The integrations read the text files from your published npm package through
-jsDelivr, so your site picks up new card versions without being redeployed.
+jsDelivr, so your site picks up new card versions without being redeployed. Card
+packages created with `npm create termcard` run the build automatically before every
+`npm publish` and include `dist/` in the package.
+
+For safety, `build` only replaces a folder it created itself (marked with a
+`.termcard-build` file); it refuses to write into any other non-empty folder.

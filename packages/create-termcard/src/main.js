@@ -46,8 +46,8 @@ export async function main(argv = process.argv.slice(2)) {
 
   let answers;
   if (flags.config) {
+    loadConfig(flags.config); // readable errors for missing, invalid or malformed files
     const raw = JSON.parse(readFileSync(flags.config, 'utf8'));
-    loadConfig(flags.config); // validate up front
     const packageName = flags.name ?? slugify(raw.name);
     const nameError = validatePackageName(packageName);
     if (nameError) throw new ConfigError([`--name: ${nameError}`]);
@@ -78,7 +78,7 @@ export async function main(argv = process.argv.slice(2)) {
   const cmd = `npx ${answers.packageName}`;
   console.log(`
 ${published ? `Your card is live:  ${style.bold(cmd)}` : 'Next steps:'}
-${published ? '' : `  cd ${shown}\n  npm publish --access public\n`}
+${published ? '' : `  cd ${shown}\n  npm install\n  npm publish --access public\n`}
   Customize it in ${style.bold('card.config.json')} — fields, menu, template, colors, languages.
   Docs: ${style.muted('https://github.com/aepasahan/termcard/blob/main/docs/configuration.md')}
 `);

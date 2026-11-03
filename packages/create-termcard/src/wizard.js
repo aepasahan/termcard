@@ -1,20 +1,21 @@
 /** Interactive questions → a raw card config plus package options. */
 
-import { BUILT_IN_LANGUAGES, languageName, templates, themes, normalizeConfig, layoutCard, toAnsi, colorDepth } from 'termcard';
+import {
+  BUILT_IN_LANGUAGES, languageName, templates, themes, normalizeConfig, layoutCard, toAnsi, colorDepth,
+  isEmail, urlProblem, TEXT_LIMIT,
+} from 'termcard';
 import { text, confirm, select, multiselect, style } from './prompts.js';
 import { slugify, validatePackageName } from './names.js';
 import { checkAvailability } from './npm.js';
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+// Answers are checked with the same rules as the config schema, so the final config always validates.
 const optional = (check) => (v) => (v ? check(v) : undefined);
-const isUrl = (v) => {
-  try {
-    return ['http:', 'https:'].includes(new URL(v).protocol);
-  } catch {
-    return false;
-  }
-};
+const short = (v) => (v.length > TEXT_LIMIT ? `At most ${TEXT_LIMIT} characters` : undefined);
 const withProtocol = (v) => (v && !/^https?:\/\//i.test(v) ? `https://${v}` : v);
+const link = (v) => {
+  const problem = urlProblem(withProtocol(v));
+  return problem ? `Link ${problem}` : undefined;
+};
 
 /** Accepts a username or a full URL for a known service. */
 const profileUrl = (base) => (value) => {
@@ -60,22 +61,26 @@ export async function runWizard({ offline = false } = {}) {
   );
 
   const name = await text({ message: 'Full name', validate: (v) => (!v ? 'Your name is required' : v.length > 80 ? 'At most 80 characters' : undefined) });
-  const title = await text({ message: 'Role or title', hint: 'optional' });
-  const tagline = await text({ message: 'Tagline, company or @handle', hint: 'optional' });
-  const email = await text({ message: 'Email', hint: 'optional', validate: optional((v) => (EMAIL.test(v) ? undefined : 'Not a valid email address')) });
-  const website = withProtocol(await text({ message: 'Website', hint: 'optional', validate: optional((v) => (isUrl(withProtocol(v)) ? undefined : 'Not a valid URL')) }));
-  const location = await text({ message: 'Location', hint: 'optional, e.g. Berlin · Germany' });
+  const title = await text({ message: 'Role or title', hint: 'optional', validate: optional(short) });
+  const tagline = await text({ message: 'Tagline, company or @handle', hint: 'optional', validate: optional(short) });
+  const email = await text({ message: 'Email', hint: 'optional', validate: optional((v) => (isEmail(v) ? undefined : 'Not a valid email address')) });
+  const website = withProtocol(await text({ message: 'Website', hint: 'optional', validate: optional(link) }));
+  const location = await text({ message: 'Location', hint: 'optional, e.g. Berlin · Germany', validate: optional(short) });
 
   process.stdout.write(style.faint('\n  Profiles — a username or a full URL\n'));
+  const profile = async (message, base) => {
+    const toUrl = profileUrl(base);
+    return toUrl(await text({ message, hint: 'optional', validate: optional((v) => link(toUrl(v))) }));
+  };
   const links = [
-    profileUrl('https://github.com/')(await text({ message: 'GitHub', hint: 'optional' })),
-    profileUrl('https://www.linkedin.com/in/')(await text({ message: 'LinkedIn', hint: 'optional' })),
-    profileUrl('https://x.com/')(await text({ message: 'X', hint: 'optional' })),
+    await profile('GitHub', 'https://github.com/'),
+    await profile('LinkedIn', 'https://www.linkedin.com/in/'),
+    await profile('X', 'https://x.com/'),
   ];
   const others = await text({
     message: 'Other links, comma-separated',
     hint: 'optional',
-    validate: optional((v) => (v.split(',').every((u) => isUrl(withProtocol(u.trim()))) ? undefined : 'One of the links is not a valid URL')),
+    validate: optional((v) => v.split(',').map((u) => link(u.trim())).find(Boolean)),
   });
   links.push(...(others ? others.split(',').map((u) => withProtocol(u.trim())) : []));
 

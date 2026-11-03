@@ -4,12 +4,11 @@
  * Entries whose data is missing (e.g. "contact" without an email) are skipped.
  */
 
-import { localize } from '../text.js';
+import { localize, slugify } from '../text.js';
 import { createVCard } from '../vcard.js';
 import { openExternal, copyToClipboard, writeTempFile } from '../system.js';
 
 const host = (url) => new URL(url).host.replace(/^www\./, '');
-const slug = (name) => name.normalize('NFKD').replace(/[^\w]+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'contact';
 
 export function buildMenu(config, lang, t, sys = { openExternal, copyToClipboard, writeTempFile }) {
   const done = (ok, key, value) => ({ ok, status: t(key, { value }) });
@@ -34,7 +33,7 @@ export function buildMenu(config, lang, t, sys = { openExternal, copyToClipboard
       run: async () => {
         let file;
         try {
-          file = sys.writeTempFile(`${slug(config.name)}.vcf`, createVCard(config, lang));
+          file = sys.writeTempFile(`${slugify(config.name) || 'contact'}.vcf`, createVCard(config, lang));
         } catch {
           return done(false, 'status.saveError');
         }
