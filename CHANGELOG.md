@@ -4,7 +4,7 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org); until 1.0.0, minor versions may contain
 breaking changes to the config format.
 
-## 0.1.0 — Unreleased
+## 0.1.0 — 2026-11-03
 
 First version.
 

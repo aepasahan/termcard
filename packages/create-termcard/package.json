@@ -27,7 +27,7 @@
     "npx"
   ],
   "author": "Ahmet Erkan Paşahan <ae.pasahan@creetivelab.com> (https://aepasahan.com)",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aepasahan/termcard.git",

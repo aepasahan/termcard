@@ -40,3 +40,11 @@ packages/create-termcard/src
 - **Adding a language:** copy `packages/termcard/src/i18n/locales/en.js`, translate every
   key, register it in `i18n/index.js`. A test checks that all locales have the same keys.
 - Note user-facing changes in `CHANGELOG.md`. Versions follow [Semantic Versioning](https://semver.org).
+
+## Releasing
+
+1. Bump the version in the changed packages and move the `Unreleased` notes in
+   `CHANGELOG.md` under the new version.
+2. Run the **Release** workflow (or push a `v*` tag). It runs all checks and publishes
+   every package whose version is not on npm yet. It needs an `NPM_TOKEN` repository
+   secret with publish rights.
