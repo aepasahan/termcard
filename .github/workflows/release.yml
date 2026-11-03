@@ -22,7 +22,7 @@ jobs:
       termcard: ${{ steps.publish.outputs.termcard }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
@@ -55,7 +55,7 @@ jobs:
       contents: write # create the GitHub release
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - run: node packages/termcard/mcpb/build.js dist
