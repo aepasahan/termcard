@@ -70,8 +70,8 @@ test('menu: false disables it; items are validated', () => {
 });
 
 test('languages: custom languages need strings, default must be available', () => {
-  assert.ok(problems({ name: 'A', language: { available: ['ja'] } })[0].includes('strings.ja'));
-  assert.doesNotThrow(() => normalizeConfig({ name: 'A', language: { available: ['ja'] }, strings: { ja: { 'action.exit': '終了' } } }));
+  assert.ok(problems({ name: 'A', language: { available: ['ko'] } })[0].includes('strings.ko'));
+  assert.doesNotThrow(() => normalizeConfig({ name: 'A', language: { available: ['ko'] }, strings: { ko: { 'action.exit': '종료' } } }));
   assert.ok(problems({ name: 'A', language: { default: 'de', available: ['en'] } }).length);
 });
 

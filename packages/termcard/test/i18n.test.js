@@ -40,3 +40,19 @@ test('every built-in locale has exactly the same keys', async () => {
   const reference = Object.keys(tables[0]).sort();
   for (const [i, table] of tables.entries()) assert.deepEqual(Object.keys(table).sort(), reference, BUILT_IN_LANGUAGES[i]);
 });
+
+test('fourteen built-in languages, with right-to-left scripts marked', async () => {
+  const { textDirection } = await import('../src/i18n/index.js');
+  assert.equal(BUILT_IN_LANGUAGES.length, 14);
+  for (const lang of ['ar', 'ur']) assert.equal(textDirection(lang), 'rtl');
+  for (const lang of ['en', 'zh', 'hi', 'ja', 'ru']) assert.equal(textDirection(lang), 'ltr');
+  assert.equal(textDirection('he', {}), 'rtl', 'custom RTL languages work too');
+  assert.equal(textDirection('xx', { xx: { 'meta.dir': 'rtl' } }), 'rtl');
+});
+
+test('system locales map to the new languages', () => {
+  const all = { default: 'auto', available: BUILT_IN_LANGUAGES };
+  assert.equal(detectLanguage(all, { env: { LANG: 'zh_CN.UTF-8' } }), 'zh');
+  assert.equal(detectLanguage(all, { env: { LANG: 'ar_SA.UTF-8' } }), 'ar');
+  assert.equal(detectLanguage(all, { env: { LANG: 'pt_BR.UTF-8' } }), 'pt');
+});

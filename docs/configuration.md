@@ -49,7 +49,10 @@ text-direction overrides are removed automatically.
 "language": { "default": "auto", "available": ["en", "tr"] }
 ```
 
-- `available` — languages the card supports. Built in: `en`, `tr`, `de`, `es`, `fr`.
+- `available` — languages the card supports. Built in:
+  `en` English, `zh` Chinese (Simplified), `hi` Hindi, `es` Spanish, `ar` Arabic, `fr` French,
+  `bn` Bengali, `pt` Portuguese, `ru` Russian, `id` Indonesian, `ur` Urdu, `de` German,
+  `ja` Japanese, `tr` Turkish.
 - `default` — `"auto"` (detect) or a language code that is always used.
 
 `"language": "de"` is shorthand for a card that exists in German only.
@@ -73,6 +76,14 @@ listed in [`packages/termcard/src/i18n/locales/en.js`](../packages/termcard/src/
 
 A language that is not built in can be added to `available` once it has an entry
 under `strings`; untranslated keys fall back to English.
+
+### Right-to-left languages
+
+Arabic and Urdu are written right to left; custom languages can declare this with
+`"meta.dir": "rtl"` in their `strings`. Terminals that support bidirectional text (for
+example macOS Terminal and iTerm2) display these lines correctly; the web page sets the
+page direction automatically. Names in scripts without capital letters — Arabic,
+Devanagari, Chinese and others — are never letter-spaced, so their letters stay joined.
 
 ## Look
 

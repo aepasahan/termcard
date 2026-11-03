@@ -8,7 +8,7 @@
 export { normalizeConfig, ConfigError, isEmail, urlProblem, TEXT_LIMIT, DESCRIPTION_LIMIT, ICON_SETS } from './config/schema.js';
 export { templates, DEFAULT_TEMPLATE, CARD_OPTIONS } from './config/templates.js';
 export { themes, THEME_DESCRIPTIONS, DEFAULT_THEME } from './config/themes.js';
-export { BUILT_IN_LANGUAGES, createTranslator, detectLanguage, languageFromHeader, languageName } from './i18n/index.js';
+export { BUILT_IN_LANGUAGES, createTranslator, detectLanguage, languageFromHeader, languageName, textDirection } from './i18n/index.js';
 export { layoutCard, layoutHeader } from './render/card.js';
 export { toPlain, toHtml, escapeHtml } from './render/format.js';
 export { webIconSet } from './render/icons.js';

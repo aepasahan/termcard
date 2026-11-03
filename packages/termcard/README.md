@@ -40,7 +40,7 @@ npm create termcard@latest
 - **Save contact** — adds your vCard to their address book
 - **Visit your website and profiles** — LinkedIn, GitHub, X, Behance, Dribbble and more
 - **Copy your email or phone number** to the clipboard
-- **Switch language** — English, Turkish, German, Spanish or French, detected automatically
+- **Switch language** — 14 languages, from English, Chinese and Hindi to Arabic and Urdu (right to left), detected automatically
 
 Flags such as `--lang tr`, `--card` (no menu) and `--vcard` work on every card.
 

@@ -105,3 +105,17 @@ test('vCard escapes special characters', () => {
   assert.match(vcard, /TITLE:Designer/);
   assert.match(vcard, /X-SOCIALPROFILE;TYPE=github:https:\/\/github\.com\/jane/);
 });
+
+test('names in scripts without case are not letter-spaced', () => {
+  const arabic = toPlain(layoutCard(make({ name: 'محمد علي', language: { available: ['ar'] } }), 'ar'));
+  assert.match(arabic, /محمد/);
+  assert.doesNotMatch(arabic, /م ح م د/);
+  assert.match(toPlain(layoutCard(make({ name: 'Иван Петров' }), 'en')), /И В А Н/);
+});
+
+test('Arabic diacritics and CJK text keep the frame aligned', () => {
+  for (const [lang, tagline] of [['ar', 'مَرْحَبًا بِكُمْ'], ['zh', '设计师与开发者'], ['ja', 'デザイナー']]) {
+    const plain = toPlain(layoutCard(make({ tagline, language: { available: [lang] } }), lang));
+    assert.equal(new Set(widths(plain)).size, 1, plain);
+  }
+});

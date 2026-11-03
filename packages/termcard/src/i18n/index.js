@@ -13,8 +13,18 @@ import tr from './locales/tr.js';
 import de from './locales/de.js';
 import es from './locales/es.js';
 import fr from './locales/fr.js';
+import zh from './locales/zh.js';
+import hi from './locales/hi.js';
+import ar from './locales/ar.js';
+import bn from './locales/bn.js';
+import pt from './locales/pt.js';
+import ru from './locales/ru.js';
+import id from './locales/id.js';
+import ur from './locales/ur.js';
+import ja from './locales/ja.js';
 
-const LOCALES = { en, tr, de, es, fr };
+// The most widely spoken languages, plus Turkish, German and French.
+const LOCALES = { en, zh, hi, es, ar, fr, bn, pt, ru, id, ur, de, ja, tr };
 export const BUILT_IN_LANGUAGES = Object.keys(LOCALES);
 
 /** Returns a translator bound to one language, honoring the card's own string overrides. */
@@ -25,6 +35,13 @@ export function createTranslator(lang, overrides = {}) {
     return key;
   };
 }
+
+// Languages written right to left. A card can mark its own languages with "meta.dir": "rtl".
+const RTL = new Set(['ar', 'ur', 'fa', 'he', 'ps', 'sd', 'ug', 'yi', 'dv', 'ckb']);
+
+/** "rtl" or "ltr" for a language. */
+export const textDirection = (lang, overrides = {}) =>
+  overrides[lang]?.['meta.dir'] ?? (RTL.has(lang) ? 'rtl' : 'ltr');
 
 /** Native display name of a language, e.g. "Türkçe". */
 export const languageName = (lang, overrides = {}) =>

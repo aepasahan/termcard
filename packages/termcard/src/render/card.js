@@ -5,7 +5,7 @@
  * renderer replaces with CSS. Formatters live in ./format.js.
  */
 
-import { displayWidth, localize, stripProtocol, upper, wrap } from '../text.js';
+import { displayWidth, hasCase, localize, stripProtocol, upper, wrap } from '../text.js';
 import { createTranslator } from '../i18n/index.js';
 import { borders } from './borders.js';
 import { iconFor } from './icons.js';
@@ -20,6 +20,8 @@ function nameLines(name, { nameStyle, splitName }, lang) {
   const words = name.split(/\s+/);
   const parts = splitName && words.length > 1 ? [words.slice(0, -1).join(' '), words.at(-1)] : [name];
   return parts.map((part) => {
+    // Scripts without case (Arabic, Devanagari, CJK, …) are shown as written: spacing would break them.
+    if (!hasCase(part)) return part;
     if (nameStyle === 'spaced') return [...upper(part, lang)].join(' ');
     if (nameStyle === 'uppercase') return upper(part, lang);
     return part;

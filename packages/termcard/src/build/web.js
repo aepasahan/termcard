@@ -3,7 +3,7 @@
 import { layoutCard } from '../render/card.js';
 import { webIconSet } from '../render/icons.js';
 import { toHtml, escapeHtml } from '../render/format.js';
-import { createTranslator, languageName } from '../i18n/index.js';
+import { createTranslator, languageName, textDirection } from '../i18n/index.js';
 import { localize } from '../text.js';
 
 export function renderWebPage(config, { command }) {
@@ -13,7 +13,7 @@ export function renderWebPage(config, { command }) {
   const data = Object.fromEntries(
     langs.map((lang) => {
       const t = createTranslator(lang, config.strings);
-      return [lang, { card: toHtml(layoutCard(config, lang, { iconSet: webIconSet(config.icons) })), save: t('action.save'), vcf: `contact.${lang}.vcf` }];
+      return [lang, { card: toHtml(layoutCard(config, lang, { iconSet: webIconSet(config.icons) })), save: t('action.save'), vcf: `contact.${lang}.vcf`, dir: textDirection(lang, config.strings) }];
     }),
   );
   const description = [config.name, localize(config.title, fallback), localize(config.tagline, fallback)].filter(Boolean).join(' — ');
@@ -44,7 +44,7 @@ body{min-height:100vh;display:flex;align-items:center;justify-content:center;pad
 .lang button{all:unset;cursor:pointer;padding:2px 8px;border-radius:4px;color:var(--faint)}
 .lang button[aria-pressed="true"]{color:var(--accent)}
 .lang button:focus-visible,.btn:focus-visible,a:focus-visible{outline:1px solid var(--accent);outline-offset:2px}
-pre{margin:20px;padding:1.6em 2.4em;border:1px solid var(--line);border-radius:6px;font:inherit;line-height:1.45;white-space:pre;overflow-x:auto}
+pre{unicode-bidi:plaintext;margin:20px;padding:1.6em 2.4em;border:1px solid var(--line);border-radius:6px;font:inherit;line-height:1.45;white-space:pre;overflow-x:auto}
 a{color:inherit;text-decoration:none}
 a:hover span{text-decoration:underline;text-underline-offset:3px}
 .name{color:var(--text);font-weight:700}.text{color:var(--text)}.muted{color:var(--muted)}.faint{color:var(--faint)}.accent{color:var(--accent)}
@@ -78,6 +78,7 @@ a:hover span{text-decoration:underline;text-underline-offset:3px}
   const set = (lang) => {
     if (!has(lang)) lang = langs.includes('${fallback}') ? '${fallback}' : langs[0];
     document.documentElement.lang = lang;
+    document.documentElement.dir = data[lang].dir;
     $('card').innerHTML = data[lang].card;
     $('vcf').textContent = data[lang].save;
     $('vcf').href = data[lang].vcf;

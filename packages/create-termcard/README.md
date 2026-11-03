@@ -30,7 +30,7 @@ npm create termcard@latest
 
 1. **Tell it about you.** Name, role, a short description, email, website and profiles.
    Everything except your name is optional.
-2. **Choose your languages.** English, Turkish, German, Spanish and French are built in.
+2. **Choose your languages.** Fourteen are built in, including Chinese, Hindi, Arabic, Spanish and Portuguese.
 3. **Make it yours.** A live preview lets you switch between three layouts, eight seasonal
    color themes and icon styles until it looks right.
 4. **Pick a name.** The wizard checks that it's free on npm.

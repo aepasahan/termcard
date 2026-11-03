@@ -9,8 +9,18 @@ const UNSAFE = /[\u0000-\u001f\u007f-\u009f‪-‮⁦-⁩]/g;
 
 export const sanitize = (value) => String(value).replace(UNSAFE, '').trim();
 
+// Non-spacing combining marks: they attach to the previous letter and take no column.
+const COMBINING = [
+  [0x0300, 0x036f], // Latin, Greek, Cyrillic diacritics
+  [0x0591, 0x05bd], [0x05bf, 0x05bf], [0x05c1, 0x05c2], [0x05c4, 0x05c5], [0x05c7, 0x05c7], // Hebrew points
+  [0x0610, 0x061a], [0x064b, 0x065f], [0x0670, 0x0670], [0x06d6, 0x06dc], [0x06df, 0x06e4], [0x06e7, 0x06e8], [0x06ea, 0x06ed], // Arabic
+  [0x0900, 0x0902], [0x093a, 0x093a], [0x093c, 0x093c], [0x0941, 0x0948], [0x094d, 0x094d], [0x0951, 0x0957], [0x0962, 0x0963], // Devanagari
+  [0x0981, 0x0981], [0x09bc, 0x09bc], [0x09c1, 0x09c4], [0x09cd, 0x09cd], [0x09e2, 0x09e3], // Bengali
+  [0x3099, 0x309a], // Japanese voicing marks
+];
+
 const isZeroWidth = (cp) =>
-  (cp >= 0x0300 && cp <= 0x036f) || // combining diacritics
+  COMBINING.some(([from, to]) => cp >= from && cp <= to) ||
   (cp >= 0x200b && cp <= 0x200f) || // zero-width space/joiners
   (cp >= 0xfe00 && cp <= 0xfe0f); // variation selectors
 
@@ -61,6 +71,9 @@ export function localize(value, lang, fallback = 'en') {
   if (typeof value === 'string') return value;
   return value[lang] ?? value[fallback] ?? Object.values(value)[0] ?? '';
 }
+
+/** Whether text contains letters with upper/lower case (Latin, Greek, Cyrillic, …). */
+export const hasCase = (text) => /\p{Lu}|\p{Ll}/u.test(text);
 
 /** Locale-aware uppercase that keeps Turkish dotted/dotless i correct. */
 export const upper = (text, lang) => text.toLocaleUpperCase(lang === 'tr' || lang === 'az' ? 'tr-TR' : undefined);

@@ -4,6 +4,19 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org); until 1.0.0, minor versions may contain
 breaking changes to the config format.
 
+## termcard 0.3.0, create-termcard 0.3.1 — 2026-11-03
+
+### termcard
+- Nine new languages: Chinese, Hindi, Arabic, Bengali, Portuguese, Russian, Indonesian,
+  Urdu and Japanese — fourteen in total.
+- Right-to-left support: Arabic and Urdu are marked RTL (custom languages via
+  `"meta.dir": "rtl"`), the web page switches direction, and `textDirection()` is exported.
+- Combining marks (Arabic, Hebrew, Devanagari, Bengali, Japanese) no longer shift the frame.
+- Names in scripts without case are no longer letter-spaced.
+
+### Docs
+- Landscape demo GIF that pans between the card and the menu.
+
 ## termcard 0.2.1, create-termcard 0.3.0 — 2026-11-03
 
 ### create-termcard

@@ -52,7 +52,7 @@ on npm and publishes the card for you.
 ## Features
 
 - **No code to fork or edit.** Your card is a single, validated JSON file.
-- **Five languages built in** — English, Turkish, German, Spanish and French — and you can add your own.
+- **Fourteen languages built in** — the world's most spoken languages plus Turkish, German and French, including right-to-left Arabic and Urdu — and you can add your own.
 - **Eight seasonal color themes**, from *thaw* to *midwinter*, designed to look calm on both dark and light terminals.
 - **Three layouts, optional icons and a short description**; choose which details appear, in what order, or show only the menu.
 - **Updates reach everyone.** Cards depend on termcard, so improvements arrive without republishing your card.

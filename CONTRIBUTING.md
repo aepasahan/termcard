@@ -38,7 +38,8 @@ packages/create-termcard/src
 - Every config value is untrusted: validate in `config/schema.js`, never pass it to a shell.
 - Add or update tests (`node --test`) for any behavior change.
 - **Adding a language:** copy `packages/termcard/src/i18n/locales/en.js`, translate every
-  key, register it in `i18n/index.js`. A test checks that all locales have the same keys.
+  key, register it in `i18n/index.js` (and in the RTL list if it is written right to left).
+  A test checks that all locales have the same keys. Native speakers' reviews are very welcome.
 - Note user-facing changes in `CHANGELOG.md`. Versions follow [Semantic Versioning](https://semver.org).
 
 ## Releasing
