@@ -13,6 +13,13 @@ you ask for — instead of guessing or searching the web.
 
 ## Install
 
+### Claude on the web, desktop and mobile (remote connector)
+
+termcard also runs as a remote MCP server, so it works in regular Claude chats everywhere.
+Add its URL under **Settings › Connectors › Add custom connector**. The remote server can't
+write files to your computer, so when you create a card it hands you `card.config.json`
+(`export_card_config`) together with the commands to publish it. See [remote/](../remote/).
+
 ### Claude plugin (Claude Code, Cowork)
 
 The termcard plugin bundles the MCP server with a skill that teaches Claude the workflow:
@@ -74,7 +81,8 @@ as `io.github.aepasahan/termcard`.
 | `list_card_options` | What a card can contain: fields, limits, templates, themes, icons, languages, menu items. |
 | `preview_card` | Validates a draft config and returns a text preview of the card and its menu, or the problems to fix. |
 | `check_name` | Whether a package name is valid and still free on npm. |
-| `create_card_project` | Writes a ready-to-publish card package into a new, empty folder. **Never overwrites, never publishes.** |
+| `create_card_project` | Local server: writes a ready-to-publish card package into a new, empty folder. **Never overwrites, never publishes.** |
+| `export_card_config` | Remote server: returns the finished `card.config.json` and the commands to publish it. |
 
 Prompts: `introduce` ("introduce the owner of this card") and `create_card`, which walks
 through creating your own card:

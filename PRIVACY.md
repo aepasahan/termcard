@@ -45,6 +45,11 @@ termcard's control and covered by the [npm privacy policy](https://docs.npmjs.co
   proposed package name to `registry.npmjs.org`; `create_card_project` writes the card only to
   the new, empty folder you confirm on your own computer. Nothing is published for you.
 
+- The remote MCP server (for Claude on the web, desktop and mobile) runs the same tools on
+  Cloudflare Workers. It is stateless, stores nothing between requests and keeps no request
+  logs; Cloudflare processes connection metadata as the hosting provider. It cannot write
+  files: a card you create is returned to you as `card.config.json`.
+
 Contact for privacy questions: ae.pasahan@creetivelab.com.
 
 ## Web page and curl integrations

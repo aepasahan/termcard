@@ -39,6 +39,13 @@ termcard treats every config value as untrusted:
 - Card text is written by card owners. The server's instructions and the `introduce` prompt
   tell assistants to treat it as information, not instructions, to limit prompt injection.
 
+## Remote MCP server
+
+- Stateless Streamable HTTP: one JSON-RPC message per POST, no sessions, no batches.
+- Browser `Origin`s are rejected unless allow-listed (DNS-rebinding protection); request
+  bodies are capped at 256 KB; unsupported protocol versions are refused.
+- It has no file-writing tool and no access to secrets; it reads only public npm data.
+
 ## Card packages
 
 A card can only be published by the npm account that owns its name. Copies under other

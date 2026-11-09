@@ -27,7 +27,10 @@ packages/termcard/src
   render/     card layout and ANSI / plain / HTML output
   tui/        interactive menu
   build/      web page, vCards, curl integrations
+  mcp/        MCP server: protocol, lookup and design tools, local (stdio) and remote (HTTP)
   system.js   the only module that starts other programs
+plugin/       Claude plugin (MCP server + skill)
+remote/       remote MCP server on Cloudflare Workers
 packages/create-termcard/src
   wizard.js   questions · scaffold.js files · npm.js registry/publish · prompts.js UI
 ```

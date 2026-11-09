@@ -4,6 +4,18 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org); until 1.0.0, minor versions may contain
 breaking changes to the config format.
 
+## Unreleased
+
+### Remote MCP server
+- `termcard/http`: the MCP server as a stateless Streamable HTTP handler
+  (`createMcpHttpHandler`), for Claude on the web, desktop and mobile.
+- `remote/`: Cloudflare Workers deployment (`wrangler.toml`) and a manual
+  "Deploy remote MCP" workflow.
+- New `export_card_config` tool (remote): returns the finished `card.config.json` and the
+  commands to publish it, instead of writing files.
+- MCP tools are organized by what they touch: `lookup.js`, `design.js` (no file system) and
+  `project.js` (local only).
+
 ## termcard 0.5.0, create-termcard 0.5.0 — 2026-11-09
 
 ### termcard

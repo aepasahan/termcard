@@ -1,11 +1,10 @@
 /**
- * MCP tools for creating a card in a conversation:
- * learn the options → draft a config → preview until valid → check the name → write the project.
- * Publishing is never done here: the user runs `npm publish` themselves.
+ * MCP tools for designing a card in a conversation:
+ * learn the options → draft a config → preview until valid → check the name → export it.
+ * No file system access: these run in the local and the remote server. The local server adds
+ * create_card_project (./project.js). Publishing is never done here.
  */
 
-import { homedir } from 'node:os';
-import { isAbsolute, join, resolve } from 'node:path';
 import { normalizeConfig, ConfigError, DESCRIPTION_LIMIT, ICON_SETS, TEXT_LIMIT } from '../config/schema.js';
 import { templates, DEFAULT_TEMPLATE, MENU_ACTIONS, DEFAULT_MENU } from '../config/templates.js';
 import { themes, THEME_DESCRIPTIONS, DEFAULT_THEME } from '../config/themes.js';
@@ -13,8 +12,7 @@ import { BUILT_IN_LANGUAGES, createTranslator, languageName, textDirection } fro
 import { layoutCard } from '../render/card.js';
 import { toPlain } from '../render/format.js';
 import { buildMenu } from '../tui/actions.js';
-import { createProject, TargetNotEmptyError } from '../project/scaffold.js';
-import { validatePackageName, binName } from '../project/names.js';
+import { validatePackageName } from '../project/names.js';
 import { checkAvailability } from '../project/registry.js';
 import { ToolError } from './protocol.js';
 
@@ -63,7 +61,7 @@ const OPTIONS = {
 const configSchema = { type: 'object', description: 'The card configuration (card.config.json). Call list_card_options for the fields.' };
 
 /** Validates a config, returning { config } or { problems }. */
-function validate(raw) {
+export function validate(raw) {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return { problems: ['config must be an object'] };
   try {
     return { config: normalizeConfig(raw) };
@@ -80,17 +78,11 @@ function render(config, language) {
   return { language: lang, text: [card, ...(menu.length ? ['', ...menu] : [])].join('\n') };
 }
 
-/** "~/cards/jane" → absolute path; refuses relative paths and the file-system root. */
-function resolveDirectory(directory, packageName) {
-  const raw = typeof directory === 'string' && directory.trim() ? directory.trim() : join('~', 'termcard-cards', binName(packageName));
-  const expanded = raw === '~' || raw.startsWith('~/') ? join(homedir(), raw.slice(1)) : raw;
-  if (!isAbsolute(expanded)) throw new ToolError('Please give an absolute folder path (or one starting with ~/).');
-  const dir = resolve(expanded);
-  if (dir === resolve('/') || dir === homedir()) throw new ToolError('Please choose a dedicated, empty folder for the card.');
-  return dir;
-}
-
-export function createBuilderTools({ fetch } = {}) {
+/**
+ * @param {{ fetch?: typeof fetch, finish?: 'create_card_project' | 'export_card_config' }} options
+ *   finish: the tool the create_card prompt ends with.
+ */
+export function createDesignTools({ fetch, finish = 'export_card_config' } = {}) {
   const tools = [
     {
       name: 'list_card_options',
@@ -137,44 +129,32 @@ export function createBuilderTools({ fetch } = {}) {
       },
     },
     {
-      name: 'create_card_project',
-      title: 'Create the card project',
-      description: 'Writes a ready-to-publish card package (card.config.json, package.json, README, license) into a new, empty folder on the user\'s computer. It never overwrites files and never publishes. Ask the user to confirm the details, the name and the folder first.',
+      name: 'export_card_config',
+      title: 'Export the card config',
+      description: 'Returns the finished card.config.json for the user to save, with the commands that turn it into a published card. Use it where files cannot be written for the user (for example in a web chat).',
       inputSchema: {
         type: 'object',
         properties: {
           config: configSchema,
-          packageName: { type: 'string', description: 'npm package name, checked with check_name.' },
-          directory: { type: 'string', description: 'Absolute path (or ~/…) of a new or empty folder. Defaults to ~/termcard-cards/<name>.' },
+          packageName: { type: 'string', description: 'Optional npm package name, checked with check_name.' },
         },
-        required: ['config', 'packageName'],
+        required: ['config'],
         additionalProperties: false,
       },
-      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false },
-      run: async ({ config, packageName, directory }) => {
-        const nameProblem = validatePackageName(typeof packageName === 'string' ? packageName : '');
-        if (nameProblem) throw new ToolError(`Package name: ${nameProblem}.`);
+      run: async ({ config, packageName }) => {
         const { problems } = validate(config);
         if (problems) throw new ToolError(`The card config has problems:\n- ${problems.join('\n- ')}`);
-        const dir = resolveDirectory(directory, packageName);
-        let files;
-        try {
-          files = createProject({ dir, packageName, config });
-        } catch (error) {
-          if (error instanceof TargetNotEmptyError) throw new ToolError(`${dir} already exists and is not empty. Choose another folder.`);
-          throw new ToolError(`Could not write the project: ${error.code ?? error.message}`);
-        }
+        const name = typeof packageName === 'string' && !validatePackageName(packageName) ? packageName : '<name>';
         return {
-          directory: dir,
-          files,
-          published: false,
+          fileName: 'card.config.json',
+          content: `${JSON.stringify(config, null, 2)}\n`,
           nextSteps: [
-            `Open a terminal in ${dir}`,
-            'Optional: `npm install && npm start` to try the card',
-            '`npm publish --access public` (log in first with `npm login` if needed)',
-            `Share it: npx ${packageName}`,
+            'Save the content as card.config.json in an empty folder',
+            `npm create termcard@latest -- --config card.config.json --name ${name}`,
+            `cd ${name.replace(/^@[^/]+\//, '')} && npm publish --access public`,
+            `Share it: npx ${name}`,
           ],
-          note: 'Nothing was published. The user publishes the card themselves when they are ready.',
+          note: 'Nothing was published. The user publishes the card themselves.',
         };
       },
     },
@@ -198,7 +178,9 @@ export function createBuilderTools({ fetch } = {}) {
               '2. Ask me, a few questions at a time, for my name, role, a short description, contact details, profile links and languages. Everything except my name is optional; don\'t invent details.',
               '3. Draft card.config.json and call preview_card; show me the preview and fix any problems. Offer a template, a color theme and icons, and preview again after changes.',
               '4. Suggest a short package name and call check_name until we find a free one.',
-              '5. Before writing anything, confirm the details, the name and the folder with me, then call create_card_project.',
+              finish === 'create_card_project'
+                ? '5. Before writing anything, confirm the details, the name and the folder with me, then call create_card_project.'
+                : '5. Confirm the details and the name with me, then call export_card_config and give me the file and the commands.',
               '6. Tell me how to publish it myself with npm. Don\'t publish anything for me.',
             ].join('\n'),
           },

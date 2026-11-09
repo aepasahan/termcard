@@ -1,0 +1,18 @@
+# Cloudflare Workers configuration for termcard's remote MCP server.
+# Deploy: npx wrangler deploy --config remote/wrangler.toml (or the "Deploy remote MCP" workflow).
+name = "termcard-mcp"
+main = "worker.js"
+compatibility_date = "2025-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+# No request logs are kept by termcard. Turn on Workers Logs only for debugging.
+[observability]
+enabled = false
+
+[vars]
+# Browser origins allowed to call the server, comma-separated (e.g. a web MCP inspector).
+# Requests without an Origin header, such as Claude's, are always allowed.
+ALLOWED_ORIGINS = ""
+
+# Serve it on your own domain, e.g. https://mcp.aepasahan.com/mcp:
+# routes = [{ pattern = "mcp.aepasahan.com", custom_domain = true }]
