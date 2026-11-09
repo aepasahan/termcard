@@ -38,10 +38,14 @@ export function createMcpHttpHandler({ version, fetch, allowedOrigins = [], path
 
   return async function handle(request) {
     const url = new URL(request.url);
-    if (url.pathname !== path) {
-      return url.pathname === '/'
+    // Accept the endpoint with or without a trailing slash, and MCP POSTs to the root, since
+    // clients are often configured with the bare domain.
+    const pathname = url.pathname.length > 1 ? url.pathname.replace(/\/+$/, '') : url.pathname;
+    const isEndpoint = pathname === path || (pathname === '/' && request.method === 'POST');
+    if (!isEndpoint) {
+      return pathname === '/'
         ? new Response(`termcard MCP server ${version}\nEndpoint: ${path}\nhttps://github.com/aepasahan/termcard/blob/main/docs/mcp.md\n`, { headers: { 'content-type': 'text/plain; charset=utf-8' } })
-        : new Response('Not found', { status: 404 });
+        : new Response(`Not found. The MCP endpoint is ${path}\n`, { status: 404, headers: { 'content-type': 'text/plain; charset=utf-8' } });
     }
 
     const origin = request.headers.get('origin');

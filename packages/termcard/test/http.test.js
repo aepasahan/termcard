@@ -55,3 +55,15 @@ test('root explains the endpoint; other paths are not found', async () => {
   assert.match(await (await handle(new Request('https://mcp.example/'))).text(), /Endpoint: \/mcp/);
   assert.equal((await handle(new Request('https://mcp.example/other'))).status, 404);
 });
+
+test('the endpoint also answers with a trailing slash and on the root', async () => {
+  for (const url of ['https://mcp.example/mcp/', 'https://mcp.example/', 'https://mcp.example']) {
+    const res = await handle(new Request(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'ping' }),
+    }));
+    assert.equal(res.status, 200, url);
+    assert.deepEqual((await res.json()).result, {}, url);
+  }
+});

@@ -4,6 +4,12 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org); until 1.0.0, minor versions may contain
 breaking changes to the config format.
 
+## Unreleased
+
+### Remote MCP server
+- The endpoint also accepts `/mcp/` and MCP requests on the root (`https://mcp.termcard.dev`),
+  so connectors configured with a trailing slash or the bare domain work.
+
 ## termcard 0.6.0, create-termcard 0.6.0 — 2026-11-09
 
 ### Remote MCP server
