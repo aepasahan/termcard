@@ -21,8 +21,8 @@ jobs:
     outputs:
       termcard: ${{ steps.publish.outputs.termcard }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           registry-url: https://registry.npmjs.org
@@ -54,8 +54,8 @@ jobs:
     permissions:
       contents: write # create the GitHub release
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
       - run: node packages/termcard/mcpb/build.js dist
@@ -76,7 +76,7 @@ jobs:
       contents: read
       id-token: write # signs in to the MCP Registry as this GitHub repository's owner
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set the released version in server.json
         env:
           VERSION: ${{ needs.npm.outputs.termcard }}
@@ -88,6 +88,16 @@ jobs:
             s.packages.forEach((p) => { p.version = process.env.VERSION; });
             fs.writeFileSync('server.json', JSON.stringify(s, null, 2));
           "
+      # npm takes a few minutes to make a new version visible; the registry checks it exists.
+      - name: Wait until the version is visible on npm
+        env:
+          VERSION: ${{ needs.npm.outputs.termcard }}
+        run: |
+          for i in $(seq 1 40); do
+            if [ "$(npm view "termcard@$VERSION" version 2>/dev/null)" = "$VERSION" ]; then exit 0; fi
+            sleep 15
+          done
+          echo "termcard@$VERSION did not appear on npm in time" >&2; exit 1
       - name: Publish to the MCP Registry
         run: |
           curl -sSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
