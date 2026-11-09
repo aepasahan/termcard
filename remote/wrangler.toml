@@ -5,6 +5,16 @@ main = "worker.js"
 compatibility_date = "2025-10-01"
 compatibility_flags = ["nodejs_compat"]
 
+# mcp.termcard.dev serves the MCP endpoint; termcard.dev redirects to the project page.
+# Deploying creates the DNS records for these custom domains in the termcard.dev zone.
+# workers_dev keeps the *.workers.dev address working as well.
+# (Top-level keys must come before any [section] in TOML.)
+workers_dev = true
+routes = [
+  { pattern = "mcp.termcard.dev", custom_domain = true },
+  { pattern = "termcard.dev", custom_domain = true },
+]
+
 # No request logs are kept by termcard. Turn on Workers Logs only for debugging.
 [observability]
 enabled = false
@@ -13,12 +23,3 @@ enabled = false
 # Browser origins allowed to call the server, comma-separated (e.g. a web MCP inspector).
 # Requests without an Origin header, such as Claude's, are always allowed.
 ALLOWED_ORIGINS = ""
-
-# mcp.termcard.dev serves the MCP endpoint; termcard.dev redirects to the project page.
-# Deploying creates the DNS records for these custom domains in the termcard.dev zone.
-# workers_dev keeps the *.workers.dev address working as well.
-workers_dev = true
-routes = [
-  { pattern = "mcp.termcard.dev", custom_domain = true },
-  { pattern = "termcard.dev", custom_domain = true },
-]
