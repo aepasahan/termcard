@@ -15,6 +15,15 @@ breaking changes to the config format.
   commands to publish it, instead of writing files.
 - MCP tools are organized by what they touch: `lookup.js`, `design.js` (no file system) and
   `project.js` (local only).
+- termcard's hosted server lives at `https://mcp.termcard.dev/mcp`; `termcard.dev` redirects to
+  the project page for now.
+
+### Claude plugin
+- Uses the hosted server instead of `npx`, so it works in Claude chat on the web, desktop and
+  mobile without Node.js; cards are handed back with `export_card_config`.
+
+### MCP Registry
+- The entry lists the hosted server (`remotes`) next to the npm package.
 
 ## termcard 0.5.0, create-termcard 0.5.0 — 2026-11-09
 

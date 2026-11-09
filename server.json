@@ -3,7 +3,7 @@
   "name": "io.github.aepasahan/termcard",
   "title": "termcard",
   "description": "Create terminal business cards (npx <name>) in a chat, or look up anyone's card.",
-  "websiteUrl": "https://github.com/aepasahan/termcard",
+  "websiteUrl": "https://termcard.dev",
   "repository": {
     "url": "https://github.com/aepasahan/termcard",
     "source": "github",
@@ -25,6 +25,12 @@
           "value": "mcp"
         }
       ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://mcp.termcard.dev/mcp"
     }
   ]
 }

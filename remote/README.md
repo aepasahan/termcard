@@ -27,5 +27,7 @@ npx wrangler deploy --config remote/wrangler.toml
 ```
 
 The endpoint is `https://<worker>.<account>.workers.dev/mcp` (or your domain + `/mcp`).
-termcard's own deployment: `https://termcard-mcp.aepasahan-dev.workers.dev/mcp`.
+termcard's own deployment: `https://mcp.termcard.dev/mcp` (also reachable at
+`https://termcard-mcp.aepasahan-dev.workers.dev/mcp`). `https://termcard.dev` redirects to
+the project page until the website exists.
 Add it in Claude under **Settings › Connectors › Add custom connector** to test it.

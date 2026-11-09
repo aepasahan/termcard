@@ -14,5 +14,11 @@ enabled = false
 # Requests without an Origin header, such as Claude's, are always allowed.
 ALLOWED_ORIGINS = ""
 
-# Serve it on your own domain, e.g. https://mcp.aepasahan.com/mcp:
-# routes = [{ pattern = "mcp.aepasahan.com", custom_domain = true }]
+# mcp.termcard.dev serves the MCP endpoint; termcard.dev redirects to the project page.
+# Deploying creates the DNS records for these custom domains in the termcard.dev zone.
+# workers_dev keeps the *.workers.dev address working as well.
+workers_dev = true
+routes = [
+  { pattern = "mcp.termcard.dev", custom_domain = true },
+  { pattern = "termcard.dev", custom_domain = true },
+]

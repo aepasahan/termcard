@@ -28,9 +28,11 @@ When the user names a card (for example "aepasahan" or "npx aepasahan"):
 3. Draft the config and call `preview_card`. Show the preview, fix any listed problems, and offer
    a template (`classic`, `compact`, `minimal`), a seasonal theme and icons.
 4. Suggest a short package name and call `check_name` until one is free.
-5. Confirm the details, the name and the folder with the user, then call `create_card_project`.
-6. Explain how to publish: `npm publish --access public` in that folder (after `npm login`).
-   Never publish for the user.
+5. Confirm the details and the name with the user. If `create_card_project` is available (local
+   server), confirm the folder too and call it; otherwise call `export_card_config` and give the
+   user the file and the commands it returns.
+6. Explain how to publish with `npm publish --access public` (after `npm login`). Never publish
+   for the user.
 
 ## When the termcard tools are not available
 

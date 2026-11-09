@@ -49,8 +49,8 @@ packages/create-termcard/src
 
 1. Bump the version in the changed packages and move the `Unreleased` notes in
    `CHANGELOG.md` under the new version. When termcard's version changes, update it in
-   `plugin/.claude-plugin/plugin.json`, `plugin/.mcp.json`, `plugin/README.md` and
-   `server.json` too — a test checks that they match.
+   `plugin/.claude-plugin/plugin.json` and `server.json` too — a test checks that they match.
+   Redeploy the remote server (**Deploy remote MCP**) so it runs the released code.
 2. Run the **Release** workflow (or push a `v*` tag). It runs all checks and publishes
    every package whose version is not on npm yet. It needs an `NPM_TOKEN` repository
    secret with publish rights.

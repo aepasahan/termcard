@@ -6,10 +6,10 @@ const read = (path) => readFileSync(new URL(`../../../${path}`, import.meta.url)
 const json = (path) => JSON.parse(read(path));
 const { version } = json('packages/termcard/package.json');
 
-test('the Claude plugin, MCP Registry entry and wizard use this termcard version', () => {
+test('the Claude plugin, MCP Registry entry and wizard point at this termcard release', () => {
   assert.equal(json('plugin/.claude-plugin/plugin.json').version, version);
-  assert.deepEqual(json('plugin/.mcp.json').mcpServers.termcard.args, ['-y', `termcard@${version}`, 'mcp']);
-  assert.ok(read('plugin/README.md').includes(`termcard@${version}`));
+  assert.deepEqual(json('plugin/.mcp.json').mcpServers.termcard, { type: 'http', url: 'https://mcp.termcard.dev/mcp' });
+  assert.equal(json('server.json').remotes[0].url, 'https://mcp.termcard.dev/mcp');
   assert.equal(json('server.json').version, version);
   assert.equal(json('server.json').packages[0].version, version);
   assert.equal(json('packages/create-termcard/package.json').dependencies.termcard, `^${version}`);

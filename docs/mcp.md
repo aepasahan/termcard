@@ -18,7 +18,7 @@ you ask for — instead of guessing or searching the web.
 termcard also runs as a remote MCP server, so it works in regular Claude chats everywhere:
 
 1. In Claude, open **Settings › Connectors › Add custom connector**.
-2. Name: `termcard` · URL: `https://termcard-mcp.aepasahan-dev.workers.dev/mcp`
+2. Name: `termcard` · URL: `https://mcp.termcard.dev/mcp`
 3. Enable it in a chat from the tools menu and ask *"Who is aepasahan?"* or
    *"Create my terminal business card."*
 
@@ -26,17 +26,16 @@ No sign-in is needed. The remote server can't write files to your computer, so w
 create a card it hands you `card.config.json` (`export_card_config`) together with the
 commands to publish it. See [remote/](../remote/).
 
-### Claude plugin (Claude Code, Cowork)
+### Claude plugin (chat, Cowork, Claude Code)
 
-The termcard plugin bundles the MCP server with a skill that teaches Claude the workflow:
+The termcard plugin bundles the hosted MCP server with a skill that teaches Claude the workflow:
 
 ```
 /plugin install termcard --marketplace aepasahan/termcard
 ```
 
-In the Claude app, add the marketplace `aepasahan/termcard` under **Customize › Plugins**.
-Local servers run in Claude Code and in Cowork on your computer; in claude.ai chat the
-plugin's skill still helps you write a card config.
+In the Claude app, add the marketplace `aepasahan/termcard` under **Customize › Plugins**. The
+plugin uses the remote server, so it works everywhere without installing anything.
 
 ### Claude Desktop
 
