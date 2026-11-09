@@ -70,6 +70,8 @@ Nothing is ever published or sent on your behalf.
 /plugin install termcard --marketplace aepasahan/termcard
 ```
 
+In Claude on the web, desktop or mobile, add the remote connector
+`https://termcard-mcp.aepasahan-dev.workers.dev/mcp` under **Settings › Connectors**.
 There's also a one-click Claude Desktop extension, and any MCP client works — see
 [termcard for AI assistants](docs/mcp.md). Card owners can opt out with `"mcp": false`.
 

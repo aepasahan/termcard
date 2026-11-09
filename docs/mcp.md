@@ -15,10 +15,16 @@ you ask for — instead of guessing or searching the web.
 
 ### Claude on the web, desktop and mobile (remote connector)
 
-termcard also runs as a remote MCP server, so it works in regular Claude chats everywhere.
-Add its URL under **Settings › Connectors › Add custom connector**. The remote server can't
-write files to your computer, so when you create a card it hands you `card.config.json`
-(`export_card_config`) together with the commands to publish it. See [remote/](../remote/).
+termcard also runs as a remote MCP server, so it works in regular Claude chats everywhere:
+
+1. In Claude, open **Settings › Connectors › Add custom connector**.
+2. Name: `termcard` · URL: `https://termcard-mcp.aepasahan-dev.workers.dev/mcp`
+3. Enable it in a chat from the tools menu and ask *"Who is aepasahan?"* or
+   *"Create my terminal business card."*
+
+No sign-in is needed. The remote server can't write files to your computer, so when you
+create a card it hands you `card.config.json` (`export_card_config`) together with the
+commands to publish it. See [remote/](../remote/).
 
 ### Claude plugin (Claude Code, Cowork)
 
