@@ -24,6 +24,7 @@ export function createTermcardServer({ pinned, fetch } = {}) {
   const design = createDesignTools({ fetch, finish: 'create_card_project' });
   return createServer({
     name: 'termcard',
+    title: 'Termcard',
     version: VERSION,
     instructions: instructions('create_card_project'),
     tools: [...lookup.tools, ...design.tools.filter((t) => t.name !== 'export_card_config'), createProjectTool()],

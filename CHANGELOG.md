@@ -9,6 +9,8 @@ breaking changes to the config format.
 ### Project
 - Contact address is now hello@termcard.dev; author links point to https://aepasahan.dev.
 - Claude plugin: listing icon (`.claude-plugin/icon.png`) and `privacyPolicyUrl`.
+- Display name "Termcard" in the Claude plugin, the Desktop extension, the MCP Registry and the
+  MCP server info; package and command names stay `termcard`.
 
 ### Remote MCP server
 - The endpoint also accepts `/mcp/` and MCP requests on the root (`https://mcp.termcard.dev`),

@@ -1,7 +1,7 @@
 {
   "manifest_version": "0.2",
   "name": "termcard",
-  "display_name": "termcard",
+  "display_name": "Termcard",
   "version": "0.0.0",
   "description": "Create your terminal business card in a conversation, and look up anyone's termcard card (npx <name>).",
   "long_description": "termcard business cards are published on npm and opened with `npx <name>`. With this extension Claude can create your own card with you — asking for your details, previewing it, checking that the name is free and writing a ready-to-publish folder — and look up anyone's card to introduce them, save them as a contact (vCard) or draft an email you review and send yourself. Nothing is published or sent on your behalf, and cards are downloaded only from the npm registry and verified before use.",

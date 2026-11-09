@@ -30,6 +30,7 @@ export function createMcpHttpHandler({ version, fetch, allowedOrigins = [], path
   const design = createDesignTools({ fetch, finish: 'export_card_config' });
   const server = createServer({
     name: 'termcard',
+    title: 'Termcard',
     version,
     instructions: instructions('export_card_config'),
     tools: [...lookup.tools, ...design.tools],
