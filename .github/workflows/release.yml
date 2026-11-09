@@ -21,7 +21,7 @@ jobs:
     outputs:
       termcard: ${{ steps.publish.outputs.termcard }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v5
         with:
           node-version: 22
@@ -54,7 +54,7 @@ jobs:
     permissions:
       contents: write # create the GitHub release
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v5
         with:
           node-version: 22
@@ -76,7 +76,7 @@ jobs:
       contents: read
       id-token: write # signs in to the MCP Registry as this GitHub repository's owner
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Set the released version in server.json
         env:
           VERSION: ${{ needs.npm.outputs.termcard }}
