@@ -4,7 +4,11 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org); until 1.0.0, minor versions may contain
 breaking changes to the config format.
 
-## Unreleased
+## termcard 0.6.1, create-termcard 0.6.1 — 2026-11-09
+
+### Project
+- Contact address is now hello@termcard.dev; author links point to https://aepasahan.dev.
+- Claude plugin: listing icon (`.claude-plugin/icon.png`) and `privacyPolicyUrl`.
 
 ### Remote MCP server
 - The endpoint also accepts `/mcp/` and MCP requests on the root (`https://mcp.termcard.dev`),

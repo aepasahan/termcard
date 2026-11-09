@@ -1,6 +1,6 @@
 {
   "name": "termcard",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Interactive business cards for the terminal — npx yourname",
   "mcpName": "io.github.aepasahan/termcard",
   "type": "module",
@@ -34,7 +34,7 @@
     "terminal",
     "vcard"
   ],
-  "author": "Ahmet Erkan Paşahan <ae.pasahan@creetivelab.com> (https://aepasahan.com)",
+  "author": "Ahmet Erkan Paşahan <hello@termcard.dev> (https://aepasahan.dev)",
   "license": "MIT",
   "repository": {
     "type": "git",

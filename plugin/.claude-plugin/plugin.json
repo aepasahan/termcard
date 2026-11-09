@@ -1,7 +1,7 @@
 {
   "name": "termcard",
   "displayName": "termcard",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Create your terminal business card in a conversation, and look up anyone's termcard card (npx <name>) to save them as a contact or draft an email.",
   "author": {
     "name": "Ahmet Erkan Paşahan",

@@ -3,7 +3,7 @@
   "description": "termcard — interactive terminal business cards, for Claude.",
   "owner": {
     "name": "Ahmet Erkan Paşahan",
-    "url": "https://aepasahan.com"
+    "url": "https://aepasahan.dev"
   },
   "plugins": [
     {

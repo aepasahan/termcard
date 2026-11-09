@@ -53,11 +53,11 @@ install. Prefer a local server that can also write the project folder for you? U
   Nothing else is shared with anyone.
 - **Data retention:** no request logs and no stored data; looked-up cards are cached in memory
   briefly and then discarded.
-- **Contact:** [ae.pasahan@creetivelab.com](mailto:ae.pasahan@creetivelab.com) ·
+- **Contact:** [hello@termcard.dev](mailto:hello@termcard.dev) ·
   [security reports](https://github.com/aepasahan/termcard/security/advisories/new)
 
 The full policy is in [PRIVACY.md](https://github.com/aepasahan/termcard/blob/main/PRIVACY.md).
 
 ## License
 
-MIT · Made by [Ahmet Erkan Paşahan](https://aepasahan.com)
+MIT · Made by [Ahmet Erkan Paşahan](https://aepasahan.dev)

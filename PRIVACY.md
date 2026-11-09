@@ -50,7 +50,7 @@ termcard's control and covered by the [npm privacy policy](https://docs.npmjs.co
   logs; Cloudflare processes connection metadata as the hosting provider. It cannot write
   files: a card you create is returned to you as `card.config.json`.
 
-Contact for privacy questions: ae.pasahan@creetivelab.com.
+Contact for privacy questions: hello@termcard.dev.
 
 ## Web page and curl integrations
 

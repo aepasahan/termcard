@@ -1,6 +1,6 @@
 {
   "name": "create-termcard",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Create and publish your terminal business card: npm create termcard",
   "type": "module",
   "bin": {
@@ -14,7 +14,7 @@
     "test": "node --test"
   },
   "dependencies": {
-    "termcard": "^0.6.0"
+    "termcard": "^0.6.1"
   },
   "engines": {
     "node": ">=18.18"
@@ -26,7 +26,7 @@
     "terminal",
     "npx"
   ],
-  "author": "Ahmet Erkan Paşahan <ae.pasahan@creetivelab.com> (https://aepasahan.com)",
+  "author": "Ahmet Erkan Paşahan <hello@termcard.dev> (https://aepasahan.dev)",
   "license": "MIT",
   "repository": {
     "type": "git",

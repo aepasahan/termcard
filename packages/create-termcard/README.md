@@ -4,7 +4,7 @@
 
 **Create and publish your terminal business card in about two minutes.**
 
-Created by [Ahmet Erkan Paşahan](https://aepasahan.com)
+Created by [Ahmet Erkan Paşahan](https://aepasahan.dev)
 
 [![npm](https://img.shields.io/npm/v/create-termcard?color=87afd7&label=npm)](https://www.npmjs.com/package/create-termcard)
 [![Tests](https://img.shields.io/github/actions/workflow/status/aepasahan/termcard/ci.yml?branch=main&label=tests)](https://github.com/aepasahan/termcard/actions/workflows/ci.yml)
@@ -79,7 +79,7 @@ to publish.
 
 <div align="center">
 
-Designed and built by **[Ahmet Erkan Paşahan](https://aepasahan.com)** ·
+Designed and built by **[Ahmet Erkan Paşahan](https://aepasahan.dev)** ·
 [LinkedIn](https://www.linkedin.com/in/aepasahan) · [GitHub](https://github.com/aepasahan/termcard) ·
 try it: `npx aepasahan`
 
