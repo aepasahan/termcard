@@ -4,7 +4,7 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org); until 1.0.0, minor versions may contain
 breaking changes to the config format.
 
-## Unreleased
+## termcard 0.6.0, create-termcard 0.6.0 — 2026-11-09
 
 ### Remote MCP server
 - `termcard/http`: the MCP server as a stateless Streamable HTTP handler
@@ -24,6 +24,9 @@ breaking changes to the config format.
 
 ### MCP Registry
 - The entry lists the hosted server (`remotes`) next to the npm package.
+
+### create-termcard
+- Version aligned with termcard 0.6.0; no changes of its own.
 
 ## termcard 0.5.0, create-termcard 0.5.0 — 2026-11-09
 
