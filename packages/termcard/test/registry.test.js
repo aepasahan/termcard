@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { checkAvailability } from '../src/npm.js';
+import { checkAvailability } from '../src/project/registry.js';
 
 const respond = (status) => async (url) => {
   respond.lastUrl = url;

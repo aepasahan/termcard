@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { slugify, validatePackageName, binName } from '../src/names.js';
+import { slugify, validatePackageName, binName } from '../src/index.js';
 
 test('slugify transliterates accented and Turkish letters', () => {
   assert.equal(slugify('Ahmet Erkan Paşahan'), 'ahmet-erkan-pasahan');

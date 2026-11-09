@@ -41,6 +41,11 @@ termcard's control and covered by the [npm privacy policy](https://docs.npmjs.co
 - It shares only what the card already shows publicly. Card owners can opt out with
   `"mcp": false`.
 - Drafted emails are returned to the user as `mailto:` links and are never sent.
+- When creating a card, the details you give are used only to build it. `check_name` sends the
+  proposed package name to `registry.npmjs.org`; `create_card_project` writes the card only to
+  the new, empty folder you confirm on your own computer. Nothing is published for you.
+
+Contact for privacy questions: ae.pasahan@creetivelab.com.
 
 ## Web page and curl integrations
 

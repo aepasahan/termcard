@@ -1,8 +1,10 @@
 /** Writes a new card package to disk. Pure file generation — no network, no npm calls. */
 
-import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { binName } from './names.js';
+
+const TERMCARD_VERSION = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8')).version;
 
 const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
 
@@ -116,10 +118,10 @@ export class TargetNotEmptyError extends Error {
 }
 
 /**
- * @param {{ dir: string, packageName: string, config: object, termcardVersion: string, workflow?: boolean, year?: number }} options
+ * @param {{ dir: string, packageName: string, config: object, termcardVersion?: string, workflow?: boolean, year?: number }} options
  * @returns {string[]} relative paths of the files written
  */
-export function createProject({ dir, packageName, config, termcardVersion, workflow: withWorkflow = false, year = new Date().getFullYear() }) {
+export function createProject({ dir, packageName, config, termcardVersion = TERMCARD_VERSION, workflow: withWorkflow = false, year = new Date().getFullYear() }) {
   if (existsSync(dir) && readdirSync(dir).length) throw new TargetNotEmptyError(dir);
 
   const files = {

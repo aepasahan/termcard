@@ -5,9 +5,9 @@ import { mkdtempSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSyn
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createProject, TargetNotEmptyError } from '../src/scaffold.js';
+import { createProject, TargetNotEmptyError } from '../src/project/scaffold.js';
 
-const termcardDir = fileURLToPath(new URL('../../termcard', import.meta.url));
+const termcardDir = fileURLToPath(new URL('..', import.meta.url));
 const config = { name: 'Jane Doe', email: 'jane@example.com', links: ['https://github.com/jane'], language: { available: ['en', 'tr'] } };
 
 function tempDir(t) {

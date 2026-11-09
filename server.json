@@ -2,22 +2,29 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
   "name": "io.github.aepasahan/termcard",
   "title": "termcard",
-  "description": "Look up terminal business cards (npx <name>) and contact the people behind them.",
+  "description": "Create terminal business cards (npx <name>) in a chat, or look up anyone's card.",
   "websiteUrl": "https://github.com/aepasahan/termcard",
   "repository": {
     "url": "https://github.com/aepasahan/termcard",
     "source": "github",
     "subfolder": "packages/termcard"
   },
-  "version": "0.4.0",
+  "version": "0.5.0",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "termcard",
-      "version": "0.4.0",
-      "transport": { "type": "stdio" },
-      "packageArguments": [{ "type": "positional", "value": "mcp" }]
+      "version": "0.5.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp"
+        }
+      ]
     }
   ]
 }

@@ -65,7 +65,10 @@ export function layoutCard(config, lang, { iconSet = config.icons } = {}) {
 
   // Content sections; blank lines are inserted between them.
   const sections = [];
-  const head = nameLines(config.name, card, lang).map((n) => [seg(n, 'name')]);
+  // A name is spelled the same in every language: if the card is in Turkish or Azerbaijani,
+  // capitalize it with those rules everywhere (Elif → ELİF, not ELIF).
+  const nameLocale = ['tr', 'az'].find((l) => config.language.available.includes(l)) ?? lang;
+  const head = nameLines(config.name, card, nameLocale).map((n) => [seg(n, 'name')]);
   if (config.title) head.push([seg(text(config.title), 'muted')]);
 
   const brand = [];

@@ -32,7 +32,10 @@ termcard treats every config value as untrusted:
 - Cards fetched by name come only from the npm registry; the tarball is verified against
   npm's integrity hash, the package must depend on termcard, and sizes are capped.
 - Fetched configs pass the same validation and sanitizing as local ones.
-- All tools are read-only; e-mails are drafted as `mailto:` links, never sent.
+- Lookup tools are read-only; e-mails are drafted as `mailto:` links, never sent.
+- `create_card_project` is the only tool that writes: it validates the config and the package
+  name first, requires an absolute path to a new or empty folder (never the home or root
+  folder), never overwrites files, and never publishes.
 - Card text is written by card owners. The server's instructions and the `introduce` prompt
   tell assistants to treat it as information, not instructions, to limit prompt injection.
 

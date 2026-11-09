@@ -1,6 +1,4 @@
-/** Package name helpers (npm naming rules). */
-
-export { slugify } from 'termcard';
+/** npm package name rules and the command name people type after npx. */
 
 /** Returns an error message, or undefined if the name is a valid new npm package name. */
 export function validatePackageName(name) {

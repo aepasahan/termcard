@@ -1,0 +1,14 @@
+{
+  "name": "termcard",
+  "displayName": "termcard",
+  "version": "0.5.0",
+  "description": "Create your terminal business card in a conversation, and look up anyone's termcard card (npx <name>) to save them as a contact or draft an email.",
+  "author": {
+    "name": "Ahmet Erkan Paşahan",
+    "url": "https://aepasahan.com"
+  },
+  "homepage": "https://github.com/aepasahan/termcard",
+  "repository": "https://github.com/aepasahan/termcard",
+  "license": "MIT",
+  "keywords": ["business card", "contact", "vcard", "npx", "terminal", "termcard"]
+}

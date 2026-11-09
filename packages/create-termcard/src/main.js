@@ -8,10 +8,8 @@
 import { readFileSync } from 'node:fs';
 import { resolve, relative } from 'node:path';
 import { parseArgs } from 'node:util';
-import { loadConfig, ConfigError } from 'termcard';
+import { loadConfig, ConfigError, createProject, TargetNotEmptyError, validatePackageName, slugify, binName } from 'termcard';
 import { runWizard, preview } from './wizard.js';
-import { createProject, TargetNotEmptyError } from './scaffold.js';
-import { validatePackageName, slugify, binName } from './names.js';
 import { publish } from './npm.js';
 import { confirm, CancelledError, style } from './prompts.js';
 

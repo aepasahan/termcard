@@ -17,3 +17,6 @@ export { colorDepth } from './render/color.js';
 export { createVCard } from './vcard.js';
 export { buildCard, UnsafeOutputError } from './build/index.js';
 export { slugify } from './text.js';
+export { createProject, TargetNotEmptyError } from './project/scaffold.js';
+export { validatePackageName, binName } from './project/names.js';
+export { checkAvailability } from './project/registry.js';

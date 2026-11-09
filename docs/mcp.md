@@ -13,6 +13,18 @@ you ask for — instead of guessing or searching the web.
 
 ## Install
 
+### Claude plugin (Claude Code, Cowork)
+
+The termcard plugin bundles the MCP server with a skill that teaches Claude the workflow:
+
+```
+/plugin install termcard --marketplace aepasahan/termcard
+```
+
+In the Claude app, add the marketplace `aepasahan/termcard` under **Customize › Plugins**.
+Local servers run in Claude Code and in Cowork on your computer; in claude.ai chat the
+plugin's skill still helps you write a card config.
+
 ### Claude Desktop
 
 Download **termcard.mcpb** from the
@@ -55,10 +67,31 @@ as `io.github.aepasahan/termcard`.
 | `get_vcard` | The contact details as a vCard, ready for an address book. |
 | `compose_email` | A draft email as a `mailto:` link. **Nothing is sent** — you open, review and send it. |
 
-There is also an `introduce` prompt ("introduce the owner of this card").
+### Creating a card
 
-All tools are read-only. termcard never sends messages, never stores anything and never
-runs anything on your behalf.
+| Tool | |
+| ---- | --- |
+| `list_card_options` | What a card can contain: fields, limits, templates, themes, icons, languages, menu items. |
+| `preview_card` | Validates a draft config and returns a text preview of the card and its menu, or the problems to fix. |
+| `check_name` | Whether a package name is valid and still free on npm. |
+| `create_card_project` | Writes a ready-to-publish card package into a new, empty folder. **Never overwrites, never publishes.** |
+
+Prompts: `introduce` ("introduce the owner of this card") and `create_card`, which walks
+through creating your own card:
+
+> *"Create my terminal business card."*
+
+Claude asks for your details a few at a time, shows the preview, offers a template, a
+seasonal theme and icons, finds a free name and — after you confirm the details, the name
+and the folder — writes the project. You publish it yourself:
+
+```bash
+cd ~/termcard-cards/yourname && npm publish --access public
+```
+
+All tools except `create_card_project` are read-only, and that one only writes into a new,
+empty folder you confirm. termcard never sends messages, never publishes, and never runs
+anything else on your behalf.
 
 ## Just one card, offline
 

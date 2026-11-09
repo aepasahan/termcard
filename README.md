@@ -61,15 +61,16 @@ on npm and publishes the card for you.
 
 ## Ask your AI assistant
 
-termcard also speaks the [Model Context Protocol](https://modelcontextprotocol.io), so AI
-assistants like Claude can look up any termcard card by name, save the person as a contact
-or draft an email to them — read-only, nothing is ever sent on your behalf.
+termcard also speaks the [Model Context Protocol](https://modelcontextprotocol.io). In Claude
+or any MCP client you can **create your card just by chatting** — *"Create my terminal
+business card"* — and look up anyone's card by name, save them as a contact or draft an email.
+Nothing is ever published or sent on your behalf.
 
-```bash
-claude mcp add termcard -- npx -y termcard mcp
+```
+/plugin install termcard --marketplace aepasahan/termcard
 ```
 
-For Claude Desktop there's a one-click extension, and any MCP client works — see
+There's also a one-click Claude Desktop extension, and any MCP client works — see
 [termcard for AI assistants](docs/mcp.md). Card owners can opt out with `"mcp": false`.
 
 ## Customizing your card

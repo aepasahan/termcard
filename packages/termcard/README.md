@@ -54,9 +54,9 @@ Flags such as `--lang tr`, `--card` (no menu) and `--vcard` work on every card.
 
 ## Ask your AI assistant
 
-termcard includes an MCP server, so AI assistants such as Claude can look up any termcard
-card by name, save the person as a contact or draft an email — read-only, nothing is sent
-on your behalf.
+termcard includes an MCP server, so in Claude and other AI assistants you can **create your
+card by chatting** and look up anyone's card by name, save them as a contact or draft an
+email. Nothing is ever published or sent on your behalf.
 
 ```bash
 claude mcp add termcard -- npx -y termcard mcp

@@ -3,10 +3,9 @@
 import {
   BUILT_IN_LANGUAGES, languageName, templates, themes, normalizeConfig, layoutCard, toAnsi, colorDepth,
   isEmail, urlProblem, TEXT_LIMIT, DESCRIPTION_LIMIT, THEME_DESCRIPTIONS, DEFAULT_THEME,
+  slugify, validatePackageName, checkAvailability,
 } from 'termcard';
 import { text, confirm, select, multiselect, style } from './prompts.js';
-import { slugify, validatePackageName } from './names.js';
-import { checkAvailability } from './npm.js';
 
 // Answers are checked with the same rules as the config schema, so the final config always validates.
 const optional = (check) => (v) => (v ? check(v) : undefined);

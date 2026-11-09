@@ -68,11 +68,12 @@ test('JSON-RPC errors and notifications', async () => {
   assert.deepEqual((await server.handle({ jsonrpc: '2.0', id: 3, method: 'ping' })).result, {});
 });
 
-test('tools are read-only and "name" is required only without a pinned card', async () => {
+test('card lookup tools are read-only and "name" is required only without a pinned card', async () => {
   const list = async (server) => (await server.handle({ jsonrpc: '2.0', id: 1, method: 'tools/list' })).result.tools;
   const generic = await list(createTermcardServer());
-  assert.deepEqual(generic.map((t) => t.name), ['get_card', 'get_vcard', 'compose_email']);
-  assert.ok(generic.every((t) => t.annotations.readOnlyHint));
+  const lookup = generic.slice(0, 3);
+  assert.deepEqual(lookup.map((t) => t.name), ['get_card', 'get_vcard', 'compose_email']);
+  assert.ok(lookup.every((t) => t.annotations.readOnlyHint));
   assert.deepEqual(generic[0].inputSchema.required, ['name']);
   assert.deepEqual((await list(createTermcardServer({ pinned })))[0].inputSchema.required, []);
 });

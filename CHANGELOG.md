@@ -4,6 +4,28 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org); until 1.0.0, minor versions may contain
 breaking changes to the config format.
 
+## termcard 0.5.0, create-termcard 0.5.0 — 2026-11-09
+
+### termcard
+- **Create a card by chatting.** New MCP tools `list_card_options`, `preview_card`,
+  `check_name` and `create_card_project`, and a `create_card` prompt. Only
+  `create_card_project` writes files — into a new, empty folder — and nothing is published.
+- Every tool now declares its title and whether it is read-only.
+- Names on cards that include Turkish or Azerbaijani are capitalized with those rules in
+  every language (Elif → ELİF).
+- Project scaffolding, package-name rules and the npm availability check moved from
+  create-termcard into termcard (`createProject`, `validatePackageName`, `checkAvailability`),
+  so the wizard and the MCP server share one implementation.
+
+### Claude plugin
+- New `plugin/` (with `.claude-plugin/marketplace.json`): the MCP server pinned to this
+  version plus a `termcard-cards` skill. Install with
+  `/plugin install termcard --marketplace aepasahan/termcard`.
+- The Claude Desktop extension lists the new tools and prompts and links the privacy policy.
+
+### create-termcard
+- Uses termcard's scaffolding; READMEs mention creating a card by chatting.
+
 ## termcard 0.4.0, create-termcard 0.4.0 — 2026-11-03
 
 ### termcard

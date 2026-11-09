@@ -1,6 +1,6 @@
 {
   "name": "termcard",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Interactive business cards for the terminal — npx yourname",
   "mcpName": "io.github.aepasahan/termcard",
   "type": "module",

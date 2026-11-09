@@ -48,6 +48,12 @@ Your card is also ready for AI assistants: anyone using the
 [termcard MCP server](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md) can ask
 about you by name. Set `"mcp": false` in `card.config.json` to opt out.
 
+## Prefer to chat?
+
+With the [termcard plugin or MCP server](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md),
+just ask Claude: *"Create my terminal business card."* It uses the same building blocks as
+this wizard.
+
 ## Without the wizard
 
 Already have a `card.config.json`? Create the package from it directly:

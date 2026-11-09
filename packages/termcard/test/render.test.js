@@ -119,3 +119,9 @@ test('Arabic diacritics and CJK text keep the frame aligned', () => {
     assert.equal(new Set(widths(plain)).size, 1, plain);
   }
 });
+
+test('Turkish names keep their dotted İ in every language of a Turkish card', () => {
+  const config = make({ name: 'Elif Yılmaz', language: { available: ['en', 'tr'] } });
+  assert.match(toPlain(layoutCard(config, 'en')), /E L İ F/);
+  assert.match(toPlain(layoutCard(make({ name: 'Elif Smith', language: { available: ['en'] } }), 'en')), /E L I F/);
+});

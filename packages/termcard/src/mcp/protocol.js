@@ -21,7 +21,7 @@ export class ToolError extends Error {}
 
 /**
  * @param {{ name: string, version: string, instructions?: string,
- *           tools: Array<{ name, title, description, inputSchema, run(args) }>,
+ *           tools: Array<{ name, title, description, inputSchema, annotations?, run(args) }>,
  *           prompts?: Array<{ name, title, description, arguments, get(args) }> }} definition
  */
 export function createServer({ name, version, instructions, tools, prompts = [] }) {
@@ -37,8 +37,10 @@ export function createServer({ name, version, instructions, tools, prompts = [] 
     }),
     ping: () => ({}),
     'tools/list': () => ({
-      tools: tools.map(({ name: n, title, description, inputSchema }) => ({
-        name: n, title, description, inputSchema, annotations: { readOnlyHint: true, openWorldHint: false },
+      tools: tools.map(({ name: n, title, description, inputSchema, annotations }) => ({
+        name: n, title, description, inputSchema,
+        // Read-only unless a tool says otherwise; every tool also carries its title as an annotation.
+        annotations: { title, readOnlyHint: true, openWorldHint: false, ...annotations },
       })),
     }),
     'tools/call': async ({ name: toolName, arguments: args = {} } = {}) => {
