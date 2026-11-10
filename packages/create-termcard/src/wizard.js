@@ -61,7 +61,7 @@ async function askPackageName(config, { offline }) {
 
 export async function runWizard({ offline = false } = {}) {
   process.stdout.write(
-    `\n${style.bold('termcard')} ${style.muted('— create your terminal business card')}\n` +
+    `\n${style.bold('Termcard')} ${style.muted('— create your terminal business card')}\n` +
       `${style.faint('Everything you enter here becomes public once the card is published.')}\n` +
       `${style.faint('Leave optional fields empty to skip them.')}\n\n`,
   );

@@ -65,7 +65,7 @@ export async function fetchCard(packageName, fetchImpl = globalThis.fetch) {
   const meta = await download(fetchImpl, `${REGISTRY}/${packageName.replace('/', '%2f')}/latest`, MAX_BYTES * 4);
   if (meta === null) throw new ToolError(`There is no npm package called "${packageName}".`);
   const pkg = JSON.parse(meta.toString('utf8'));
-  if (!pkg.dependencies?.termcard) throw new ToolError(`"${packageName}" is not a termcard business card.`);
+  if (!pkg.dependencies?.termcard) throw new ToolError(`"${packageName}" is not a Termcard business card.`);
 
   const tarballUrl = pkg.dist?.tarball;
   if (typeof tarballUrl !== 'string' || !tarballUrl.startsWith(`${REGISTRY}/`)) {

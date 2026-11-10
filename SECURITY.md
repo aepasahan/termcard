@@ -9,7 +9,7 @@ rather than in a public issue. You'll get a response within a few days.
 ## Design
 
 A card is run by strangers via `npx`, and its config is written by someone else, so
-termcard treats every config value as untrusted:
+Termcard treats every config value as untrusted:
 
 - **Configs are JSON only** (max 64 KB) and never executed.
 - **Validation** — URLs must be `http(s)` without credentials; emails and phone numbers
@@ -18,7 +18,7 @@ termcard treats every config value as untrusted:
   are stripped, so a config cannot inject escape sequences or spoof text direction.
 - **Processes** — browsers, mail clients and clipboard tools are started without a shell
   and with fixed argument lists; only `http(s)`, `mailto`, `tel` URLs and absolute paths
-  of files termcard created are ever opened.
+  of files Termcard created are ever opened.
 - **Temporary files** go to a fresh private directory with `0600` permissions.
 - **HTML output** escapes all content, embeds data safely in scripts and ships with a
   restrictive Content Security Policy.
@@ -30,7 +30,7 @@ termcard treats every config value as untrusted:
 ## MCP server
 
 - Cards fetched by name come only from the npm registry; the tarball is verified against
-  npm's integrity hash, the package must depend on termcard, and sizes are capped.
+  npm's integrity hash, the package must depend on Termcard, and sizes are capped.
 - Fetched configs pass the same validation and sanitizing as local ones.
 - Lookup tools are read-only; e-mails are drafted as `mailto:` links, never sent.
 - `create_card_project` is the only tool that writes: it validates the config and the package

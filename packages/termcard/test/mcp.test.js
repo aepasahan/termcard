@@ -110,9 +110,9 @@ test('remote cards are read from the npm tarball and verified', async () => {
   assert.equal(npm.urls.length, 2, 'cards are cached for the session');
 });
 
-test('remote lookups reject anything that is not a valid, verified termcard card', async () => {
+test('remote lookups reject anything that is not a valid, verified Termcard card', async () => {
   const cases = [
-    [registry({ config: { name: 'X' }, dependencies: {} }), /not a termcard business card/],
+    [registry({ config: { name: 'X' }, dependencies: {} }), /not a Termcard business card/],
     [registry({ config: { name: 'X' }, integrity: 'sha512-AAAA' }), /could not be verified/],
     [registry({}), /does not include a readable card.config.json/],
     [registry({ config: { name: '' } }), /invalid configuration/],

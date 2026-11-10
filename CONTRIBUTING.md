@@ -48,7 +48,7 @@ packages/create-termcard/src
 ## Releasing
 
 1. Bump the version in the changed packages and move the `Unreleased` notes in
-   `CHANGELOG.md` under the new version. When termcard's version changes, update it in
+   `CHANGELOG.md` under the new version. When Termcard's version changes, update it in
    `plugin/.claude-plugin/plugin.json` and `server.json` too — a test checks that they match.
    Redeploy the remote server (**Deploy remote MCP**) so it runs the released code.
 2. Run the **Release** workflow (or push a `v*` tag). It runs all checks and publishes

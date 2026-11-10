@@ -1,11 +1,11 @@
 ---
 name: termcard-cards
-description: Create a terminal business card with termcard (people open it with `npx <name>`), or look up someone's termcard card to introduce them, save them as a contact or draft an email to them. Use when the user mentions termcard, an npx business card, or a card name such as "npx aepasahan".
+description: Create a terminal business card with Termcard (people open it with `npx <name>`), or look up someone's Termcard card to introduce them, save them as a contact or draft an email to them. Use when the user mentions Termcard, an npx business card, or a card name such as "npx aepasahan".
 ---
 
-# termcard business cards
+# Termcard business cards
 
-termcard cards are small npm packages that show an interactive business card in the
+Termcard cards are small npm packages that show an interactive business card in the
 terminal: `npx <name>`. A card is described by one file, `card.config.json`.
 
 ## Looking someone up
@@ -34,7 +34,7 @@ When the user names a card (for example "aepasahan" or "npx aepasahan"):
 6. Explain how to publish with `npm publish --access public` (after `npm login`). Never publish
    for the user.
 
-## When the termcard tools are not available
+## When the Termcard tools are not available
 
 Some surfaces don't run local tools. Then write `card.config.json` together with the user,
 following the fields in the [configuration guide](https://github.com/aepasahan/termcard/blob/main/docs/configuration.md),

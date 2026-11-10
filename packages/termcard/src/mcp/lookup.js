@@ -59,7 +59,7 @@ export function createLookupTools({ pinned, fetch } = {}) {
     {
       name: 'get_card',
       title: 'Get business card',
-      description: 'Returns a person\'s termcard business card: name, role, description, location, email, phone, website and profile links.',
+      description: 'Returns a person\'s Termcard business card: name, role, description, location, email, phone, website and profile links.',
       inputSchema: { type: 'object', properties: { name: nameProperty, language: languageProperty }, required, additionalProperties: false },
       annotations: { openWorldHint: true },
       run: async ({ name, language }) => clean(describeCard(await getCard(name), language)),
@@ -111,7 +111,7 @@ export function createLookupTools({ pinned, fetch } = {}) {
     {
       name: 'introduce',
       title: 'Introduce someone',
-      description: 'Introduces the owner of a termcard business card in a few sentences.',
+      description: 'Introduces the owner of a Termcard business card in a few sentences.',
       arguments: [{ name: 'name', description: nameProperty.description, required: !pinned }],
       get: ({ name } = {}) => {
         const target = name || pinned?.packageName;

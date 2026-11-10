@@ -1,6 +1,6 @@
 <div align="center">
 
-# termcard
+# Termcard
 
 **Your business card, in the terminal.**
 
@@ -19,8 +19,8 @@ Created by [Ahmet Erkan Paşahan](https://aepasahan.dev)
 
 ## What is it?
 
-termcard is the engine behind interactive terminal business cards. You describe yourself
-in a small JSON file; termcard draws the card, runs the menu, speaks your visitor's
+Termcard is the engine behind interactive terminal business cards. You describe yourself
+in a small JSON file; Termcard draws the card, runs the menu, speaks your visitor's
 language and keeps everything safe. Anyone can then meet you with:
 
 ```bash
@@ -54,7 +54,7 @@ Flags such as `--lang tr`, `--card` (no menu) and `--vcard` work on every card.
 
 ## Ask your AI assistant
 
-termcard includes an MCP server, so in Claude and other AI assistants you can **create your
+Termcard includes an MCP server, so in Claude and other AI assistants you can **create your
 card by chatting** and look up anyone's card by name, save them as a contact or draft an
 email. Nothing is ever published or sent on your behalf.
 
@@ -63,7 +63,7 @@ claude mcp add termcard -- npx -y termcard mcp
 ```
 
 Claude Desktop extension and setup for Cursor, VS Code and other clients:
-[termcard for AI assistants](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md).
+[Termcard for AI assistants](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md).
 
 ## For card owners
 
@@ -74,7 +74,7 @@ npx termcard build       # optional: web page, vCards and curl files for your ow
 npx termcard mcp         # MCP server for AI assistants
 ```
 
-Using termcard in your own package takes two lines:
+Using Termcard in your own package takes two lines:
 
 ```js
 #!/usr/bin/env node

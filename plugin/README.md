@@ -1,8 +1,8 @@
-# termcard for Claude
+# Termcard for Claude
 
 Create your own terminal business card in a conversation, and look up anyone else's.
 
-[termcard](https://github.com/aepasahan/termcard) cards are small npm packages that show an
+[Termcard](https://github.com/aepasahan/termcard) cards are small npm packages that show an
 interactive business card in the terminal — `npx yourname`. This plugin brings them to Claude:
 
 - **Create your card by chatting.** Claude asks for your details, previews the card, suggests
@@ -27,7 +27,7 @@ In the Claude app, add the marketplace `aepasahan/termcard` under **Customize �
 
 | Component | |
 | --------- | --- |
-| MCP server `termcard` | termcard's hosted MCP server at `https://mcp.termcard.dev/mcp` (no sign-in). Tools: `get_card`, `get_vcard`, `compose_email`, `list_card_options`, `preview_card`, `check_name`, `export_card_config`. Prompts: `introduce`, `create_card`. |
+| MCP server `termcard` | Termcard's hosted MCP server at `https://mcp.termcard.dev/mcp` (no sign-in). Tools: `get_card`, `get_vcard`, `compose_email`, `list_card_options`, `preview_card`, `check_name`, `export_card_config`. Prompts: `introduce`, `create_card`. |
 | Skill `termcard-cards` | Teaches Claude the workflow for looking up and creating cards, and how to help when the tools aren't available. |
 
 It works in Claude chat on the web, desktop and mobile, in Cowork and in Claude Code — nothing to
@@ -36,7 +36,7 @@ install. Prefer a local server that can also write the project folder for you? U
 
 ## What it runs, sends and writes
 
-- It connects to termcard's MCP server at `https://mcp.termcard.dev/mcp`, hosted on Cloudflare Workers. The
+- It connects to Termcard's MCP server at `https://mcp.termcard.dev/mcp`, hosted on Cloudflare Workers. The
   server's source is the open-source [`termcard`](https://github.com/aepasahan/termcard) package.
 - To look up a card or check a name, the server contacts **only** `registry.npmjs.org`, sending
   the package name. Downloaded cards are verified against npm's integrity hash.

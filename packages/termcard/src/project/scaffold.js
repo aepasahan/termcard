@@ -55,10 +55,10 @@ npx ${pkg}
 An interactive business card. Use the arrow keys to get in touch, save my contact
 details, or visit my website and profiles — in your own language.
 
-Using an AI assistant? With [termcard's MCP server](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md)
+Using an AI assistant? With [Termcard's MCP server](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md)
 you can simply ask it about \`${pkg}\`.
 
-<sub>Made with [termcard](https://www.npmjs.com/package/termcard).</sub>
+<sub>Made with [Termcard](https://www.npmjs.com/package/termcard).</sub>
 `;
 
 // .github/README.md is shown on GitHub instead of README.md: notes for the card's owner.
@@ -106,7 +106,7 @@ with "npx") to view the card and use its contact features.
 You may not copy, modify, republish or redistribute this package or its content, in whole
 or in part, without the prior written permission of the copyright holder.
 
-The card is rendered by termcard (https://www.npmjs.com/package/termcard), which is
+The card is rendered by Termcard (https://www.npmjs.com/package/termcard), which is
 licensed separately under the MIT License.
 `;
 

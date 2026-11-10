@@ -14,7 +14,7 @@ import { BUILT_IN_LANGUAGES } from '../i18n/index.js';
 
 export class ConfigError extends Error {
   constructor(problems) {
-    super(`Invalid termcard config:\n${problems.map((p) => `  • ${p}`).join('\n')}`);
+    super(`Invalid Termcard config:\n${problems.map((p) => `  • ${p}`).join('\n')}`);
     this.name = 'ConfigError';
     this.problems = problems;
   }

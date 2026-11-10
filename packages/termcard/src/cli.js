@@ -12,13 +12,13 @@ import { serveMcp } from './mcp/server.js';
 const VERSION = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
 const DEFAULT_CONFIG = 'card.config.json';
 
-const HELP = `termcard ${VERSION} — terminal business cards
+const HELP = `Termcard ${VERSION} — terminal business cards
 
 Usage:
   termcard preview [config]          Show the card (accepts the same flags as the card itself)
   termcard validate [config]         Check a config and list any problems
   termcard build [config] [--out d]  Write terminal, web, vCard and curl files (default: dist)
-  termcard mcp                       Run the MCP server that lets AI assistants read any termcard card
+  termcard mcp                       Run the MCP server that lets AI assistants read any Termcard card
 
 Create a new card:
   npm create termcard@latest

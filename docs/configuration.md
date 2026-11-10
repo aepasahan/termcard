@@ -186,7 +186,7 @@ menu. Set `"menu": false` to always print the card only.
 "mcp": true
 ```
 
-Cards can be read by AI assistants through termcard's MCP server (see [mcp.md](mcp.md)).
+Cards can be read by AI assistants through Termcard's MCP server (see [mcp.md](mcp.md)).
 This is on by default and shares only what the card already shows. Set `"mcp": false` to
 opt out.
 

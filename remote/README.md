@@ -1,6 +1,6 @@
 # Remote MCP server
 
-termcard's MCP server over HTTPS, so Claude can use termcard in chat on the web, desktop
+Termcard's MCP server over HTTPS, so Claude can use Termcard in chat on the web, desktop
 and mobile — not only where local servers run. It's the same code as the local server
 (`packages/termcard/src/mcp/http.js`), deployed as a Cloudflare Worker.
 
@@ -27,7 +27,7 @@ npx wrangler deploy --config remote/wrangler.toml
 ```
 
 The endpoint is `https://<worker>.<account>.workers.dev/mcp` (or your domain + `/mcp`).
-termcard's own deployment: `https://mcp.termcard.dev/mcp` (also reachable at
+Termcard's own deployment: `https://mcp.termcard.dev/mcp` (also reachable at
 `https://termcard-mcp.aepasahan-dev.workers.dev/mcp`). `https://termcard.dev` redirects to
 the project page until the website exists.
 Add it in Claude under **Settings › Connectors › Add custom connector** to test it.

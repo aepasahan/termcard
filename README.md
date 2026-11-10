@@ -1,6 +1,6 @@
 <div align="center">
 
-# termcard
+# Termcard
 
 **Your business card, in the terminal.**
 
@@ -21,7 +21,7 @@ Created by [Ahmet Erkan Paşahan](https://aepasahan.dev)
 ## What is it?
 
 Developers and designers spend their day in the terminal, so why not meet them there?
-termcard turns a short description of who you are into a small interactive program that
+Termcard turns a short description of who you are into a small interactive program that
 anyone can open with one command:
 
 ```bash
@@ -56,12 +56,12 @@ on npm and publishes the card for you.
 - **Eight seasonal color themes**, from *thaw* to *midwinter*, designed to look calm on both dark and light terminals.
 - **Three layouts, optional icons and a short description**; choose which details appear, in what order, or show only the menu.
 - **Ready for AI assistants.** A built-in MCP server lets Claude and other assistants read cards and draft emails.
-- **Updates reach everyone.** Cards depend on termcard, so improvements arrive without republishing your card.
+- **Updates reach everyone.** Cards depend on Termcard, so improvements arrive without republishing your card.
 - **Private and safe by design.** Zero dependencies, no tracking, and every value in a card is validated and sanitized before it reaches anyone's terminal.
 
 ## Ask your AI assistant
 
-termcard also speaks the [Model Context Protocol](https://modelcontextprotocol.io). In Claude
+Termcard also speaks the [Model Context Protocol](https://modelcontextprotocol.io). In Claude
 or any MCP client you can **create your card just by chatting** — *"Create my terminal
 business card"* — and look up anyone's card by name, save them as a contact or draft an email.
 Nothing is ever published or sent on your behalf.
@@ -73,7 +73,7 @@ Nothing is ever published or sent on your behalf.
 In Claude on the web, desktop or mobile, add the remote connector
 `https://mcp.termcard.dev/mcp` under **Settings › Connectors**.
 There's also a one-click Claude Desktop extension, and any MCP client works — see
-[termcard for AI assistants](docs/mcp.md). Card owners can opt out with `"mcp": false`.
+[Termcard for AI assistants](docs/mcp.md). Card owners can opt out with `"mcp": false`.
 
 ## Customizing your card
 
@@ -97,7 +97,7 @@ The [configuration guide](docs/configuration.md) covers every option, and
 
 ## Command line
 
-termcard also ships a small tool for card owners. Visitors never see or need it.
+Termcard also ships a small tool for card owners. Visitors never see or need it.
 
 | Command | What it does |
 | ------- | ------------ |
@@ -121,7 +121,7 @@ This repository contains two packages:
 | [`create-termcard`](packages/create-termcard) | The setup wizard behind `npm create termcard`. |
 
 Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Please report
-security issues privately as described in [SECURITY.md](SECURITY.md). How termcard handles
+security issues privately as described in [SECURITY.md](SECURITY.md). How Termcard handles
 personal data is described in [PRIVACY.md](PRIVACY.md).
 
 ---

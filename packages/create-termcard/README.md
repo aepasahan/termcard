@@ -18,7 +18,7 @@ Created by [Ahmet Erkan Paşahan](https://aepasahan.dev)
 
 ## What is it?
 
-This is the setup wizard for [termcard](https://www.npmjs.com/package/termcard). It turns
+This is the setup wizard for [Termcard](https://www.npmjs.com/package/termcard). It turns
 a few answers into a published business card that anyone can open with `npx yourname` —
 no code, no templates to fork.
 
@@ -45,12 +45,12 @@ npx yourname
 To change anything later, edit `card.config.json` in the created folder and publish again.
 
 Your card is also ready for AI assistants: anyone using the
-[termcard MCP server](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md) can ask
+[Termcard MCP server](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md) can ask
 about you by name. Set `"mcp": false` in `card.config.json` to opt out.
 
 ## Prefer to chat?
 
-With the [termcard plugin or MCP server](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md),
+With the [Termcard plugin or MCP server](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md),
 just ask Claude: *"Create my terminal business card."* It uses the same building blocks as
 this wizard.
 

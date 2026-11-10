@@ -1,6 +1,6 @@
 # Privacy
 
-termcard is designed so that no personal data about the people who run a card is
+Termcard is designed so that no personal data about the people who run a card is
 collected, stored or transmitted.
 
 ## People running a card (`npx <name>`)
@@ -15,7 +15,7 @@ collected, stored or transmitted.
   anywhere.
 
 npm itself records anonymous download counts for public packages. This is outside
-termcard's control and covered by the [npm privacy policy](https://docs.npmjs.com/policies/privacy).
+Termcard's control and covered by the [npm privacy policy](https://docs.npmjs.com/policies/privacy).
 
 ## Card owners (`npm create termcard`)
 

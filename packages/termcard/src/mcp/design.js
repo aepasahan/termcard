@@ -87,7 +87,7 @@ export function createDesignTools({ fetch, finish = 'export_card_config' } = {})
     {
       name: 'list_card_options',
       title: 'List card options',
-      description: 'Explains what a termcard card can contain — fields, limits, templates, color themes, icon sets, languages and menu items — with an example config. Call this before drafting a card.',
+      description: 'Explains what a Termcard card can contain — fields, limits, templates, color themes, icon sets, languages and menu items — with an example config. Call this before drafting a card.',
       inputSchema: { type: 'object', properties: {}, additionalProperties: false },
       run: async () => OPTIONS,
     },
@@ -164,16 +164,16 @@ export function createDesignTools({ fetch, finish = 'export_card_config' } = {})
     {
       name: 'create_card',
       title: 'Create my terminal business card',
-      description: 'Guides you through creating your own termcard business card in this conversation.',
+      description: 'Guides you through creating your own Termcard business card in this conversation.',
       arguments: [],
       get: () => ({
-        description: 'Create a termcard business card',
+        description: 'Create a Termcard business card',
         messages: [{
           role: 'user',
           content: {
             type: 'text',
             text: [
-              'Help me create my terminal business card with termcard.',
+              'Help me create my terminal business card with Termcard.',
               '1. Call list_card_options to learn what a card can contain.',
               '2. Ask me, a few questions at a time, for my name, role, a short description, contact details, profile links and languages. Everything except my name is optional; don\'t invent details.',
               '3. Draft card.config.json and call preview_card; show me the preview and fix any problems. Offer a template, a color theme and icons, and preview again after changes.',

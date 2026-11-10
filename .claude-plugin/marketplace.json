@@ -1,6 +1,6 @@
 {
   "name": "termcard",
-  "description": "termcard — interactive terminal business cards, for Claude.",
+  "description": "Termcard — interactive terminal business cards, for Claude.",
   "owner": {
     "name": "Ahmet Erkan Paşahan",
     "url": "https://aepasahan.dev"
@@ -9,7 +9,7 @@
     {
       "name": "termcard",
       "source": "./plugin",
-      "description": "Create your terminal business card in a conversation, and look up anyone's termcard card."
+      "description": "Create your terminal business card in a conversation, and look up anyone's Termcard card."
     }
   ]
 }

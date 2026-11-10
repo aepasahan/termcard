@@ -3,8 +3,8 @@
   "name": "termcard",
   "display_name": "Termcard",
   "version": "0.0.0",
-  "description": "Create your terminal business card in a conversation, and look up anyone's termcard card (npx <name>).",
-  "long_description": "termcard business cards are published on npm and opened with `npx <name>`. With this extension Claude can create your own card with you — asking for your details, previewing it, checking that the name is free and writing a ready-to-publish folder — and look up anyone's card to introduce them, save them as a contact (vCard) or draft an email you review and send yourself. Nothing is published or sent on your behalf, and cards are downloaded only from the npm registry and verified before use.",
+  "description": "Create your terminal business card in a conversation, and look up anyone's Termcard card (npx <name>).",
+  "long_description": "Termcard business cards are published on npm and opened with `npx <name>`. With this extension Claude can create your own card with you — asking for your details, previewing it, checking that the name is free and writing a ready-to-publish folder — and look up anyone's card to introduce them, save them as a contact (vCard) or draft an email you review and send yourself. Nothing is published or sent on your behalf, and cards are downloaded only from the npm registry and verified before use.",
   "author": {
     "name": "Ahmet Erkan Paşahan",
     "url": "https://aepasahan.dev"
@@ -43,7 +43,7 @@
   "tools": [
     {
       "name": "get_card",
-      "description": "Get a person's termcard business card by its npm name."
+      "description": "Get a person's Termcard business card by its npm name."
     },
     {
       "name": "get_vcard",
@@ -73,7 +73,7 @@
   "prompts": [
     {
       "name": "introduce",
-      "description": "Introduce the owner of a termcard card.",
+      "description": "Introduce the owner of a Termcard card.",
       "arguments": [
         "name"
       ],
@@ -82,7 +82,7 @@
     {
       "name": "create_card",
       "description": "Create my terminal business card.",
-      "text": "Help me create my terminal business card with termcard: learn the options with list_card_options, ask me for my details a few at a time, preview the card with preview_card, find a free name with check_name, and call create_card_project only after I confirm. Don't publish anything for me."
+      "text": "Help me create my terminal business card with Termcard: learn the options with list_card_options, ask me for my details a few at a time, preview the card with preview_card, find a free name with check_name, and call create_card_project only after I confirm. Don't publish anything for me."
     }
   ],
   "compatibility": {

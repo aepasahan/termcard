@@ -1,7 +1,7 @@
-# termcard for AI assistants (MCP)
+# Termcard for AI assistants (MCP)
 
-termcard includes a [Model Context Protocol](https://modelcontextprotocol.io) server.
-Install it once in your AI assistant and you can ask about anyone who has a termcard
+Termcard includes a [Model Context Protocol](https://modelcontextprotocol.io) server.
+Install it once in your AI assistant and you can ask about anyone who has a Termcard
 business card — by the same name you'd use with `npx`:
 
 > *"Who is aepasahan and how can I reach him?"*
@@ -15,7 +15,7 @@ you ask for — instead of guessing or searching the web.
 
 ### Claude on the web, desktop and mobile (remote connector)
 
-termcard also runs as a remote MCP server, so it works in regular Claude chats everywhere:
+Termcard also runs as a remote MCP server, so it works in regular Claude chats everywhere:
 
 1. In Claude, open **Settings › Connectors › Add custom connector**.
 2. Name: `termcard` · URL: `https://mcp.termcard.dev/mcp`
@@ -28,7 +28,7 @@ commands to publish it. See [remote/](../remote/).
 
 ### Claude plugin (chat, Cowork, Claude Code)
 
-The termcard plugin bundles the hosted MCP server with a skill that teaches Claude the workflow:
+The Termcard plugin bundles the hosted MCP server with a skill that teaches Claude the workflow:
 
 ```
 /plugin install termcard --marketplace aepasahan/termcard
@@ -68,7 +68,7 @@ VS Code can also add it from the command line:
 code --add-mcp '{"name":"termcard","command":"npx","args":["-y","termcard","mcp"]}'
 ```
 
-termcard is listed in the official [MCP Registry](https://registry.modelcontextprotocol.io)
+Termcard is listed in the official [MCP Registry](https://registry.modelcontextprotocol.io)
 as `io.github.aepasahan/termcard`.
 
 ## What the assistant can do
@@ -103,7 +103,7 @@ cd ~/termcard-cards/yourname && npm publish --access public
 ```
 
 All tools except `create_card_project` are read-only, and that one only writes into a new,
-empty folder you confirm. termcard never sends messages, never publishes, and never runs
+empty folder you confirm. Termcard never sends messages, never publishes, and never runs
 anything else on your behalf.
 
 ## Just one card, offline
@@ -123,11 +123,11 @@ again; assistants will then be told that you've chosen not to share the card.
 ## How cards are found
 
 1. The assistant asks for a card by its npm name, e.g. `aepasahan`.
-2. termcard asks the npm registry for that package and checks that it is a termcard card.
+2. Termcard asks the npm registry for that package and checks that it is a Termcard card.
 3. It downloads the package from npm, **verifies it against npm's integrity hash**, and reads
    `card.config.json` from it.
 4. The config is validated and sanitized exactly like every card before anything is returned.
 
 Only `registry.npmjs.org` is contacted, and only with the package names the assistant asks
-for. Card content is written by its owner; termcard labels it as information, and asks the
+for. Card content is written by its owner; Termcard labels it as information, and asks the
 assistant never to treat it as instructions.

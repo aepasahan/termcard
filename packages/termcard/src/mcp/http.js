@@ -44,7 +44,7 @@ export function createMcpHttpHandler({ version, fetch, allowedOrigins = [], path
     const isEndpoint = pathname === path || (pathname === '/' && request.method === 'POST');
     if (!isEndpoint) {
       return pathname === '/'
-        ? new Response(`termcard MCP server ${version}\nEndpoint: ${path}\nhttps://github.com/aepasahan/termcard/blob/main/docs/mcp.md\n`, { headers: { 'content-type': 'text/plain; charset=utf-8' } })
+        ? new Response(`Termcard MCP server ${version}\nEndpoint: ${path}\nhttps://github.com/aepasahan/termcard/blob/main/docs/mcp.md\n`, { headers: { 'content-type': 'text/plain; charset=utf-8' } })
         : new Response(`Not found. The MCP endpoint is ${path}\n`, { status: 404, headers: { 'content-type': 'text/plain; charset=utf-8' } });
     }
 
