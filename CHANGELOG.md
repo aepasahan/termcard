@@ -4,6 +4,12 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org); until 1.0.0, minor versions may contain
 breaking changes to the config format.
 
+## Unreleased
+
+### Website
+- `website/`: termcard.dev — introduction, live demo, Termcard in Claude, and the config
+  builder; deployed on Vercel with strict security headers.
+
 ## termcard 0.6.2, create-termcard 0.6.2 — 2026-11-10
 
 ### Brand
