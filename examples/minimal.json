@@ -1,5 +1,8 @@
 {
+  "$schema": "https://termcard.dev/schema.json",
   "name": "Jane Doe",
   "email": "jane@example.com",
-  "links": ["https://github.com/janedoe"]
+  "links": [
+    "https://github.com/janedoe"
+  ]
 }

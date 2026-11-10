@@ -1,0 +1,554 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://termcard.dev/schema.json",
+  "title": "Termcard card configuration",
+  "description": "card.config.json for a Termcard business card (npx <name>). Guide: https://github.com/aepasahan/termcard/blob/main/docs/configuration.md",
+  "type": "object",
+  "required": [
+    "name"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "URL of this schema, for editor support."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "description": "Full name. Required."
+    },
+    "title": {
+      "description": "Role, shown under the name. Plain text, or one text per language: { \"en\": \"…\", \"tr\": \"…\" }.",
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})?$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        }
+      ]
+    },
+    "tagline": {
+      "description": "Company, @handle or slogan, shown in the accent color. Plain text, or one text per language: { \"en\": \"…\", \"tr\": \"…\" }.",
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})?$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        }
+      ]
+    },
+    "description": {
+      "description": "A few sentences about you, wrapped to the card width. Plain text, or one text per language: { \"en\": \"…\", \"tr\": \"…\" }.",
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 280
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})?$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 280
+          }
+        }
+      ]
+    },
+    "organization": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120,
+      "description": "Company name, used in the vCard."
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "maxLength": 254,
+      "pattern": "^[A-Za-z0-9.!$'*+=^_`{|}~-]+@[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*\\.[A-Za-z]{2,}$",
+      "description": "Enables \"Get in touch\" and \"Copy email\"."
+    },
+    "phone": {
+      "type": "string",
+      "pattern": "^\\+?[0-9][0-9 ().-]{3,24}$",
+      "description": "Digits, spaces and + ( ) - . only."
+    },
+    "website": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https?://",
+      "maxLength": 2048,
+      "description": "Your website."
+    },
+    "location": {
+      "description": "Shown at the bottom of the card, e.g. \"Berlin · Germany\". Plain text, or one text per language: { \"en\": \"…\", \"tr\": \"…\" }.",
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})?$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        }
+      ]
+    },
+    "links": {
+      "type": "array",
+      "description": "Profile links. Well-known services (LinkedIn, GitHub, X, …) get their label and id automatically.",
+      "items": {
+        "anyOf": [
+          {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https?://",
+            "maxLength": 2048,
+            "description": "Profile URL."
+          },
+          {
+            "type": "object",
+            "required": [
+              "url"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^https?://",
+                "maxLength": 2048,
+                "description": "Profile URL."
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40,
+                "description": "Label shown on the card."
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9-]+$",
+                "maxLength": 40,
+                "description": "Used in card.fields and menu items (link:<id>)."
+              },
+              "icon": {
+                "type": "string",
+                "maxLength": 8,
+                "description": "A single symbol, at most 2 columns wide."
+              }
+            }
+          }
+        ]
+      }
+    },
+    "language": {
+      "description": "Languages the card supports. A code alone means a single-language card.",
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})?$",
+          "examples": [
+            "en",
+            "zh",
+            "hi",
+            "es",
+            "ar",
+            "fr",
+            "bn",
+            "pt",
+            "ru",
+            "id",
+            "ur",
+            "de",
+            "ja",
+            "tr"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "default": {
+              "anyOf": [
+                {
+                  "const": "auto"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})?$",
+                  "examples": [
+                    "en",
+                    "zh",
+                    "hi",
+                    "es",
+                    "ar",
+                    "fr",
+                    "bn",
+                    "pt",
+                    "ru",
+                    "id",
+                    "ur",
+                    "de",
+                    "ja",
+                    "tr"
+                  ]
+                }
+              ],
+              "default": "auto",
+              "description": "\"auto\" uses the visitor's system language."
+            },
+            "available": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})?$",
+                "examples": [
+                  "en",
+                  "zh",
+                  "hi",
+                  "es",
+                  "ar",
+                  "fr",
+                  "bn",
+                  "pt",
+                  "ru",
+                  "id",
+                  "ur",
+                  "de",
+                  "ja",
+                  "tr"
+                ]
+              },
+              "default": [
+                "en"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "strings": {
+      "type": "object",
+      "description": "Your own interface texts per language, e.g. { \"en\": { \"action.contact\": \"Start a project\" } }.",
+      "propertyNames": {
+        "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})?$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string",
+          "maxLength": 200
+        }
+      }
+    },
+    "template": {
+      "enum": [
+        "classic",
+        "compact",
+        "minimal"
+      ],
+      "default": "classic"
+    },
+    "theme": {
+      "description": "A seasonal theme, or one with your own colors.",
+      "anyOf": [
+        {
+          "enum": [
+            "thaw",
+            "bloom",
+            "blossom",
+            "solstice",
+            "ember",
+            "harvest",
+            "frost",
+            "midwinter"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "preset": {
+              "enum": [
+                "thaw",
+                "bloom",
+                "blossom",
+                "solstice",
+                "ember",
+                "harvest",
+                "frost",
+                "midwinter"
+              ]
+            },
+            "text": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}$"
+                },
+                {
+                  "const": "default"
+                }
+              ]
+            },
+            "muted": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}$"
+                },
+                {
+                  "const": "default"
+                }
+              ]
+            },
+            "faint": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}$"
+                },
+                {
+                  "const": "default"
+                }
+              ]
+            },
+            "accent": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}$"
+                },
+                {
+                  "const": "default"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "icons": {
+      "enum": [
+        "none",
+        "symbols",
+        "emoji",
+        "nerd"
+      ],
+      "default": "none"
+    },
+    "card": {
+      "description": "false shows only the menu; an object fine-tunes the template.",
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "border": {
+              "enum": [
+                "rounded",
+                "square",
+                "double",
+                "heavy",
+                "none"
+              ]
+            },
+            "nameStyle": {
+              "enum": [
+                "spaced",
+                "uppercase",
+                "plain"
+              ]
+            },
+            "spacing": {
+              "enum": [
+                "relaxed",
+                "compact"
+              ]
+            },
+            "locationAlign": {
+              "enum": [
+                "left",
+                "right"
+              ]
+            },
+            "splitName": {
+              "type": "boolean"
+            },
+            "accentRule": {
+              "type": "boolean"
+            },
+            "labels": {
+              "type": "boolean"
+            },
+            "padding": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8
+            },
+            "width": {
+              "anyOf": [
+                {
+                  "const": "auto"
+                },
+                {
+                  "type": "integer",
+                  "minimum": 20,
+                  "maximum": 120
+                }
+              ]
+            },
+            "fields": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "website, email, phone, link ids and location, in display order."
+            }
+          }
+        }
+      ]
+    },
+    "menu": {
+      "description": "false hides the menu; items sets which entries appear and in what order.",
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "contact",
+                      "save",
+                      "website",
+                      "links",
+                      "copy-email",
+                      "copy-phone",
+                      "language",
+                      "exit"
+                    ]
+                  },
+                  {
+                    "type": "string",
+                    "pattern": "^link:[A-Za-z0-9-]+$"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "label",
+                      "url"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "label": {
+                        "description": "Menu label. Plain text, or one text per language: { \"en\": \"…\", \"tr\": \"…\" }.",
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 120
+                          },
+                          {
+                            "type": "object",
+                            "propertyNames": {
+                              "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})?$"
+                            },
+                            "additionalProperties": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 120
+                            }
+                          }
+                        ]
+                      },
+                      "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "pattern": "^https?://",
+                        "maxLength": 2048,
+                        "description": "Opened when chosen."
+                      },
+                      "hint": {
+                        "description": "Shown under the menu. Plain text, or one text per language: { \"en\": \"…\", \"tr\": \"…\" }.",
+                        "anyOf": [
+                          {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 120
+                          },
+                          {
+                            "type": "object",
+                            "propertyNames": {
+                              "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})?$"
+                            },
+                            "additionalProperties": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 120
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "mcp": {
+      "type": "boolean",
+      "default": true,
+      "description": "Let AI assistants read the card through MCP."
+    }
+  }
+}

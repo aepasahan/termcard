@@ -1,6 +1,6 @@
 {
   "name": "termcard",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "description": "Interactive business cards for the terminal — npx yourname",
   "mcpName": "io.github.aepasahan/termcard",
   "type": "module",
@@ -8,17 +8,20 @@
     ".": "./src/index.js",
     "./browser": "./src/browser.js",
     "./http": "./src/mcp/http.js",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./schema.json": "./schema/card.schema.json"
   },
   "bin": {
     "termcard": "bin/termcard.js"
   },
   "files": [
     "bin",
-    "src"
+    "src",
+    "schema"
   ],
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "schema": "node scripts/schema.js"
   },
   "engines": {
     "node": ">=18.18"

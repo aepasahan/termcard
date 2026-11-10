@@ -125,3 +125,9 @@ test('Turkish names keep their dotted İ in every language of a Turkish card', (
   assert.match(toPlain(layoutCard(config, 'en')), /E L İ F/);
   assert.match(toPlain(layoutCard(make({ name: 'Elif Smith', language: { available: ['en'] } }), 'en')), /E L I F/);
 });
+
+test('the accent rule only appears under a tagline', () => {
+  const rule = /│\s+───\s+│/; // the short accent line inside the frame, not the border
+  assert.doesNotMatch(toPlain(layoutCard(make({ tagline: undefined }), 'en')), rule);
+  assert.match(toPlain(layoutCard(make(), 'en')), rule);
+});

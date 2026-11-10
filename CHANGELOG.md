@@ -4,7 +4,16 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org); until 1.0.0, minor versions may contain
 breaking changes to the config format.
 
-## Unreleased
+## termcard 0.7.0, create-termcard 0.7.0 — 2026-11-10
+
+### termcard
+- **JSON Schema for card.config.json** at `https://termcard.dev/schema.json` (also
+  `termcard/schema.json` in the package): autocompletion and inline errors in editors. It is
+  generated from the validator's own rules (`npm run schema`), and tests check it stays in sync
+  and agrees with the validator on valid and invalid configs.
+- Configs written by `npm create termcard` and by Claude (`export_card_config`,
+  `create_card_project`) start with `"$schema"`.
+- The short accent line under the tagline is only drawn when there is a tagline.
 
 ### Website
 - termcard.dev — introduction, live demo, Termcard in Claude, and the config builder — is

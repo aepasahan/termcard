@@ -13,6 +13,7 @@ import { layoutCard } from '../render/card.js';
 import { toPlain } from '../render/format.js';
 import { buildMenu } from '../tui/actions.js';
 import { validatePackageName } from '../project/names.js';
+import { SCHEMA_URL } from '../config/json-schema.js';
 import { checkAvailability } from '../project/registry.js';
 import { ToolError } from './protocol.js';
 
@@ -147,7 +148,7 @@ export function createDesignTools({ fetch, finish = 'export_card_config' } = {})
         const name = typeof packageName === 'string' && !validatePackageName(packageName) ? packageName : '<name>';
         return {
           fileName: 'card.config.json',
-          content: `${JSON.stringify(config, null, 2)}\n`,
+          content: `${JSON.stringify({ $schema: SCHEMA_URL, ...config }, null, 2)}\n`,
           nextSteps: [
             'Save the content as card.config.json in an empty folder',
             `npm create termcard@latest -- --config card.config.json --name ${name}`,

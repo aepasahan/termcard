@@ -81,6 +81,7 @@ Everything lives in `card.config.json`. Only your name is required:
 
 ```json
 {
+  "$schema": "https://termcard.dev/schema.json",
   "name": "Jane Doe",
   "tagline": "@studio",
   "email": "jane@example.com",
@@ -93,7 +94,8 @@ Everything lives in `card.config.json`. Only your name is required:
 ```
 
 The [configuration guide](docs/configuration.md) covers every option, and
-[`examples/full.json`](examples/full.json) shows them all together.
+[`examples/full.json`](examples/full.json) shows them all together. The `$schema` line gives you
+autocompletion and inline errors in your editor.
 
 ## Command line
 

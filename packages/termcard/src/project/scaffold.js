@@ -3,6 +3,7 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { binName } from './names.js';
+import { SCHEMA_URL } from '../config/json-schema.js';
 
 const TERMCARD_VERSION = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8')).version;
 
@@ -142,7 +143,8 @@ export function createProject({ dir, packageName, config, termcardVersion = TERM
       author: config.email ? `${config.name} <${config.email}>` : config.name,
       license: 'SEE LICENSE IN LICENSE',
     }),
-    'card.config.json': json(config),
+    // $schema gives editors autocompletion and inline errors for the config.
+    'card.config.json': json({ $schema: SCHEMA_URL, ...config }),
     'bin/card.js': binScript,
     'README.md': publicReadme(packageName, config),
     '.github/README.md': ownerReadme(packageName),

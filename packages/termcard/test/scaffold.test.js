@@ -29,7 +29,7 @@ test('creates a runnable card package', (t) => {
   assert.equal(pkg.license, 'SEE LICENSE IN LICENSE');
   assert.match(readFileSync(join(dir, 'LICENSE'), 'utf8'), /All rights reserved/);
   assert.match(readFileSync(join(dir, 'README.md'), 'utf8'), /npx @jane\/card/);
-  assert.deepEqual(JSON.parse(readFileSync(join(dir, 'card.config.json'), 'utf8')), config);
+  assert.deepEqual(JSON.parse(readFileSync(join(dir, 'card.config.json'), 'utf8')), { $schema: 'https://termcard.dev/schema.json', ...config });
 
   // Simulate `npm install` by linking the local termcard package, then run the card.
   mkdirSync(join(dir, 'node_modules'));

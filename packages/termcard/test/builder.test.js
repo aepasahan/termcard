@@ -51,7 +51,7 @@ test('create_card_project writes a card package and never overwrites', async (t)
   const dir = join(tempDir(t), 'jane');
   const result = (await call('create_card_project', { config: draft, packageName: 'janedoe', directory: dir })).structuredContent;
   assert.equal(result.published, false);
-  assert.deepEqual(JSON.parse(readFileSync(join(dir, 'card.config.json'), 'utf8')), draft);
+  assert.deepEqual(JSON.parse(readFileSync(join(dir, 'card.config.json'), 'utf8')), { $schema: 'https://termcard.dev/schema.json', ...draft });
   assert.equal(JSON.parse(readFileSync(join(dir, 'package.json'), 'utf8')).name, 'janedoe');
 
   const busy = tempDir(t);

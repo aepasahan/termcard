@@ -28,7 +28,7 @@ test('export_card_config returns the file and the publish commands', async () =>
   const res = await post({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'export_card_config', arguments: { config: { name: 'Jane Doe' }, packageName: 'janedoe' } } });
   const out = (await res.json()).result.structuredContent;
   assert.equal(out.fileName, 'card.config.json');
-  assert.deepEqual(JSON.parse(out.content), { name: 'Jane Doe' });
+  assert.deepEqual(JSON.parse(out.content), { $schema: 'https://termcard.dev/schema.json', name: 'Jane Doe' });
   assert.ok(out.nextSteps.some((s) => s.includes('--config card.config.json --name janedoe')));
 });
 

@@ -16,6 +16,21 @@ JSON is the only accepted format on purpose: a config can never execute code.
 
 See [`examples/full.json`](../examples/full.json) for a config that uses every option.
 
+### Editor support
+
+Add the schema to get autocompletion and inline errors in VS Code and other editors.
+Cards created with `npm create termcard` or by Claude already include it:
+
+```json
+{
+  "$schema": "https://termcard.dev/schema.json",
+  "name": "Jane Doe"
+}
+```
+
+The schema is generated from Termcard's own validation rules and also ships in the npm package
+(`termcard/schema.json`).
+
 ## Profile
 
 | Key            | Type               | Notes |
@@ -151,7 +166,7 @@ Otherwise, every option below overrides the template's value.
 | `nameStyle`     | `spaced` `uppercase` `plain` | |
 | `splitName`     | boolean | Last name on its own line. |
 | `spacing`       | `relaxed` `compact` | |
-| `accentRule`    | boolean | Short accent line under the tagline. |
+| `accentRule`    | boolean | Short accent line under the tagline (shown only when there is a tagline). |
 | `labels`        | boolean | Show `Email`, `GitHub` … before values. |
 | `locationAlign` | `left` `right` | |
 | `padding`       | 0–8 | Spaces inside the frame. |

@@ -20,16 +20,17 @@ export class ConfigError extends Error {
   }
 }
 
-const TOP_LEVEL_KEYS = [
+export const TOP_LEVEL_KEYS = [
   '$schema', 'name', 'title', 'tagline', 'description', 'organization', 'email', 'phone', 'website',
   'location', 'links', 'language', 'strings', 'template', 'theme', 'icons', 'card', 'menu', 'mcp',
 ];
-const LANG_CODE = /^[a-z]{2,3}(-[a-z0-9]{2,8})?$/i;
+export const LANG_CODE = /^[a-z]{2,3}(-[a-z0-9]{2,8})?$/i;
 // Deliberately stricter than RFC 5322: no characters that change the meaning of a mailto: URL (? & # % /).
 const EMAIL = /^[a-z0-9.!$'*+=^_`{|}~-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/i;
-const PHONE = /^\+?[0-9][0-9 ().-]{3,24}$/;
+export const PHONE = /^\+?[0-9][0-9 ().-]{3,24}$/;
 const HEX = /^#[0-9a-f]{6}$/i;
 const MAX_TEXT = 120;
+export const NAME_LIMIT = 80;
 export const DESCRIPTION_LIMIT = 280;
 export const ICON_SETS = ['none', 'symbols', 'emoji', 'nerd'];
 

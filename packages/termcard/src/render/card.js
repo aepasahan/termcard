@@ -73,7 +73,7 @@ export function layoutCard(config, lang, { iconSet = config.icons } = {}) {
 
   const brand = [];
   if (config.tagline) brand.push([seg(text(config.tagline), 'accent')]);
-  if (card.accentRule) brand.push([seg('───', 'accent')]);
+  if (card.accentRule && config.tagline) brand.push([seg('───', 'accent')]);
   if (config.description) {
     for (const line of wrap(text(config.description), descriptionWidth(card, borders[card.border]))) brand.push([seg(line, 'muted')]);
   }
