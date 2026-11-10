@@ -120,8 +120,8 @@ This repository contains two packages:
 | [`termcard`](packages/termcard) | Renders and runs the cards. Every card depends on it. |
 | [`create-termcard`](packages/create-termcard) | The setup wizard behind `npm create termcard`. |
 
-Also here: [`plugin/`](plugin) (the Claude plugin), [`remote/`](remote) (the hosted MCP server) and
-[`website/`](website) ([termcard.dev](https://termcard.dev)).
+Also here: [`plugin/`](plugin) (the Claude plugin) and [`remote/`](remote) (the hosted MCP server).
+The website, [termcard.dev](https://termcard.dev), has its own repository.
 
 Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Please report
 security issues privately as described in [SECURITY.md](SECURITY.md). How Termcard handles

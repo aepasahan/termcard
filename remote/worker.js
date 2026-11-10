@@ -4,15 +4,14 @@
  *
  *   https://mcp.termcard.dev/mcp   MCP endpoint (rate-limited per client IP)
  *   /favicon.ico, /icon.png        the Termcard icon, for directories and clients
- *   https://termcard.dev           redirects to the project page (until the website is live)
+ *
+ * The website (https://termcard.dev) is a separate project on Vercel.
  */
 
 import { createMcpHttpHandler } from '../packages/termcard/src/mcp/http.js';
 import pkg from '../packages/termcard/package.json';
 import icon from '../packages/termcard/mcpb/icon.png';
 
-const PROJECT_PAGE = 'https://github.com/aepasahan/termcard';
-const SITE_HOSTS = new Set(['termcard.dev', 'www.termcard.dev']);
 const ICON_PATHS = new Set(['/favicon.ico', '/favicon.png', '/icon.png', '/apple-touch-icon.png']);
 
 let handler;
@@ -30,7 +29,6 @@ export default {
     if (ICON_PATHS.has(url.pathname)) {
       return new Response(icon, { headers: { 'content-type': 'image/png', 'cache-control': 'public, max-age=86400' } });
     }
-    if (SITE_HOSTS.has(url.hostname)) return Response.redirect(PROJECT_PAGE, 302);
 
     // Protects the free request quota from a single noisy client. Claude's requests arrive
     // from Anthropic's servers, which many users share, so the limit is deliberately generous.

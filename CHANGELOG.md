@@ -7,8 +7,9 @@ breaking changes to the config format.
 ## Unreleased
 
 ### Website
-- `website/`: termcard.dev — introduction, live demo, Termcard in Claude, and the config
-  builder; deployed on Vercel with strict security headers.
+- termcard.dev — introduction, live demo, Termcard in Claude, and the config builder — is
+  live on Vercel, from its own repository. The hosted MCP server no longer answers on
+  termcard.dev, only on mcp.termcard.dev.
 
 ## termcard 0.6.2, create-termcard 0.6.2 — 2026-11-10
 
