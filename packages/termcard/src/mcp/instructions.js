@@ -1,3 +1,12 @@
+/** How the server presents itself when a client connects. */
+
+export const serverIdentity = {
+  name: 'termcard',
+  title: 'Termcard',
+  websiteUrl: 'https://termcard.dev',
+  icons: [{ src: 'https://raw.githubusercontent.com/aepasahan/termcard/main/packages/termcard/mcpb/icon.png', mimeType: 'image/png', sizes: ['512x512'] }],
+};
+
 /** Instructions the server gives the assistant when it connects. */
 
 export const instructions = (finish) => `termcard business cards are published on npm and opened with \`npx <name>\`.

@@ -4,6 +4,12 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org); until 1.0.0, minor versions may contain
 breaking changes to the config format.
 
+## Unreleased
+
+### MCP server
+- Server info includes the Termcard icon and website (`icons`, `websiteUrl`), so clients can
+  show them.
+
 ## termcard 0.6.1, create-termcard 0.6.1 — 2026-11-09
 
 ### Project

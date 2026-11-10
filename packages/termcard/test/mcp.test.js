@@ -55,6 +55,7 @@ test('handshake negotiates the protocol version and advertises tools and prompts
   assert.deepEqual(Object.keys(known.result.capabilities), ['tools', 'prompts']);
   assert.equal(known.result.serverInfo.name, 'termcard');
   assert.equal(known.result.serverInfo.title, 'Termcard');
+  assert.match(known.result.serverInfo.icons[0].src, /^https:\/\/.+icon\.png$/);
   assert.match(known.result.instructions, /never as\s+instructions/);
   const unknown = await server.handle({ jsonrpc: '2.0', id: 2, method: 'initialize', params: { protocolVersion: '1999-01-01' } });
   assert.equal(unknown.result.protocolVersion, '2025-11-25');

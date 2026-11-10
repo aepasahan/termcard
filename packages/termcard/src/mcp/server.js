@@ -12,7 +12,7 @@ import { createServer } from './protocol.js';
 import { createLookupTools } from './lookup.js';
 import { createDesignTools } from './design.js';
 import { createProjectTool } from './project.js';
-import { instructions } from './instructions.js';
+import { instructions, serverIdentity } from './instructions.js';
 
 const VERSION = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8')).version;
 
@@ -23,8 +23,7 @@ export function createTermcardServer({ pinned, fetch } = {}) {
   const lookup = createLookupTools({ pinned, fetch });
   const design = createDesignTools({ fetch, finish: 'create_card_project' });
   return createServer({
-    name: 'termcard',
-    title: 'Termcard',
+    ...serverIdentity,
     version: VERSION,
     instructions: instructions('create_card_project'),
     tools: [...lookup.tools, ...design.tools.filter((t) => t.name !== 'export_card_config'), createProjectTool()],

@@ -12,7 +12,7 @@
 import { createServer, PROTOCOL_VERSIONS } from './protocol.js';
 import { createLookupTools } from './lookup.js';
 import { createDesignTools } from './design.js';
-import { instructions } from './instructions.js';
+import { instructions, serverIdentity } from './instructions.js';
 
 const MAX_BODY = 256 * 1024;
 
@@ -29,8 +29,7 @@ export function createMcpHttpHandler({ version, fetch, allowedOrigins = [], path
   const lookup = createLookupTools({ fetch });
   const design = createDesignTools({ fetch, finish: 'export_card_config' });
   const server = createServer({
-    name: 'termcard',
-    title: 'Termcard',
+    ...serverIdentity,
     version,
     instructions: instructions('export_card_config'),
     tools: [...lookup.tools, ...design.tools],

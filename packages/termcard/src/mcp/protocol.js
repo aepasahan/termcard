@@ -24,7 +24,7 @@ export class ToolError extends Error {}
  *           tools: Array<{ name, title, description, inputSchema, annotations?, run(args) }>,
  *           prompts?: Array<{ name, title, description, arguments, get(args) }> }} definition
  */
-export function createServer({ name, title, version, instructions, tools, prompts = [] }) {
+export function createServer({ name, title, version, icons, websiteUrl, instructions, tools, prompts = [] }) {
   const toolMap = new Map(tools.map((t) => [t.name, t]));
   const promptMap = new Map(prompts.map((p) => [p.name, p]));
 
@@ -32,7 +32,7 @@ export function createServer({ name, title, version, instructions, tools, prompt
     initialize: ({ protocolVersion } = {}) => ({
       protocolVersion: PROTOCOL_VERSIONS.includes(protocolVersion) ? protocolVersion : PROTOCOL_VERSIONS[0],
       capabilities: { tools: {}, ...(prompts.length && { prompts: {} }) },
-      serverInfo: { name, ...(title && { title }), version },
+      serverInfo: { name, ...(title && { title }), version, ...(icons && { icons }), ...(websiteUrl && { websiteUrl }) },
       ...(instructions && { instructions }),
     }),
     ping: () => ({}),
