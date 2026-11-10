@@ -45,6 +45,8 @@ termcard treats every config value as untrusted:
 - Browser `Origin`s are rejected unless allow-listed (DNS-rebinding protection); request
   bodies are capped at 256 KB; unsupported protocol versions are refused.
 - It has no file-writing tool and no access to secrets; it reads only public npm data.
+- Requests are rate-limited per client IP, and looked-up cards are cached briefly in a
+  size-capped cache.
 
 ## Card packages
 

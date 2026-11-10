@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { gzipSync } from 'node:zlib';
 import { PassThrough } from 'node:stream';
 import { createTermcardServer } from '../src/mcp/server.js';
-import { readFromTarball } from '../src/mcp/cards.js';
+import { readFromTarball, createCardSource } from '../src/mcp/cards.js';
 import { run } from '../src/index.js';
 import { make, sink } from './helpers.js';
 
@@ -164,4 +164,16 @@ test('serves newline-delimited JSON over streams and answers parse errors', asyn
 test('reads files from npm tarballs', () => {
   assert.equal(readFromTarball(tarball({ 'a.txt': 'A', 'card.config.json': '{"x":1}' }), 'package/card.config.json').toString(), '{"x":1}');
   assert.equal(readFromTarball(tarball({ 'a.txt': 'A' }), 'package/card.config.json'), null);
+});
+
+test('the card cache expires, so updated cards show up', async () => {
+  const npm = registry({ config: { name: 'Ana Silva' } });
+  let time = 0;
+  const getCard = createCardSource({ fetch: npm.fetch, now: () => time });
+  await getCard('ana');
+  await getCard('ana');
+  assert.equal(npm.urls.length, 2, 'second lookup is served from the cache');
+  time += 11 * 60 * 1000;
+  await getCard('ana');
+  assert.equal(npm.urls.length, 4, 'after ten minutes the card is fetched again');
 });

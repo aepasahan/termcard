@@ -1,0 +1,35 @@
+name: Health check
+
+# Checks the hosted MCP server every six hours with plain HTTP requests — no AI models, no
+# tokens. A failed run shows up in Actions and GitHub emails the repository owner.
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: MCP endpoint answers
+        run: |
+          set -euo pipefail
+          init=$(curl -fsS --max-time 20 -H 'content-type: application/json' \
+            -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}' \
+            https://mcp.termcard.dev/mcp)
+          echo "$init" | jq -e '.result.serverInfo.name == "termcard"' > /dev/null
+          echo "Server: $(echo "$init" | jq -c '.result.serverInfo | {name, version}')"
+      - name: A card can be looked up on npm
+        run: |
+          set -euo pipefail
+          card=$(curl -fsS --max-time 30 -H 'content-type: application/json' \
+            -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_card","arguments":{"name":"aepasahan"}}}' \
+            https://mcp.termcard.dev/mcp)
+          echo "$card" | jq -e '.result.isError != true and (.result.structuredContent.name | length > 0)' > /dev/null
+      - name: Icon and website respond
+        run: |
+          curl -fsS --max-time 20 -o /dev/null https://mcp.termcard.dev/favicon.ico
+          curl -fsS --max-time 20 -o /dev/null https://termcard.dev

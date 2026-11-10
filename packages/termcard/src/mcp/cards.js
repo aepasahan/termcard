@@ -93,8 +93,22 @@ export async function fetchCard(packageName, fetchImpl = globalThis.fetch) {
  * @param {{ pinned?: { config, packageName }, fetch?: typeof fetch }} options
  * @returns {(name?: string) => Promise<{ config, packageName }>}
  */
-export function createCardSource({ pinned, fetch: fetchImpl = globalThis.fetch } = {}) {
-  const cache = new Map();
+// Looked-up cards are kept briefly, so updates to a card show up and memory stays bounded
+// on a long-running (remote) server.
+const CACHE_TTL_MS = 10 * 60 * 1000;
+const CACHE_MAX = 200;
+
+export function createCardSource({ pinned, fetch: fetchImpl = globalThis.fetch, now = Date.now } = {}) {
+  const cache = new Map(); // name → { card: Promise, expires }
+  const cached = (wanted) => {
+    const entry = cache.get(wanted);
+    if (entry && entry.expires > now()) return entry.card;
+    cache.delete(wanted);
+    if (cache.size >= CACHE_MAX) cache.delete(cache.keys().next().value); // oldest first
+    const card = fetchCard(wanted, fetchImpl).catch((e) => (cache.delete(wanted), Promise.reject(e)));
+    cache.set(wanted, { card, expires: now() + CACHE_TTL_MS });
+    return card;
+  };
   return async (name) => {
     const wanted = typeof name === 'string' ? name.trim().toLowerCase().replace(/^npx\s+/, '') : '';
     let card;
@@ -102,8 +116,7 @@ export function createCardSource({ pinned, fetch: fetchImpl = globalThis.fetch }
       if (!pinned) throw new ToolError('Please provide the card\'s npm package name, e.g. "aepasahan" for `npx aepasahan`.');
       card = pinned;
     } else {
-      if (!cache.has(wanted)) cache.set(wanted, fetchCard(wanted, fetchImpl).catch((e) => (cache.delete(wanted), Promise.reject(e))));
-      card = await cache.get(wanted);
+      card = await cached(wanted);
     }
     if (card.config.mcp === false) {
       throw new ToolError(`The owner of "${card.packageName}" has chosen not to share this card with AI assistants. It can still be opened in a terminal: npx ${card.packageName}`);

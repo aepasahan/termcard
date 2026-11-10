@@ -6,6 +6,14 @@ breaking changes to the config format.
 
 ## Unreleased
 
+### Remote MCP server
+- Rate limit per client IP (Workers rate limiting binding, 600 requests/minute) to protect
+  the free request quota; Claude's shared proxy IPs keep plenty of headroom.
+- Serves the icon at `/favicon.ico` and `/icon.png` for directories and clients.
+- Looked-up cards are cached for 10 minutes at most and the cache is capped, so card updates
+  show up and memory stays bounded.
+- Scheduled health check (GitHub Actions, plain HTTP, every six hours).
+
 ### MCP server
 - Server info includes the Termcard icon and website (`icons`, `websiteUrl`), so clients can
   show them.

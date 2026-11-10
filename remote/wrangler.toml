@@ -15,6 +15,9 @@ routes = [
   { pattern = "termcard.dev", custom_domain = true },
 ]
 
+# The icon is bundled as binary data (served at /favicon.ico and /icon.png).
+rules = [{ type = "Data", globs = ["**/*.png"], fallthrough = true }]
+
 # No request logs are kept by termcard. Turn on Workers Logs only for debugging.
 [observability]
 enabled = false
@@ -23,3 +26,12 @@ enabled = false
 # Browser origins allowed to call the server, comma-separated (e.g. a web MCP inspector).
 # Requests without an Origin header, such as Claude's, are always allowed.
 ALLOWED_ORIGINS = ""
+
+# Per-client-IP limit for MCP requests: 600 per minute, counted per Cloudflare location.
+[[ratelimits]]
+name = "LIMITER"
+namespace_id = "7310"
+
+  [ratelimits.simple]
+  limit = 600
+  period = 60
