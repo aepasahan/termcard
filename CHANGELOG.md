@@ -1,8 +1,24 @@
 # Changelog
 
 All notable changes are documented here. This project follows
-[Semantic Versioning](https://semver.org); until 1.0.0, minor versions may contain
-breaking changes to the config format.
+[Semantic Versioning](https://semver.org): from 1.0.0 on, a config that works keeps working
+until the next major version.
+
+## termcard 1.0.0, create-termcard 1.0.0 — 2026-11-11
+
+Termcard is stable. No breaking changes since 0.7.0 — 1.0 is a promise about what comes next:
+
+- **`card.config.json` is stable.** Configs that are valid today stay valid and look the same
+  in every 1.x release. New features arrive as optional fields; nothing is renamed or removed
+  before 2.0. The [JSON Schema](https://termcard.dev/schema.json) describes the 1.x format.
+- **The command line, the MCP tools and the library's exported functions** follow the same rule.
+- Cards created from now on depend on `termcard ^1.0.0`, so they receive every 1.x update
+  automatically. Cards created with 0.x keep working; run `npm install termcard@latest` in
+  your card's folder and publish again to move to 1.x.
+
+### Website
+- termcard.dev offers the card builder to AI agents in the browser (WebMCP), and serves
+  `llms.txt`, `robots.txt`, a sitemap and a social preview image.
 
 ## termcard 0.7.0, create-termcard 0.7.0 — 2026-11-10
 

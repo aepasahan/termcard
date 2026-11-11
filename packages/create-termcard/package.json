@@ -1,6 +1,6 @@
 {
   "name": "create-termcard",
-  "version": "0.7.0",
+  "version": "1.0.0",
   "description": "Create and publish your terminal business card: npm create termcard",
   "type": "module",
   "bin": {
@@ -14,7 +14,7 @@
     "test": "node --test"
   },
   "dependencies": {
-    "termcard": "^0.7.0"
+    "termcard": "^1.0.0"
   },
   "engines": {
     "node": ">=18.18"

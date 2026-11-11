@@ -125,6 +125,9 @@ This repository contains two packages:
 Also here: [`plugin/`](plugin) (the Claude plugin) and [`remote/`](remote) (the hosted MCP server).
 The website, [termcard.dev](https://termcard.dev), has its own repository.
 
+Termcard follows [Semantic Versioning](https://semver.org): a card config that works with 1.0
+keeps working in every 1.x release. See [CHANGELOG.md](CHANGELOG.md).
+
 Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Please report
 security issues privately as described in [SECURITY.md](SECURITY.md). How Termcard handles
 personal data is described in [PRIVACY.md](PRIVACY.md).
