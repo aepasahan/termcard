@@ -1,298 +1,30 @@
 /**
  * Config validation and normalization.
  *
- * `normalizeConfig(raw)` returns a fully resolved config (template + overrides
- * applied, defaults filled in, strings sanitized) or throws a `ConfigError`
- * listing every problem found. Renderers only ever see normalized configs.
+ * `normalizeConfig(raw)` returns a fully resolved, frozen config (template + overrides applied,
+ * defaults filled in, strings sanitized) or throws a `ConfigError` listing every problem found.
+ * Renderers only ever see normalized configs.
+ *
+ * Each part of the config is checked by its own module in ./fields; the shared building blocks
+ * (sanitizing text, URLs, limits) live in ./checker.js.
  */
 
-import { sanitize, slugify, displayWidth } from '../text.js';
-import { themes, DEFAULT_THEME, THEME_ROLES } from './themes.js';
-import { templates, DEFAULT_TEMPLATE, CARD_OPTIONS, DEFAULT_MENU, MENU_ACTIONS } from './templates.js';
-import { identifyService } from './services.js';
-import { BUILT_IN_LANGUAGES } from '../i18n/index.js';
+import { createChecker, isObject, isEmail, PHONE, ConfigError, NAME_LIMIT, DESCRIPTION_LIMIT } from './checker.js';
+import { templates, DEFAULT_TEMPLATE } from './templates.js';
+import { normalizeLinks } from './fields/links.js';
+import { normalizeLanguage, normalizeStrings } from './fields/language.js';
+import { normalizeTheme } from './fields/theme.js';
+import { normalizeCard } from './fields/card.js';
+import { normalizeMenu } from './fields/menu.js';
 
-export class ConfigError extends Error {
-  constructor(problems) {
-    super(`Invalid Termcard config:\n${problems.map((p) => `  • ${p}`).join('\n')}`);
-    this.name = 'ConfigError';
-    this.problems = problems;
-  }
-}
+// Re-exported: the public API and the JSON Schema use these from here.
+export { ConfigError, LANG_CODE, PHONE, TEXT_LIMIT, NAME_LIMIT, DESCRIPTION_LIMIT, isEmail, urlProblem } from './checker.js';
 
 export const TOP_LEVEL_KEYS = [
   '$schema', 'name', 'title', 'tagline', 'description', 'organization', 'email', 'phone', 'website',
   'location', 'links', 'language', 'strings', 'template', 'theme', 'icons', 'card', 'menu', 'mcp', 'credit',
 ];
-export const LANG_CODE = /^[a-z]{2,3}(-[a-z0-9]{2,8})?$/i;
-// Deliberately stricter than RFC 5322: no characters that change the meaning of a mailto: URL (? & # % /).
-const EMAIL = /^[a-z0-9.!$'*+=^_`{|}~-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/i;
-export const PHONE = /^\+?[0-9][0-9 ().-]{3,24}$/;
-const HEX = /^#[0-9a-f]{6}$/i;
-const MAX_TEXT = 120;
-export const NAME_LIMIT = 80;
-export const DESCRIPTION_LIMIT = 280;
 export const ICON_SETS = ['none', 'symbols', 'emoji', 'nerd'];
-
-/** Why a string is not an acceptable link, or undefined if it is. */
-export function urlProblem(value) {
-  let parsed;
-  try {
-    parsed = new URL(value);
-  } catch {
-    return 'must be a full URL, e.g. https://example.com';
-  }
-  if (!['https:', 'http:'].includes(parsed.protocol)) return 'must start with https:// or http://';
-  if (parsed.username || parsed.password) return 'must not contain credentials';
-  return undefined;
-}
-
-export const isEmail = (value) => value.length <= 254 && EMAIL.test(value);
-export const TEXT_LIMIT = MAX_TEXT;
-
-const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
-
-/** Collects problems instead of throwing at the first one, so users can fix everything at once. */
-function createChecker() {
-  const problems = [];
-  const fail = (path, message) => {
-    problems.push(`${path}: ${message}`);
-  };
-
-  const text = (path, value, { required = false, max = MAX_TEXT } = {}) => {
-    if (value != null && typeof value !== 'string') return fail(path, 'must be a string');
-    const clean = value == null ? '' : sanitize(value);
-    if (!clean) return required ? fail(path, 'is required') : undefined;
-    if (clean.length > max) return fail(path, `must be at most ${max} characters`);
-    return clean;
-  };
-
-  const localized = (path, value, options) => {
-    if (value == null || typeof value === 'string') return text(path, value, options);
-    if (!isObject(value)) return fail(path, 'must be a string or an object of language → text');
-    const out = {};
-    for (const [lang, entry] of Object.entries(value)) {
-      if (!LANG_CODE.test(lang)) fail(`${path}.${lang}`, 'is not a valid language code');
-      else {
-        const clean = text(`${path}.${lang}`, entry, options);
-        if (clean) out[lang.toLowerCase()] = clean;
-      }
-    }
-    return Object.keys(out).length ? out : undefined;
-  };
-
-  const url = (path, value, { required = false } = {}) => {
-    const raw = text(path, value, { required, max: 2048 });
-    if (!raw) return undefined;
-    const problem = urlProblem(raw);
-    return problem ? fail(path, problem) : new URL(raw).href;
-  };
-
-  const oneOf = (path, value, allowed, fallback) => {
-    if (value === undefined) return fallback;
-    if (!allowed.includes(value)) return fail(path, `must be one of: ${allowed.join(', ')}`), fallback;
-    return value;
-  };
-
-  const unknownKeys = (path, value, allowed) => {
-    for (const key of Object.keys(value)) {
-      if (!allowed.includes(key)) fail(path ? `${path}.${key}` : key, 'is not a recognized option');
-    }
-  };
-
-  return { problems, fail, text, localized, url, oneOf, unknownKeys };
-}
-
-function normalizeLinks(c, raw) {
-  if (raw === undefined) return [];
-  if (!Array.isArray(raw)) return c.fail('links', 'must be an array'), [];
-  const seen = new Set();
-  // Ids set by the author win; generated ids step around them.
-  const explicitIds = new Set(raw.filter((e) => isObject(e) && typeof e.id === 'string').map((e) => e.id));
-  return raw.flatMap((entry, i) => {
-    const path = `links[${i}]`;
-    if (typeof entry === 'string') entry = { url: entry };
-    if (!isObject(entry)) return c.fail(path, 'must be a URL or { url, label?, id? }'), [];
-    c.unknownKeys(path, entry, ['url', 'label', 'id', 'icon']);
-    const href = c.url(`${path}.url`, entry.url, { required: true });
-    if (!href) return [];
-    const service = identifyService(href);
-    const explicit = c.text(`${path}.id`, entry.id, { max: 40 });
-    let id;
-    if (explicit) {
-      if (!/^[a-z0-9-]+$/i.test(explicit)) return c.fail(`${path}.id`, 'may only contain letters, digits and dashes'), [];
-      if (seen.has(explicit)) return c.fail(`${path}.id`, `"${explicit}" is already used by another link`), [];
-      id = explicit;
-    } else {
-      const auto = slugify(service.id) || 'link';
-      id = auto;
-      for (let n = 2; seen.has(id) || explicitIds.has(id); n++) id = `${auto}-${n}`;
-    }
-    seen.add(id);
-    const icon = c.text(`${path}.icon`, entry.icon, { max: 8 });
-    if (icon && displayWidth(icon) > 2) c.fail(`${path}.icon`, 'must be a single symbol (at most 2 columns wide)');
-    return [{ id, label: c.text(`${path}.label`, entry.label, { max: 40 }) ?? service.label, url: href, service: service.id, ...(icon && { icon }) }];
-  });
-}
-
-function normalizeLanguage(c, raw, strings) {
-  // "language": "de" is shorthand for a card that is only in German.
-  const value = raw === undefined ? {} : typeof raw === 'string' ? { default: raw, available: [raw] } : raw;
-  if (!isObject(value)) return c.fail('language', 'must be a language code or { default, available }'), { default: 'auto', available: ['en'] };
-  c.unknownKeys('language', value, ['default', 'available']);
-
-  const known = [...new Set([...BUILT_IN_LANGUAGES, ...Object.keys(strings)])];
-  let available = value.available ?? ['en'];
-  if (!Array.isArray(available) || !available.length) {
-    c.fail('language.available', 'must be a non-empty array of language codes');
-    available = ['en'];
-  }
-  available = available.map((l) => String(l).toLowerCase());
-  for (const lang of available) {
-    if (!known.includes(lang)) {
-      c.fail('language.available', `"${lang}" has no built-in translation; add it under "strings.${lang}"`);
-    }
-  }
-  const def = String(value.default ?? 'auto').toLowerCase();
-  if (def !== 'auto' && !available.includes(def)) c.fail('language.default', 'must be "auto" or one of language.available');
-  return { default: def, available: [...new Set(available)] };
-}
-
-function normalizeStrings(c, raw) {
-  if (raw === undefined) return {};
-  if (!isObject(raw)) return c.fail('strings', 'must be an object of language → { key: text }'), {};
-  const out = {};
-  for (const [lang, table] of Object.entries(raw)) {
-    if (!LANG_CODE.test(lang)) { c.fail(`strings.${lang}`, 'is not a valid language code'); continue; }
-    if (!isObject(table)) { c.fail(`strings.${lang}`, 'must be an object of key → text'); continue; }
-    out[lang.toLowerCase()] = Object.fromEntries(
-      Object.entries(table).flatMap(([key, v]) => {
-        const clean = c.text(`strings.${lang}.${key}`, v, { max: 200 });
-        return clean ? [[key, clean]] : [];
-      }),
-    );
-  }
-  return out;
-}
-
-const isLight = (hex) => {
-  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
-  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.5;
-};
-
-function normalizeTheme(c, raw) {
-  if (raw === undefined) return { ...themes[DEFAULT_THEME] };
-  const value = typeof raw === 'string' ? { preset: raw } : raw;
-  if (!isObject(value)) return c.fail('theme', 'must be a preset name or an object'), { ...themes[DEFAULT_THEME] };
-  c.unknownKeys('theme', value, ['preset', ...THEME_ROLES]);
-  const preset = c.oneOf('theme.preset', value.preset, Object.keys(themes), DEFAULT_THEME);
-  const theme = { ...themes[preset] };
-  for (const role of THEME_ROLES) {
-    if (value[role] === undefined) continue;
-    if (role === 'background' && Array.isArray(value.background)) {
-      if (value.background.length === 2 && value.background.every((v) => typeof v === 'string' && HEX.test(v))) theme.background = value.background.map((v) => v.toLowerCase());
-      else c.fail('theme.background', 'must be a hex color, "default", or two hex colors for a gradient, e.g. ["#1d2433", "#3a1d33"]');
-      continue;
-    }
-    if (typeof value[role] === 'string' && HEX.test(value[role])) theme[role] = value[role].toLowerCase();
-    else if (value[role] === 'default') theme[role] = 'default';
-    else c.fail(`theme.${role}`, 'must be a hex color like "#d7af5f" or "default" (the terminal\'s own color)');
-  }
-  // On a card background of its own, the terminal's text color may not be readable: pick one.
-  if (theme.background !== 'default' && theme.text === 'default') {
-    const stops = [theme.background].flat();
-    theme.text = stops.filter(isLight).length * 2 >= stops.length ? '#1c1c1c' : '#eeeeee';
-  }
-  return theme;
-}
-
-function normalizeCard(c, raw, template, fieldIds) {
-  // "card": false shows only the menu (with a one-line header).
-  if (raw === false) return { ...templates[template], enabled: false, fields: fieldIds };
-  const value = raw === undefined || raw === true ? {} : raw;
-  if (!isObject(value)) return c.fail('card', 'must be false or an object'), { ...templates[template], enabled: true, fields: fieldIds };
-  const options = Object.keys(templates.classic);
-  c.unknownKeys('card', value, [...options, 'fields', 'letterSpacing']);
-
-  const card = { ...templates[template], enabled: true };
-  for (const [key, allowed] of Object.entries(CARD_OPTIONS)) card[key] = c.oneOf(`card.${key}`, value[key], allowed, card[key]);
-  for (const key of ['splitName', 'accentRule', 'labels']) {
-    if (value[key] === undefined) continue;
-    if (typeof value[key] === 'boolean') card[key] = value[key];
-    else c.fail(`card.${key}`, 'must be true or false');
-  }
-  if (value.padding !== undefined) {
-    if (Number.isInteger(value.padding) && value.padding >= 0 && value.padding <= 8) card.padding = value.padding;
-    else c.fail('card.padding', 'must be an integer between 0 and 8');
-  }
-  if (value.letterSpacing !== undefined) {
-    if (Number.isInteger(value.letterSpacing) && value.letterSpacing >= 0 && value.letterSpacing <= 3) card.letterSpacing = value.letterSpacing;
-    else c.fail('card.letterSpacing', 'must be an integer between 0 and 3');
-  }
-  if (value.width !== undefined) {
-    if (value.width === 'auto' || (Number.isInteger(value.width) && value.width >= 20 && value.width <= 120)) card.width = value.width;
-    else c.fail('card.width', 'must be "auto" or an integer between 20 and 120');
-  }
-
-  card.fields = fieldIds;
-  if (value.fields !== undefined) {
-    if (!Array.isArray(value.fields)) c.fail('card.fields', 'must be an array');
-    else {
-      card.fields = value.fields.filter((f) => {
-        if (fieldIds.includes(f)) return true;
-        c.fail('card.fields', `unknown field "${f}" (available: ${fieldIds.join(', ') || 'none'})`);
-        return false;
-      });
-    }
-  }
-  return card;
-}
-
-function normalizeMenu(c, raw, linkIds) {
-  if (raw === false) return { enabled: false, items: [], icons: {} };
-  const value = raw === undefined || raw === true ? {} : raw;
-  if (!isObject(value)) return c.fail('menu', 'must be false or { items, icons }'), { enabled: true, items: DEFAULT_MENU, icons: {} };
-  c.unknownKeys('menu', value, ['items', 'icons']);
-  const symbol = (path, v) => {
-    const icon = c.text(path, v, { max: 8 });
-    if (icon && displayWidth(icon) > 2) return c.fail(path, 'must be a single symbol (at most 2 columns wide)'), undefined;
-    return icon;
-  };
-  // "icons": { "contact": "✉", "save": "★" } picks the symbol for built-in menu entries.
-  const icons = {};
-  if (value.icons !== undefined) {
-    if (!isObject(value.icons)) c.fail('menu.icons', 'must be an object like { "contact": "✉" }');
-    else {
-      for (const [key, v] of Object.entries(value.icons)) {
-        if (!MENU_ACTIONS.includes(key) || key === 'links') { c.fail(`menu.icons.${key}`, `unknown entry (use ${MENU_ACTIONS.filter((a) => a !== 'links').join(', ')})`); continue; }
-        const icon = symbol(`menu.icons.${key}`, v);
-        if (icon) icons[key] = icon;
-      }
-    }
-  }
-  if (value.items === undefined) return { enabled: true, items: DEFAULT_MENU, icons };
-  if (!Array.isArray(value.items)) return c.fail('menu.items', 'must be an array'), { enabled: true, items: DEFAULT_MENU, icons };
-
-  const items = value.items.flatMap((item, i) => {
-    const path = `menu.items[${i}]`;
-    if (typeof item === 'string') {
-      if (MENU_ACTIONS.includes(item)) return [item];
-      const link = item.startsWith('link:') && item.slice(5);
-      if (link && linkIds.includes(link)) return [item];
-      c.fail(path, `unknown item "${item}" (use ${MENU_ACTIONS.join(', ')} or link:<id>)`);
-      return [];
-    }
-    if (!isObject(item)) return c.fail(path, 'must be an action name or { label, url, hint? }'), [];
-    c.unknownKeys(path, item, ['label', 'url', 'hint', 'icon']);
-    const label = c.localized(`${path}.label`, item.label);
-    const href = c.url(`${path}.url`, item.url, { required: true });
-    if (!label) c.fail(`${path}.label`, 'is required');
-    const icon = symbol(`${path}.icon`, item.icon);
-    return label && href ? [{ label, url: href, hint: c.localized(`${path}.hint`, item.hint), ...(icon && { icon }) }] : [];
-  });
-  if (!items.length) c.fail('menu.items', 'must contain at least one item (or set "menu": false)');
-  return { enabled: true, items, icons };
-}
 
 export function normalizeConfig(raw) {
   if (!isObject(raw)) throw new ConfigError(['config must be a JSON object']);
@@ -300,7 +32,7 @@ export function normalizeConfig(raw) {
   c.unknownKeys('', raw, TOP_LEVEL_KEYS);
 
   const config = {
-    name: c.text('name', raw.name, { required: true, max: 80 }),
+    name: c.text('name', raw.name, { required: true, max: NAME_LIMIT }),
     title: c.localized('title', raw.title),
     tagline: c.localized('tagline', raw.tagline),
     description: c.localized('description', raw.description, { max: DESCRIPTION_LIMIT }),
@@ -324,6 +56,7 @@ export function normalizeConfig(raw) {
   // A small "Made with Termcard" line under the card. New cards turn it on; anyone can turn it off.
   config.credit = c.oneOf('credit', raw.credit, [true, false], false);
 
+  // Fields the card can show, in their default order.
   const fieldIds = [
     ...(config.website ? ['website'] : []),
     ...(config.email ? ['email'] : []),
