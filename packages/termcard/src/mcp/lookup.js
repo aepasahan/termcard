@@ -33,6 +33,9 @@ function describeCard({ config, packageName }, language) {
     phone: config.phone,
     website: config.website,
     links: config.links.map(({ label, url }) => ({ label, url })),
+    sections: config.sections.length
+      ? config.sections.map((s) => ({ title: text(s.title), items: s.items.map((item) => ({ label: text(item.label), description: text(item.description), url: item.url })) }))
+      : undefined,
   };
 }
 

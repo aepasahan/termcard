@@ -7,6 +7,23 @@ import { toHtml, escapeHtml } from '../render/format.js';
 import { createTranslator, languageName, textDirection } from '../i18n/index.js';
 import { localize } from '../text.js';
 
+/** The card's sections as HTML lists. Every value is escaped; URLs were validated as http(s). */
+function sectionsHtml(config, lang) {
+  return config.sections
+    .map((section) => {
+      const items = section.items
+        .map((item) => {
+          const label = escapeHtml(localize(item.label, lang));
+          const text = item.url ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer"><span>${label}</span></a>` : label;
+          const description = localize(item.description, lang);
+          return `<li>${text}${description ? `<span class="muted"> — ${escapeHtml(description)}</span>` : ''}</li>`;
+        })
+        .join('');
+      return `<section><h2 class="accent">${escapeHtml(localize(section.title, lang))}</h2><ul>${items}</ul></section>`;
+    })
+    .join('');
+}
+
 export function renderWebPage(config, { command }) {
   const { theme } = config;
   const langs = config.language.available;
@@ -14,7 +31,7 @@ export function renderWebPage(config, { command }) {
   const data = Object.fromEntries(
     langs.map((lang) => {
       const t = createTranslator(lang, config.strings);
-      return [lang, { card: toHtml(layoutCard(config, lang, { iconSet: webIconSet(config.icons) })), save: t('action.save'), vcf: `contact.${lang}.vcf`, dir: textDirection(lang, config.strings) }];
+      return [lang, { card: toHtml(layoutCard(config, lang, { iconSet: webIconSet(config.icons) })), sections: sectionsHtml(config, lang), save: t('action.save'), vcf: `contact.${lang}.vcf`, dir: textDirection(lang, config.strings) }];
     }),
   );
   const description = [config.name, localize(config.title, fallback), localize(config.tagline, fallback)].filter(Boolean).join(' — ');
@@ -49,6 +66,7 @@ pre{unicode-bidi:plaintext;background:var(--card-bg);margin:20px;padding:1.6em 2
 a{color:inherit;text-decoration:none}
 a:hover span{text-decoration:underline;text-underline-offset:3px}
 .name{color:var(--text);font-weight:700}.text{color:var(--text)}.muted{color:var(--muted)}.faint{color:var(--faint)}.accent{color:var(--accent)}
+.sections{padding:0 20px;max-width:64ch}.sections:empty{display:none}.sections section{margin:0 0 18px}.sections h2{font-size:1em;margin:0 0 6px}.sections ul{margin:0;padding-left:1.2em}.sections li{margin:2px 0}
 .credit{margin:0;padding:0 20px 16px;font-size:12px}.credit a{color:var(--faint);text-decoration:none}.credit a:hover{color:var(--accent)}
 .foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:0 20px 20px}
 .cmd{display:flex;align-items:center;gap:10px}
@@ -66,6 +84,7 @@ a:hover span{text-decoration:underline;text-underline-offset:3px}
       : ''
   }</div>
   <pre id="card" aria-label="${escapeHtml(config.name)}">${data[fallback].card}</pre>
+  <div id="sections" class="sections">${data[fallback].sections}</div>
   <div class="foot">
     <span class="cmd"><code>${escapeHtml(command)}</code><button class="btn" type="button" id="copy">Copy</button></span>
     <a class="btn" id="vcf" href="${data[fallback].vcf}" download>${escapeHtml(data[fallback].save)}</a>
@@ -83,6 +102,7 @@ a:hover span{text-decoration:underline;text-underline-offset:3px}
     document.documentElement.lang = lang;
     document.documentElement.dir = data[lang].dir;
     $('card').innerHTML = data[lang].card;
+    $('sections').innerHTML = data[lang].sections;
     $('vcf').textContent = data[lang].save;
     $('vcf').href = data[lang].vcf;
     document.querySelectorAll('[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));

@@ -5,7 +5,7 @@
  * termcard/schema/card.schema.json. `npm run schema` rewrites the file; a test keeps it in sync.
  */
 
-import { LANG_CODE, PHONE, NAME_LIMIT, TEXT_LIMIT, DESCRIPTION_LIMIT, ICON_SETS, CARD_TYPES, ADDRESS_LIMIT, HOURS_LIMIT, LOGO_LINES, LOGO_WIDTH } from './schema.js';
+import { LANG_CODE, PHONE, NAME_LIMIT, TEXT_LIMIT, DESCRIPTION_LIMIT, ICON_SETS, CARD_TYPES, ADDRESS_LIMIT, HOURS_LIMIT, LOGO_LINES, LOGO_WIDTH, SECTION_LIMITS } from './schema.js';
 import { themes, THEME_ROLES } from './themes.js';
 import { templates, CARD_OPTIONS, MENU_ACTIONS } from './templates.js';
 import { BUILT_IN_LANGUAGES } from '../i18n/index.js';
@@ -51,6 +51,40 @@ export function buildJsonSchema() {
       logo: {
         description: `Small text art shown at the top of the card in the accent color: up to ${LOGO_LINES} lines, ${LOGO_WIDTH} columns wide. Text with line breaks, or an array of lines.`,
         anyOf: [{ type: 'string' }, { type: 'array', maxItems: LOGO_LINES, items: { type: 'string' } }],
+      },
+      sections: {
+        type: 'array',
+        maxItems: SECTION_LIMITS.sections,
+        description: 'Lists the menu opens, such as Products, Projects, Talks or Open roles.',
+        items: {
+          type: 'object',
+          required: ['title', 'items'],
+          additionalProperties: false,
+          properties: {
+            title: localized(SECTION_LIMITS.title, 'Menu entry and list title.'),
+            icon: { type: 'string', maxLength: 8, description: 'A single symbol for the menu entry.' },
+            items: {
+              type: 'array',
+              minItems: 1,
+              maxItems: SECTION_LIMITS.items,
+              items: {
+                anyOf: [
+                  { type: 'string', minLength: 1, maxLength: SECTION_LIMITS.label },
+                  {
+                    type: 'object',
+                    required: ['label'],
+                    additionalProperties: false,
+                    properties: {
+                      label: localized(SECTION_LIMITS.label, 'Entry name.'),
+                      description: localized(SECTION_LIMITS.description, 'Shown under the list when the entry is selected.'),
+                      url: webUrl('Opened when the entry is chosen.'),
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        },
       },
       links: {
         type: 'array',

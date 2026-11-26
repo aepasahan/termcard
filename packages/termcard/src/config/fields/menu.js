@@ -1,7 +1,7 @@
 /** "menu": which entries the interactive menu shows, in what order, and their icons. */
 
 import { isObject } from '../checker.js';
-import { DEFAULT_MENU, MENU_ACTIONS } from '../templates.js';
+import { DEFAULT_MENU, ORGANIZATION_MENU, MENU_ACTIONS } from '../templates.js';
 
 const ICON_KEYS = MENU_ACTIONS.filter((a) => a !== 'links');
 
@@ -36,14 +36,15 @@ function normalizeItem(c, item, path, linkIds) {
   return label && href ? [{ label, url: href, hint: c.localized(`${path}.hint`, item.hint), ...(icon && { icon }) }] : [];
 }
 
-export function normalizeMenu(c, raw, linkIds) {
+export function normalizeMenu(c, raw, linkIds, type = 'person') {
+  const DEFAULT = type === 'organization' ? ORGANIZATION_MENU : DEFAULT_MENU;
   if (raw === false) return { enabled: false, items: [], icons: {} };
   const value = raw === undefined || raw === true ? {} : raw;
-  if (!isObject(value)) return c.fail('menu', 'must be false or { items, icons }'), { enabled: true, items: DEFAULT_MENU, icons: {} };
+  if (!isObject(value)) return c.fail('menu', 'must be false or { items, icons }'), { enabled: true, items: DEFAULT, icons: {} };
   c.unknownKeys('menu', value, ['items', 'icons']);
   const icons = normalizeIcons(c, value.icons);
-  if (value.items === undefined) return { enabled: true, items: DEFAULT_MENU, icons };
-  if (!Array.isArray(value.items)) return c.fail('menu.items', 'must be an array'), { enabled: true, items: DEFAULT_MENU, icons };
+  if (value.items === undefined) return { enabled: true, items: DEFAULT, icons };
+  if (!Array.isArray(value.items)) return c.fail('menu.items', 'must be an array'), { enabled: true, items: DEFAULT, icons };
 
   const items = value.items.flatMap((item, i) => normalizeItem(c, item, `menu.items[${i}]`, linkIds));
   if (!items.length) c.fail('menu.items', 'must contain at least one item (or set "menu": false)');

@@ -17,14 +17,16 @@ import { normalizeTheme } from './fields/theme.js';
 import { normalizeCard } from './fields/card.js';
 import { normalizeMenu } from './fields/menu.js';
 import { normalizeLogo } from './fields/logo.js';
+import { normalizeSections } from './fields/sections.js';
 
 // Re-exported: the public API and the JSON Schema use these from here.
 export { ConfigError, LANG_CODE, PHONE, TEXT_LIMIT, NAME_LIMIT, DESCRIPTION_LIMIT, isEmail, urlProblem } from './checker.js';
 export { LOGO_LINES, LOGO_WIDTH } from './fields/logo.js';
+export { SECTION_LIMITS } from './fields/sections.js';
 
 export const TOP_LEVEL_KEYS = [
   '$schema', 'type', 'name', 'title', 'tagline', 'description', 'organization', 'email', 'phone', 'website',
-  'address', 'hours', 'location', 'links', 'logo', 'language', 'strings', 'template', 'theme', 'icons', 'card', 'menu', 'mcp', 'credit',
+  'address', 'hours', 'location', 'links', 'logo', 'sections', 'language', 'strings', 'template', 'theme', 'icons', 'card', 'menu', 'mcp', 'credit',
 ];
 export const ICON_SETS = ['none', 'symbols', 'emoji', 'nerd'];
 // A card introduces a person (default) or an organization: a company, studio, team or project.
@@ -52,6 +54,7 @@ export function normalizeConfig(raw) {
     location: c.localized('location', raw.location),
     links: normalizeLinks(c, raw.links),
     logo: normalizeLogo(c, raw.logo),
+    sections: normalizeSections(c, raw.sections),
   };
   if (config.email && !isEmail(config.email)) c.fail('email', 'is not a valid email address');
   if (config.phone && !PHONE.test(config.phone)) c.fail('phone', 'may only contain digits, spaces, + ( ) - .');
@@ -77,7 +80,7 @@ export function normalizeConfig(raw) {
     ...(config.location ? ['location'] : []),
   ];
   config.card = normalizeCard(c, raw.card, config.template, fieldIds, config.type);
-  config.menu = normalizeMenu(c, raw.menu, config.links.map((l) => l.id));
+  config.menu = normalizeMenu(c, raw.menu, config.links.map((l) => l.id), config.type);
   if (!config.card.enabled && !config.menu.enabled) c.fail('card', 'cannot be false while the menu is off too');
 
   if (c.problems.length) throw new ConfigError(c.problems);

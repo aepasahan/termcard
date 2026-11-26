@@ -62,3 +62,35 @@ test('openExternal refuses anything that is not a web/mail/tel URL or absolute p
   assert.equal(await openExternal('javascript:alert(1)'), false);
   assert.equal(await openExternal('relative/file.vcf'), false);
 });
+
+test('sections become menu entries that open their list', async () => {
+  const { normalizeConfig } = await import('../src/index.js');
+  const config = normalizeConfig({
+    name: 'Acme', type: 'organization', email: 'hi@acme.example',
+    sections: [
+      { title: { en: 'Products', tr: 'Ürünler' }, items: [{ label: 'Cloud', description: 'Hosting', url: 'https://acme.example/cloud' }, 'Consulting'] },
+      { title: 'Open roles', icon: '★', items: ['Designer'] },
+    ],
+  });
+  const entries = buildMenu(config, 'tr', createTranslator('tr'));
+  const products = entries.find((e) => e.id === 'section:0');
+  assert.equal(products.label, 'Ürünler');
+  assert.equal(entries.find((e) => e.id === 'section:1').icon, '★');
+  const { view } = await products.run();
+  assert.equal(view.kind, 'list');
+  assert.deepEqual(view.items.map((i) => [i.label, i.hint, typeof i.run]), [['Cloud', 'Hosting', 'function'], ['Consulting', '', 'undefined']]);
+  // Organizations lead with contact, save, website and their sections.
+  assert.deepEqual(entries.map((e) => e.id).slice(0, 4), ['contact', 'save', 'section:0', 'section:1']);
+});
+
+test('sections are validated, limited and sanitized', async () => {
+  const { normalizeConfig } = await import('../src/index.js');
+  const bad = (sections) => () => normalizeConfig({ name: 'X', sections });
+  assert.throws(bad(Array(7).fill({ title: 'A', items: ['x'] })), /sections: must have at most 6 entries/);
+  assert.throws(bad([{ title: 'A', items: Array(13).fill('x') }]), /sections\[0\]\.items: must have at most 12 entries/);
+  assert.throws(bad([{ title: 'A', items: [] }]), /must list at least one entry/);
+  assert.throws(bad([{ items: ['x'] }]), /sections\[0\]\.title: is required/);
+  assert.throws(bad([{ title: 'A', items: [{ label: 'x', url: 'javascript:alert(1)' }] }]), /must start with https:\/\/ or http:\/\//);
+  assert.equal(normalizeConfig({ name: 'X', sections: [{ title: 'A\u001b[2J', items: ['b‮'] }] }).sections[0].title, 'A[2J');
+  assert.deepEqual(normalizeConfig({ name: 'X' }).sections, []);
+});

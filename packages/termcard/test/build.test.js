@@ -37,3 +37,13 @@ test('build never empties a folder it did not create', (t) => {
   buildCard(make(), { outDir: out }); // a previous build may be replaced
   assert.ok(!existsSync(join(out, 'stale.txt')));
 });
+
+test('the web page lists sections with escaped text and safe links', async () => {
+  const { renderWebPage } = await import('../src/build/web.js');
+  const { normalizeConfig } = await import('../src/index.js');
+  const html = renderWebPage(normalizeConfig({ name: 'Acme', sections: [{ title: '<Products>', items: [{ label: 'Cloud <b>', url: 'https://acme.example/"x' }] }] }), { command: 'npx acme' });
+  assert.ok(html.includes('&lt;Products&gt;'));
+  assert.ok(html.includes('Cloud &lt;b&gt;'));
+  assert.ok(html.includes('rel="noopener noreferrer"'));
+  assert.ok(!html.includes('<b>'));
+});

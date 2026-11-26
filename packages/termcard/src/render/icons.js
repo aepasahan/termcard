@@ -9,15 +9,15 @@
 
 const sets = {
   symbols: {
-    website: '⌂', email: '✉', phone: '☎', location: '◎', link: '↗', address: '◇', hours: '◷',
+    website: '⌂', email: '✉', phone: '☎', location: '◎', link: '↗', address: '◇', hours: '◷', section: '≡',
     save: '+', language: '⇄', exit: '×',
   },
   emoji: {
-    website: '🌐', email: '📧', phone: '📞', location: '📍', link: '🔗', address: '🏢', hours: '🕘',
+    website: '🌐', email: '📧', phone: '📞', location: '📍', link: '🔗', address: '🏢', hours: '🕘', section: '📂',
     save: '📇', language: '💬', exit: '👋',
   },
   nerd: {
-    website: '', email: '', phone: '', location: '', link: '', address: '', hours: '',
+    website: '', email: '', phone: '', location: '', link: '', address: '', hours: '', section: '',
     save: '', language: '', exit: '',
     github: '', gitlab: '', linkedin: '', x: '', instagram: '',
     facebook: '', youtube: '', behance: '', dribbble: '', medium: '',

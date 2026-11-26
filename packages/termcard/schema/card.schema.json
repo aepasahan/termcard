@@ -193,6 +193,119 @@
         }
       ]
     },
+    "sections": {
+      "type": "array",
+      "maxItems": 6,
+      "description": "Lists the menu opens, such as Products, Projects, Talks or Open roles.",
+      "items": {
+        "type": "object",
+        "required": [
+          "title",
+          "items"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "description": "Menu entry and list title. Plain text, or one text per language: { \"en\": \"…\", \"tr\": \"…\" }.",
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 40
+              },
+              {
+                "type": "object",
+                "propertyNames": {
+                  "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})?$"
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 40
+                }
+              }
+            ]
+          },
+          "icon": {
+            "type": "string",
+            "maxLength": 8,
+            "description": "A single symbol for the menu entry."
+          },
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 12,
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 60
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "label"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "label": {
+                      "description": "Entry name. Plain text, or one text per language: { \"en\": \"…\", \"tr\": \"…\" }.",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 60
+                        },
+                        {
+                          "type": "object",
+                          "propertyNames": {
+                            "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})?$"
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 60
+                          }
+                        }
+                      ]
+                    },
+                    "description": {
+                      "description": "Shown under the list when the entry is selected. Plain text, or one text per language: { \"en\": \"…\", \"tr\": \"…\" }.",
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 120
+                        },
+                        {
+                          "type": "object",
+                          "propertyNames": {
+                            "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8})?$"
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 120
+                          }
+                        }
+                      ]
+                    },
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "pattern": "^https?://",
+                      "maxLength": 2048,
+                      "description": "Opened when the entry is chosen."
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
     "links": {
       "type": "array",
       "description": "Profile links. Well-known services (LinkedIn, GitHub, X, …) get their label and id automatically.",
@@ -571,6 +684,10 @@
                   "type": "string",
                   "maxLength": 8
                 },
+                "sections": {
+                  "type": "string",
+                  "maxLength": 8
+                },
                 "copy-email": {
                   "type": "string",
                   "maxLength": 8
@@ -600,6 +717,7 @@
                       "save",
                       "website",
                       "links",
+                      "sections",
                       "copy-email",
                       "copy-phone",
                       "language",

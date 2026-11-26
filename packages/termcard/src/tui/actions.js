@@ -63,7 +63,7 @@ export function buildMenu(config, lang, t, sys = offline) {
         icon: icon('language'),
         label: t('action.language'),
         hint: t('hint.language'),
-        run: async () => ({ view: 'language' }),
+        run: async () => ({ view: { kind: 'language' } }),
       },
     exit: () => ({ icon: icon('exit'), label: t('action.exit'), hint: t('hint.exit'), run: async () => ({ quit: true }) }),
   };
@@ -76,11 +76,34 @@ export function buildMenu(config, lang, t, sys = offline) {
     run: browse(link.url),
   });
 
+  // Each section opens a list view; its entries open their URL, if they have one.
+  const sectionEntry = (section, i) => {
+    const title = localize(section.title, lang);
+    return {
+      id: `section:${i}`,
+      icon: section.icon ?? config.menu.icons?.sections ?? icon('section'),
+      label: title,
+      hint: t('hint.section'),
+      run: async () => ({
+        view: {
+          kind: 'list',
+          title,
+          items: section.items.map((item) => ({
+            label: localize(item.label, lang),
+            hint: localize(item.description, lang) || (item.url ? t('hint.link', { host: host(item.url) }) : ''),
+            ...(item.url && { run: browse(item.url) }),
+          })),
+        },
+      }),
+    };
+  };
+
   return config.menu.items.flatMap((item) => {
     if (typeof item === 'object') {
       return [{ id: `custom:${item.url}`, icon: item.icon ?? icon('link'), label: localize(item.label, lang), hint: localize(item.hint, lang) || t('hint.link', { host: host(item.url) }), run: browse(item.url) }];
     }
     if (item === 'links') return config.links.map(linkEntry);
+    if (item === 'sections') return config.sections.map(sectionEntry);
     if (item.startsWith('link:')) return config.links.filter((l) => l.id === item.slice(5)).map(linkEntry);
     const entry = factories[item]?.();
     // The owner can pick the symbol for any built-in entry ("menu": { "icons": { … } }).
