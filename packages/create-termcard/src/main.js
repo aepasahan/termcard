@@ -8,9 +8,8 @@
 import { readFileSync } from 'node:fs';
 import { resolve, relative } from 'node:path';
 import { parseArgs } from 'node:util';
-import { loadConfig, ConfigError, createProject, TargetNotEmptyError, validatePackageName, slugify, binName } from 'termcard';
+import { loadConfig, ConfigError, createProject, TargetNotEmptyError, validatePackageName, slugify, binName, publishPackage } from 'termcard';
 import { runWizard, preview } from './wizard.js';
-import { publish } from './npm.js';
 import { confirm, CancelledError, style } from './prompts.js';
 
 const TERMCARD_VERSION = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).dependencies.termcard.replace(/^[^\d]*/, '');
@@ -69,7 +68,7 @@ export async function main(argv = process.argv.slice(2)) {
   let published = false;
   if (shouldPublish) {
     console.log(style.faint('\n  Publishing… npm may ask you to log in.\n'));
-    published = await publish(dir);
+    published = await publishPackage(dir);
     console.log(published ? `\n${style.accent('✓')} Published.` : `\n${style.red('Publishing did not complete.')} ${style.muted('You can retry with: npm publish --access public')}`);
   }
 

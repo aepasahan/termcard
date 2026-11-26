@@ -32,14 +32,14 @@ function tarball(files) {
 }
 
 /** A fake npm registry serving one package. */
-function registry({ name = 'ana', config, dependencies = { termcard: '^0.4.0' }, integrity } = {}) {
+function registry({ name = 'ana', config, dependencies = { termcard: '^0.4.0' }, integrity, deprecated } = {}) {
   const tgz = tarball({ 'package.json': '{}', ...(config !== undefined && { 'card.config.json': JSON.stringify(config) }) });
   const sri = integrity ?? `sha512-${createHash('sha512').update(tgz).digest('base64')}`;
   const urls = [];
   const fetch = async (url) => {
     urls.push(url);
     if (url === `https://registry.npmjs.org/${name}/latest`) {
-      const meta = { name, version: '1.0.0', dependencies, dist: { tarball: `https://registry.npmjs.org/${name}/-/${name}-1.0.0.tgz`, integrity: sri } };
+      const meta = { name, version: '1.0.0', dependencies, ...(deprecated && { deprecated }), dist: { tarball: `https://registry.npmjs.org/${name}/-/${name}-1.0.0.tgz`, integrity: sri } };
       return new Response(JSON.stringify(meta));
     }
     if (url.endsWith('.tgz')) return new Response(tgz);
@@ -117,6 +117,7 @@ test('remote lookups reject anything that is not a valid, verified Termcard card
     [registry({}), /does not include a readable card.config.json/],
     [registry({ config: { name: '' } }), /invalid configuration/],
     [registry({ config: { name: 'X', mcp: false } }), /chosen not to share/],
+    [registry({ config: { name: 'X' }, deprecated: 'This Termcard card has been removed by its owner.' }), /no longer available/],
   ];
   for (const [npm, message] of cases) {
     const response = await call(createTermcardServer({ fetch: npm.fetch }), 'get_card', { name: 'ana' });

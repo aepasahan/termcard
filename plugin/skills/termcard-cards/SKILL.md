@@ -34,6 +34,9 @@ When the user names a card (for example "aepasahan" or "npx aepasahan"):
 6. Explain how to publish with `npm publish --access public` (after `npm login`). Never publish
    for the user.
 
+To delete a published card, the owner runs `npx termcard remove` in the card's folder (or
+`npx termcard remove <name>`). Never run it for the user.
+
 ## When the Termcard tools are not available
 
 Some surfaces don't run local tools. Then write `card.config.json` together with the user,

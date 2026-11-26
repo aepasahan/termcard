@@ -19,4 +19,5 @@ To create a card for the user: list_card_options, then preview_card while you dr
 with them, check_name for the package name, and ${finish === 'create_card_project'
   ? 'create_card_project only after the user has confirmed the details, the name and the folder'
   : 'export_card_config once the user has confirmed the details and the name'}. Never invent
-personal details. Publishing is always done by the user.`;
+personal details. Publishing is always done by the user; to delete a card, the owner runs
+\`npx termcard remove <name>\`.`;

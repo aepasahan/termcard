@@ -21,3 +21,5 @@ export { buildJsonSchema, SCHEMA_URL } from './config/json-schema.js';
 export { createProject, TargetNotEmptyError } from './project/scaffold.js';
 export { validatePackageName, binName } from './project/names.js';
 export { checkAvailability } from './project/registry.js';
+export { publishPackage } from './project/npm.js';
+export { removeCard, REMOVED_MESSAGE } from './project/remove.js';

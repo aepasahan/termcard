@@ -66,6 +66,8 @@ export async function fetchCard(packageName, fetchImpl = globalThis.fetch) {
   if (meta === null) throw new ToolError(`There is no npm package called "${packageName}".`);
   const pkg = JSON.parse(meta.toString('utf8'));
   if (!pkg.dependencies?.termcard) throw new ToolError(`"${packageName}" is not a Termcard business card.`);
+  // Owners remove cards with `termcard remove`; when npm keeps the package, it is deprecated.
+  if (pkg.deprecated) throw new ToolError(`The card "${packageName}" is no longer available: its owner has removed or retired it.`);
 
   const tarballUrl = pkg.dist?.tarball;
   if (typeof tarballUrl !== 'string' || !tarballUrl.startsWith(`${REGISTRY}/`)) {

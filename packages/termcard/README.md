@@ -72,6 +72,7 @@ npx termcard preview     # see your card exactly as visitors will
 npx termcard validate    # check card.config.json and explain any mistakes
 npx termcard build       # optional: web page, vCards and curl files for your own website
 npx termcard mcp         # MCP server for AI assistants
+npx termcard remove      # take your published card off npm
 ```
 
 Using Termcard in your own package takes two lines:

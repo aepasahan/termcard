@@ -27,9 +27,13 @@ Termcard's control and covered by the [npm privacy policy](https://docs.npmjs.co
   is available. Use `--offline` to skip this check.
 - Publishing is done by your own npm CLI with your own npm account, and only after you
   confirm.
-- To remove your data, unpublish or deprecate the package on npm
-  (`npm unpublish <name>` within npm's policy limits, otherwise `npm deprecate`) and
-  delete the files and any copies (e.g. the generated web page).
+- **To remove your card**, run `npx termcard remove` in the card's folder (or
+  `npx termcard remove <name>`). After you confirm, it deletes every version from npm with
+  your own npm account. If npm's [unpublish policy](https://docs.npmjs.com/policies/unpublish)
+  doesn't allow that, it marks the card as removed instead: `npx` then warns people, Termcard's
+  AI tools stop showing it, and you can ask [npm support](https://www.npmjs.com/support) to
+  delete it (citing your right to erasure under GDPR/KVKK). Copies people already downloaded
+  and web pages you built from the card are outside Termcard's reach; delete those yourself.
 
 ## AI assistants (MCP)
 

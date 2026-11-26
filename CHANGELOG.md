@@ -4,6 +4,19 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org): from 1.0.0 on, a config that works keeps working
 until the next major version.
 
+## termcard 1.1.0, create-termcard 1.1.0 — 2026-11-26
+
+### termcard
+- **`npx termcard remove`** takes your published card off npm, so your details stop being
+  public. Run it in the card's folder (or name the card); after you type the name to confirm,
+  it deletes every version with your own npm account. When npm's unpublish policy doesn't
+  allow that, it marks the card as removed instead and explains how to ask npm support to
+  delete it.
+- AI assistants no longer show cards that were removed or deprecated on npm.
+
+### create-termcard
+- Publishing uses the npm helper shared with `termcard remove`.
+
 ## termcard 1.0.0, create-termcard 1.0.0 — 2026-11-11
 
 Termcard is stable. No breaking changes since 0.7.0 — 1.0 is a promise about what comes next:

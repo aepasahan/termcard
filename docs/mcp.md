@@ -118,7 +118,8 @@ claude mcp add aepasahan -- npx -y aepasahan --mcp
 
 Cards are available to AI assistants by default — the details are the same ones your
 card already shows. To opt out, set `"mcp": false` in `card.config.json` and publish
-again; assistants will then be told that you've chosen not to share the card.
+again; assistants will then be told that you've chosen not to share the card. Removed cards
+(`npx termcard remove`) disappear from assistants within 10 minutes.
 
 ## How cards are found
 
