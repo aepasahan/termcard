@@ -92,7 +92,9 @@ export function layoutCard(config, lang, { iconSet = config.icons } = {}) {
   const icon = (glyph) => (iconWidth ? [seg(glyph + ' '.repeat(iconWidth - displayWidth(glyph) + 1), 'accent')] : []);
   // Long plain-text values (an address) wrap; continuation lines line up under the value.
   const prefixWidth = (iconWidth ? iconWidth + 1 : 0) + (card.labels ? labelWidth : 0);
-  const valueWidth = Math.max(24, descriptionWidth(card, borders[card.border]) - prefixWidth);
+  // As wide as the other values already make the card, or the description width, if wider.
+  const widest = Math.max(0, ...rows.filter((r) => !r.wrap).map((r) => displayWidth(r.value)));
+  const valueWidth = Math.max(24, widest, descriptionWidth(card, borders[card.border]) - prefixWidth);
   sections.push(
     rows.flatMap((r) => {
       const [first, ...rest] = r.wrap ? wrap(r.value, valueWidth) : [r.value];
