@@ -44,7 +44,7 @@ The schema is generated from Termcard's own validation rules and also ships in t
 | `email`        | string             | Enables the *Get in touch* and *Copy email* actions. Characters that would change a `mailto:` link (`? & # % /`) are not allowed. |
 | `phone`        | string             | Digits, spaces and `+ ( ) - .` only. |
 | `website`      | URL                | `https://` or `http://`. |
-| `address`      | localized string   | Street address, up to 120 characters. Wraps on the card; saved in the vCard. |
+| `address`      | localized string   | Street address, up to 120 characters. Saved in the vCard. On a person's card it is a row (long ones wrap); organizations show it from the menu. |
 | `hours`        | localized string   | Opening or office hours, e.g. `"Mon–Fri 09:00–18:00"`. |
 | `location`     | localized string   | Shown at the bottom of the card. |
 | `links`        | array              | URLs, or `{ "url", "label"?, "id"?, "icon"? }`. |
@@ -76,6 +76,10 @@ A card can introduce a company, studio, team or project instead of a person:
 - *Save contact* creates a company card in the address book (`ORG`, a work address and phone).
 - The default menu leads with *Get in touch*, *Save contact*, the **QR code** and the
   organization's sections.
+- The address is not printed on the card: *View address* in the menu shows it in full, with
+  *Open in maps* and *Copy address*. Add `"address"` to `card.fields` to print it anyway.
+- Profile links sit behind one *Profiles and links* entry, so the menu stays short
+  (`"menu": { "links": "inline" }` lists them one by one again).
 
 See [examples/organization.json](../examples/organization.json).
 
@@ -256,7 +260,8 @@ menu. Set `"menu": false` to always print the card only.
 | `copy-email`  | Copies the email address. |
 | `copy-phone`  | Copies the phone number. |
 | `sections`    | One entry per section, each opening its list. |
-| `qr`          | Shows a QR code that saves the contact (or opens the website when the contact is too long). Default for organizations. |
+| `qr`          | QR codes to scan with a phone: one saves the contact, one opens the website; the visitor picks. A contact too long for a QR code is shortened to name, phone, email and website. Default for organizations. |
+| `address`     | Shows the full address, with *Open in maps* (Google Maps, in the browser) and *Copy address*. Default for organizations. |
 | `language`    | Language picker (only with 2+ languages). |
 | `exit`        | Closes the card. |
 | `{ "label", "url", "hint"?, "icon"? }` | Custom entry that opens a URL. `label` and `hint` can be localized. |
@@ -268,6 +273,14 @@ Pick your own symbol for any built-in entry with `icons` (it overrides the icon 
 ```
 
 Links take theirs from the link itself: `{ "url": "https://example.com", "icon": "★" }`.
+
+`links` decides how profile links appear: `"inline"` gives each its own entry (the default for
+people), `"list"` puts them behind one *Profiles and links* entry (the default for
+organizations). A single link always gets its own entry.
+
+```json
+"menu": { "links": "list" }
+```
 
 ## AI assistants
 

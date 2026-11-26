@@ -4,6 +4,18 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org): from 1.0.0 on, a config that works keeps working
 until the next major version.
 
+## termcard 1.6.0, create-termcard 1.6.0 — 2026-11-27
+
+### termcard
+- **QR codes, two of them.** The QR entry lets the visitor pick: one saves the contact, one
+  opens the website. A contact too long for a QR code is shortened to the name, organization,
+  phone, email and website instead of being dropped.
+- **Profiles behind one entry.** `"menu": { "links": "list" }` puts profile links behind a
+  single *Profiles and links* entry. The default for organizations; people's menus are unchanged.
+- **Address view.** The `address` menu entry shows the full address with *Open in maps* and
+  *Copy address*. Organizations show their address this way instead of printing it on the card
+  (`card.fields` can still put it there); people's cards are unchanged.
+
 ## termcard 1.5.0, create-termcard 1.5.0 — 2026-11-27
 
 ### termcard

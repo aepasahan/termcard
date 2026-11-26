@@ -8,6 +8,8 @@ collected, stored or transmitted.
 - **No tracking, analytics or telemetry.** A card makes no network requests of its own.
 - Actions such as *Get in touch*, *Visit website* or *Copy email* hand a link to the
   visitor's own email client, browser or clipboard, only when they choose that action.
+  *Open in maps* opens the card owner's address in Google Maps the same way.
+- QR codes are drawn in the terminal from the card's own details; nothing is sent anywhere.
 - *Save contact* writes the card owner's vCard to a private temporary folder
   (permissions `0600`) on the visitor's machine and opens it. Nothing about the visitor
   is written.
