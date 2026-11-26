@@ -66,6 +66,7 @@ pre{unicode-bidi:plaintext;background:var(--card-bg);margin:20px;padding:1.6em 2
 a{color:inherit;text-decoration:none}
 a:hover span{text-decoration:underline;text-underline-offset:3px}
 .name{color:var(--text);font-weight:700}.text{color:var(--text)}.muted{color:var(--muted)}.faint{color:var(--faint)}.accent{color:var(--accent)}
+.art{display:inline-block;transform:scaleY(1.1);-webkit-text-stroke:.05em currentColor}
 .sections{padding:0 20px;max-width:64ch}.sections:empty{display:none}.sections section{margin:0 0 18px}.sections h2{font-size:1em;margin:0 0 6px}.sections ul{margin:0;padding-left:1.2em}.sections li{margin:2px 0}
 .credit{margin:0;padding:0 20px 16px;font-size:12px}.credit a{color:var(--faint);text-decoration:none}.credit a:hover{color:var(--accent)}
 .foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:0 20px 20px}

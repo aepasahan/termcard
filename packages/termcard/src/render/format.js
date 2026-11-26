@@ -71,7 +71,8 @@ export function toHtml(lines) {
     .map((line) =>
       line
         .map((s) => {
-          const inner = s.role ? `<span class="${s.role}">${escapeHtml(s.text)}</span>` : escapeHtml(s.text);
+          const classes = [s.role, s.art && 'art'].filter(Boolean).join(' ');
+          const inner = classes ? `<span class="${classes}">${escapeHtml(s.text)}</span>` : escapeHtml(s.text);
           if (!s.href) return inner;
           const external = /^https?:/.test(s.href) ? ' target="_blank" rel="noopener noreferrer"' : '';
           return `<a href="${escapeHtml(s.href)}"${external}>${inner}</a>`;

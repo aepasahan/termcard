@@ -4,6 +4,14 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org): from 1.0.0 on, a config that works keeps working
 until the next major version.
 
+## termcard 1.6.1 — 2026-11-27
+
+### termcard
+- Web output marks logo lines (`class="art"`), so `termcard build` pages draw block-character
+  logos without gaps between lines, as terminals do.
+- `npm create termcard` writes an organization's README and license in its own voice
+  ("save our contact details", "the business card of Acme Labs") and shows localized titles.
+
 ## termcard 1.6.0, create-termcard 1.6.0 — 2026-11-27
 
 ### termcard

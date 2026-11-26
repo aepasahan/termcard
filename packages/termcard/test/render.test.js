@@ -211,6 +211,8 @@ test('a logo sits at the top of the card, aligned, in the accent color', () => {
   assert.equal(lines[start].indexOf('/\\') - lines[start + 2].indexOf('/____'), 2, 'leading spaces kept');
   assert.equal(new Set(widths(toPlain(layoutCard(config, 'en')))).size, 1);
   assert.match(toAnsi(layoutCard(config, 'en'), config.theme, 256), /\x1b\[38;5;\d+m {2}\/\\/);
+  // On the web, logo lines carry a class so pages can close the gaps between them.
+  assert.ok(toHtml(layoutCard(config, 'en')).includes('<span class="accent art">  /\\</span>'));
 });
 
 test('logos are limited and sanitized', () => {
