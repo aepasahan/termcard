@@ -34,7 +34,7 @@ const OPTIONS = {
     links: 'Array of profile URLs (LinkedIn, GitHub, X, Behance, …) or { "url", "label"?, "icon"? }.',
     language: '{ "default": "auto" | code, "available": [codes] }.',
     template: Object.keys(templates).join(' | '),
-    theme: `Theme name (default "${DEFAULT_THEME}"), or { "preset", "accent", "background", … } with hex colors.`,
+    theme: `Theme name (default "${DEFAULT_THEME}"), or { "preset", "accent", "background", … } with hex colors; background may be two colors for a gradient.`,
     icons: ICON_SETS.join(' | '),
     card: 'false for a menu-only card, or { "border", "nameStyle", "letterSpacing" (0-3), "fields", … } to fine-tune.',
     menu: 'false for no menu, or { "items": [...] }.',

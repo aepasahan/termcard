@@ -189,12 +189,20 @@ function normalizeTheme(c, raw) {
   const theme = { ...themes[preset] };
   for (const role of THEME_ROLES) {
     if (value[role] === undefined) continue;
+    if (role === 'background' && Array.isArray(value.background)) {
+      if (value.background.length === 2 && value.background.every((v) => typeof v === 'string' && HEX.test(v))) theme.background = value.background.map((v) => v.toLowerCase());
+      else c.fail('theme.background', 'must be a hex color, "default", or two hex colors for a gradient, e.g. ["#1d2433", "#3a1d33"]');
+      continue;
+    }
     if (typeof value[role] === 'string' && HEX.test(value[role])) theme[role] = value[role].toLowerCase();
     else if (value[role] === 'default') theme[role] = 'default';
     else c.fail(`theme.${role}`, 'must be a hex color like "#d7af5f" or "default" (the terminal\'s own color)');
   }
   // On a card background of its own, the terminal's text color may not be readable: pick one.
-  if (theme.background !== 'default' && theme.text === 'default') theme.text = isLight(theme.background) ? '#1c1c1c' : '#eeeeee';
+  if (theme.background !== 'default' && theme.text === 'default') {
+    const stops = [theme.background].flat();
+    theme.text = stops.filter(isLight).length * 2 >= stops.length ? '#1c1c1c' : '#eeeeee';
+  }
   return theme;
 }
 

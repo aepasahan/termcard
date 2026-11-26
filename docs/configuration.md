@@ -144,6 +144,12 @@ text color is picked for you:
 "theme": { "preset": "solstice", "background": "#1d1b16" }
 ```
 
+Two colors make a left-to-right gradient:
+
+```json
+"theme": { "preset": "frost", "background": ["#1d2433", "#2e1d33"] }
+```
+
 Terminals without 24-bit color get the closest of the 256 standard colors. `NO_COLOR`
 is respected.
 

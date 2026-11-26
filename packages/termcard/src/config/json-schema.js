@@ -93,7 +93,7 @@ export function buildJsonSchema() {
           {
             type: 'object',
             additionalProperties: false,
-            properties: { preset: { enum: Object.keys(themes) }, ...Object.fromEntries(THEME_ROLES.map((r) => [r, color])) },
+            properties: { preset: { enum: Object.keys(themes) }, ...Object.fromEntries(THEME_ROLES.map((r) => [r, color])), background: { anyOf: [color, { type: 'array', items: { type: 'string', pattern: '^#[0-9a-fA-F]{6}$' }, minItems: 2, maxItems: 2, description: 'Two colors for a left-to-right gradient.' }] } },
           },
         ],
       },

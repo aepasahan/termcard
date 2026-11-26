@@ -149,3 +149,12 @@ test('a card background fills the box, and default text becomes readable on it',
   assert.equal(toAnsi(layoutCard(config, 'en'), config.theme, 0), toPlain(layoutCard(config, 'en')));
   assert.equal(make().theme.background, 'default');
 });
+
+test('a two-color background paints a gradient across the box', () => {
+  const config = make({ theme: { preset: 'frost', background: ['#000000', '#ffffff'] } });
+  const line = toAnsi(layoutCard(config, 'en'), config.theme, 16777216).split('\n')[1];
+  assert.match(line, /48;2;0;0;0m/);
+  assert.match(line, /48;2;255;255;255m/);
+  assert.equal(toAnsi(layoutCard(config, 'en'), config.theme, 0), toPlain(layoutCard(config, 'en')));
+  assert.throws(() => normalizeConfig({ name: 'X', theme: { background: ['#000000'] } }), /two hex colors/);
+});

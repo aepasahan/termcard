@@ -8,12 +8,12 @@ until the next major version.
 
 ### termcard
 - **Card background:** `"theme": { "background": "#1d1b16" }` fills the card from border to
-  border, in the terminal and on the web page. With the terminal's own text color, a readable
-  one is picked for you.
+  border, in the terminal and on the web page; two colors (`["#1d2433", "#2e1d33"]`) make a
+  left-to-right gradient. With the terminal's own text color, a readable one is picked for you.
 - **Letter spacing for your name:** `"card": { "letterSpacing": 0–3 }` sets the gap between
   letters with any `nameStyle`, so a spaced name can be tighter or wider, and a plain one can
   be spaced too.
-- **`npx termcard demo`** opens a sample card (Ada Lovelace, with example details) in six
+- **`npx termcard demo`** opens a sample card (John Doe, with example details) in six
   languages, so anyone can see what Termcard does before making their own.
 
 ### Docs

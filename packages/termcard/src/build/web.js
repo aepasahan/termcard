@@ -33,7 +33,7 @@ export function renderWebPage(config, { command }) {
 <meta property="og:description" content="${escapeHtml(description)}">
 <meta name="color-scheme" content="dark">
 <style>
-:root{--bg:#0e0e0e;--window:#161616;--line:#262626;--text:${theme.text === 'default' ? '#eeeeee' : theme.text};--muted:${theme.muted};--faint:${theme.faint};--accent:${theme.accent};--card-bg:${theme.background === 'default' ? 'transparent' : theme.background}}
+:root{--bg:#0e0e0e;--window:#161616;--line:#262626;--text:${theme.text === 'default' ? '#eeeeee' : theme.text};--muted:${theme.muted};--faint:${theme.faint};--accent:${theme.accent};--card-bg:${theme.background === 'default' ? 'transparent' : Array.isArray(theme.background) ? `linear-gradient(90deg,${theme.background.join(',')})` : theme.background}}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text)}
 body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;
