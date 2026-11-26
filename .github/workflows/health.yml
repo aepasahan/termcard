@@ -17,15 +17,24 @@ jobs:
       - name: MCP endpoint answers
         run: |
           set -euo pipefail
-          init=$(curl -fsS --max-time 20 -H 'content-type: application/json' \
+          # On failure, print what answered (Cloudflare challenge, rate limit, …) to make it easy to fix.
+          code=$(curl -sS --max-time 20 -o init.json -D headers.txt -w '%{http_code}' \
+            -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' \
             -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}' \
             https://mcp.termcard.dev/mcp)
+          if [ "$code" != 200 ]; then
+            echo "::error::MCP endpoint answered HTTP $code"
+            grep -iE '^(server|cf-ray|cf-mitigated|content-type|retry-after):' headers.txt || true
+            head -c 600 init.json; echo
+            exit 1
+          fi
+          init=$(cat init.json)
           echo "$init" | jq -e '.result.serverInfo.name == "termcard"' > /dev/null
           echo "Server: $(echo "$init" | jq -c '.result.serverInfo | {name, version}')"
       - name: A card can be looked up on npm
         run: |
           set -euo pipefail
-          card=$(curl -fsS --max-time 30 -H 'content-type: application/json' \
+          card=$(curl -fsS --max-time 30 -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' \
             -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"get_card","arguments":{"name":"aepasahan"}}}' \
             https://mcp.termcard.dev/mcp)
           echo "$card" | jq -e '.result.isError != true and (.result.structuredContent.name | length > 0)' > /dev/null
