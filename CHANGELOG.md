@@ -4,7 +4,7 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org): from 1.0.0 on, a config that works keeps working
 until the next major version.
 
-## termcard 1.6.1 — 2026-11-27
+## termcard 1.6.1, create-termcard 1.6.1 — 2026-11-27
 
 ### termcard
 - Web output marks logo lines (`class="art"`), so `termcard build` pages draw block-character
