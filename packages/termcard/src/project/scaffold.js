@@ -4,6 +4,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { join } from 'node:path';
 import { binName } from './names.js';
 import { SCHEMA_URL } from '../config/json-schema.js';
+import { localize } from '../text.js';
 
 const TERMCARD_VERSION = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8')).version;
 
@@ -43,9 +44,11 @@ jobs:
 `;
 
 // README.md is what visitors see on npm: a short introduction, not technical notes.
-const publicReadme = (pkg, config) => `# ${config.name}
+const publicReadme = (pkg, config) => {
+  const organization = config.type === 'organization';
+  return `# ${config.name}
 
-${[config.title, config.tagline].filter((v) => typeof v === 'string').join(' · ')}
+${[config.title, config.tagline].map((v) => localize(v, 'en')).filter(Boolean).join(' · ')}
 
 Say hello from your terminal:
 
@@ -53,14 +56,16 @@ Say hello from your terminal:
 npx ${pkg}
 \`\`\`
 
-An interactive business card. Use the arrow keys to get in touch, save my contact
-details, or visit my website and profiles — in your own language.
+${organization
+    ? 'An interactive business card. Use the arrow keys to get in touch, save our contact\ndetails, or visit our website and profiles — in your own language.'
+    : 'An interactive business card. Use the arrow keys to get in touch, save my contact\ndetails, or visit my website and profiles — in your own language.'}
 
 Using an AI assistant? With [Termcard's MCP server](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md)
 you can simply ask it about \`${pkg}\`.
 
 <sub>Made with [Termcard](https://www.npmjs.com/package/termcard).</sub>
 `;
+};
 
 // .github/README.md is shown on GitHub instead of README.md: notes for the card's owner.
 const ownerReadme = (pkg) => `# ${pkg} — maintainer notes
@@ -98,10 +103,10 @@ files from this npm package, so to use it add \`"dist"\` to \`files\` and
 \`"prepublishOnly": "termcard build"\` to \`scripts\` in \`package.json\`.
 `;
 
-// The card's content is personal: visitors may run it, not reuse it. (termcard itself is MIT.)
-const allRightsReserved = (name, year) => `Copyright (c) ${year} ${name}. All rights reserved.
+// The card's content belongs to its owner: visitors may run it, not reuse it. (termcard itself is MIT.)
+const allRightsReserved = (name, year, organization) => `Copyright (c) ${year} ${name}. All rights reserved.
 
-This package contains a personal business card. You may install and run it (for example
+This package contains ${organization ? `the business card of ${name}` : 'a personal business card'}. You may install and run it (for example
 with "npx") to view the card and use its contact features.
 
 You may not copy, modify, republish or redistribute this package or its content, in whole
@@ -148,7 +153,7 @@ export function createProject({ dir, packageName, config, termcardVersion = TERM
     'bin/card.js': binScript,
     'README.md': publicReadme(packageName, config),
     '.github/README.md': ownerReadme(packageName),
-    LICENSE: allRightsReserved(config.name, year),
+    LICENSE: allRightsReserved(config.name, year, config.type === 'organization'),
     '.gitignore': 'node_modules/\ndist/\n*.tgz\n',
     ...(withWorkflow ? { '.github/workflows/publish.yml': workflow } : {}),
   };

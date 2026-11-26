@@ -45,3 +45,13 @@ test('refuses to write into a non-empty folder', (t) => {
   assert.throws(() => createProject({ dir, packageName: 'jane', config, termcardVersion: '0.1.0' }), TargetNotEmptyError);
   assert.equal(readFileSync(join(dir, 'keep.txt'), 'utf8'), 'mine');
 });
+
+test('an organization gets README and license text in its own voice', (t) => {
+  const dir = join(tempDir(t), 'acme');
+  const org = { type: 'organization', name: 'Acme Labs', title: { en: 'Product studio', tr: 'Ürün stüdyosu' }, email: 'hi@example.com' };
+  createProject({ dir, packageName: 'acme', config: org, termcardVersion: '1.6.0' });
+  const readme = readFileSync(join(dir, 'README.md'), 'utf8');
+  assert.match(readme, /^Product studio$/m, 'localized titles are shown');
+  assert.match(readme, /save our contact/);
+  assert.match(readFileSync(join(dir, 'LICENSE'), 'utf8'), /the business card of Acme Labs/);
+});
