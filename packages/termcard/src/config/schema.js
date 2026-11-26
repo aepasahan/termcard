@@ -31,7 +31,7 @@ export const TOP_LEVEL_KEYS = [
 export const ICON_SETS = ['none', 'symbols', 'emoji', 'nerd'];
 // A card introduces a person (default) or an organization: a company, studio, team or project.
 export const CARD_TYPES = ['person', 'organization'];
-export const ADDRESS_LIMIT = 80;
+export const ADDRESS_LIMIT = 120;
 export const HOURS_LIMIT = 60;
 
 export function normalizeConfig(raw) {

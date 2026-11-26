@@ -37,8 +37,8 @@ export function contactRows(config, t, iconSet = config.icons, lang = config.lan
     phone: config.phone && { label: t('label.phone'), value: config.phone, href: `tel:${config.phone.replace(/[^\d+]/g, '')}`, icon: iconFor(iconSet, 'phone') },
   };
   // Address and hours are plain text, not links.
-  if (config.address) rows.address = { label: t('label.address'), value: localize(config.address, lang), icon: iconFor(iconSet, 'address') };
-  if (config.hours) rows.hours = { label: t('label.hours'), value: localize(config.hours, lang), icon: iconFor(iconSet, 'hours') };
+  if (config.address) rows.address = { label: t('label.address'), value: localize(config.address, lang), icon: iconFor(iconSet, 'address'), wrap: true };
+  if (config.hours) rows.hours = { label: t('label.hours'), value: localize(config.hours, lang), icon: iconFor(iconSet, 'hours'), wrap: true };
   for (const link of config.links) {
     rows[link.id] = { label: link.label, value: stripProtocol(link.url), href: link.url, icon: iconFor(iconSet, 'link', link) };
   }
@@ -90,12 +90,17 @@ export function layoutCard(config, lang, { iconSet = config.icons } = {}) {
   const labelWidth = Math.max(0, ...rows.map((r) => displayWidth(r.label))) + 2;
   const iconWidth = Math.max(0, ...rows.map((r) => displayWidth(r.icon)), displayWidth(iconFor(iconSet, 'location')));
   const icon = (glyph) => (iconWidth ? [seg(glyph + ' '.repeat(iconWidth - displayWidth(glyph) + 1), 'accent')] : []);
+  // Long plain-text values (an address) wrap; continuation lines line up under the value.
+  const prefixWidth = (iconWidth ? iconWidth + 1 : 0) + (card.labels ? labelWidth : 0);
+  const valueWidth = Math.max(24, descriptionWidth(card, borders[card.border]) - prefixWidth);
   sections.push(
-    rows.map((r) => [
-      ...icon(r.icon),
-      ...(card.labels ? [seg(r.label + ' '.repeat(labelWidth - displayWidth(r.label)), 'muted')] : []),
-      seg(r.value, 'text', r.href),
-    ]),
+    rows.flatMap((r) => {
+      const [first, ...rest] = r.wrap ? wrap(r.value, valueWidth) : [r.value];
+      return [
+        [...icon(r.icon), ...(card.labels ? [seg(r.label + ' '.repeat(labelWidth - displayWidth(r.label)), 'muted')] : []), seg(first, 'text', r.href)],
+        ...rest.map((line) => [seg(' '.repeat(prefixWidth)), seg(line, 'text')]),
+      ];
+    }),
   );
 
   const location =

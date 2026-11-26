@@ -194,7 +194,7 @@ test('an organization vCard is a company card with a work address', () => {
 
 test('type, address and hours are validated and sanitized', () => {
   assert.throws(() => normalizeConfig({ name: 'X', type: 'company' }), /type: must be one of: person, organization/);
-  assert.throws(() => normalizeConfig({ name: 'X', address: 'a'.repeat(81) }), /address: must be at most 80/);
+  assert.throws(() => normalizeConfig({ name: 'X', address: 'a'.repeat(121) }), /address: must be at most 120/);
   assert.equal(normalizeConfig({ name: 'X', hours: '9–5\u001b[31m‮' }).hours, '9–5[31m');
   assert.equal(normalizeConfig({ name: 'X' }).type, 'person');
 });
@@ -237,4 +237,16 @@ test('the QR entry holds the contact, or the website when the contact is too lon
   const long = { name: 'N'.repeat(80), title: 'T'.repeat(120), organization: 'O'.repeat(120), address: 'A'.repeat(80) };
   assert.equal(cardQr(make(long), 'en').kind, 'website');
   assert.equal(cardQr(make({ ...long, website: undefined }), 'en'), null);
+});
+
+test('a long address wraps under its value and keeps the frame aligned', () => {
+  const address = 'Mecidiyeköy Mah. Selahattin Pınar Aralığı Sk. Hüseyin Özer İş Merkezi No: 3 Kat:4, D: 8 Şişli-Istanbul, 34387';
+  const plain = toPlain(layoutCard(make({ type: 'organization', name: 'Creetivelab', icons: 'symbols', address }), 'en'));
+  const lines = plain.split('\n');
+  const first = lines.findIndex((l) => l.includes('Address'));
+  const valueColumn = lines[first].indexOf('Mecidiyeköy');
+  const next = lines[first + 1];
+  assert.ok(valueColumn > 0 && next.slice(0, valueColumn).trim() === '│', 'the continuation starts under the value');
+  assert.notEqual(next[valueColumn], ' ', plain);
+  assert.equal(new Set(widths(plain)).size, 1, plain);
 });
