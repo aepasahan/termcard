@@ -7,7 +7,7 @@
  * xterm-256 colors, so they look the same in 256-color and true-color terminals.
  */
 
-const neutral = { text: 'default', muted: '#8a8a8a', faint: '#6c6c6c' };
+const neutral = { text: 'default', muted: '#8a8a8a', faint: '#6c6c6c', background: 'default' };
 
 export const themes = {
   thaw: { ...neutral, accent: '#5fafaf' }, //       late winter → spring: meltwater teal
@@ -32,4 +32,5 @@ export const THEME_DESCRIPTIONS = {
 };
 
 export const DEFAULT_THEME = 'solstice';
-export const THEME_ROLES = ['text', 'muted', 'faint', 'accent'];
+// "background" fills the card's box; "default" leaves the terminal's own background.
+export const THEME_ROLES = ['text', 'muted', 'faint', 'accent', 'background'];

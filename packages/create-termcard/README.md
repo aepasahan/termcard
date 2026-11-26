@@ -51,8 +51,8 @@ about you by name. Set `"mcp": false` in `card.config.json` to opt out.
 ## Prefer to chat?
 
 With the [Termcard plugin or MCP server](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md),
-just ask Claude: *"Create my terminal business card."* It uses the same building blocks as
-this wizard.
+just ask your AI assistant: *"Create my terminal business card."* Any MCP-capable assistant
+works, and it uses the same building blocks as this wizard.
 
 ## Without the wizard
 

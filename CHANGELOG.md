@@ -4,6 +4,23 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org): from 1.0.0 on, a config that works keeps working
 until the next major version.
 
+## termcard 1.2.0, create-termcard 1.2.0 — 2026-11-26
+
+### termcard
+- **Card background:** `"theme": { "background": "#1d1b16" }` fills the card from border to
+  border, in the terminal and on the web page. With the terminal's own text color, a readable
+  one is picked for you.
+- **Letter spacing for your name:** `"card": { "letterSpacing": 0–3 }` sets the gap between
+  letters with any `nameStyle`, so a spaced name can be tighter or wider, and a plain one can
+  be spaced too.
+- **`npx termcard demo`** opens a sample card (Ada Lovelace, with example details) in six
+  languages, so anyone can see what Termcard does before making their own.
+
+### Docs
+- Termcard works with any AI assistant or agent that supports MCP; the READMEs and the MCP
+  guide now start from the standard setup (local server or hosted URL), with Claude's plugin,
+  connector and desktop extension as one of the options.
+
 ## termcard 1.1.0, create-termcard 1.1.0 — 2026-11-26
 
 ### termcard

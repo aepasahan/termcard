@@ -175,6 +175,11 @@ function normalizeStrings(c, raw) {
   return out;
 }
 
+const isLight = (hex) => {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.5;
+};
+
 function normalizeTheme(c, raw) {
   if (raw === undefined) return { ...themes[DEFAULT_THEME] };
   const value = typeof raw === 'string' ? { preset: raw } : raw;
@@ -188,6 +193,8 @@ function normalizeTheme(c, raw) {
     else if (value[role] === 'default') theme[role] = 'default';
     else c.fail(`theme.${role}`, 'must be a hex color like "#d7af5f" or "default" (the terminal\'s own color)');
   }
+  // On a card background of its own, the terminal's text color may not be readable: pick one.
+  if (theme.background !== 'default' && theme.text === 'default') theme.text = isLight(theme.background) ? '#1c1c1c' : '#eeeeee';
   return theme;
 }
 
@@ -197,7 +204,7 @@ function normalizeCard(c, raw, template, fieldIds) {
   const value = raw === undefined || raw === true ? {} : raw;
   if (!isObject(value)) return c.fail('card', 'must be false or an object'), { ...templates[template], enabled: true, fields: fieldIds };
   const options = Object.keys(templates.classic);
-  c.unknownKeys('card', value, [...options, 'fields']);
+  c.unknownKeys('card', value, [...options, 'fields', 'letterSpacing']);
 
   const card = { ...templates[template], enabled: true };
   for (const [key, allowed] of Object.entries(CARD_OPTIONS)) card[key] = c.oneOf(`card.${key}`, value[key], allowed, card[key]);
@@ -209,6 +216,10 @@ function normalizeCard(c, raw, template, fieldIds) {
   if (value.padding !== undefined) {
     if (Number.isInteger(value.padding) && value.padding >= 0 && value.padding <= 8) card.padding = value.padding;
     else c.fail('card.padding', 'must be an integer between 0 and 8');
+  }
+  if (value.letterSpacing !== undefined) {
+    if (Number.isInteger(value.letterSpacing) && value.letterSpacing >= 0 && value.letterSpacing <= 3) card.letterSpacing = value.letterSpacing;
+    else c.fail('card.letterSpacing', 'must be an integer between 0 and 3');
   }
   if (value.width !== undefined) {
     if (value.width === 'auto' || (Number.isInteger(value.width) && value.width >= 20 && value.width <= 120)) card.width = value.width;

@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { layoutCard, layoutHeader, toAnsi, toPlain, toHtml, createVCard } from '../src/index.js';
 import { hexTo256, colorDepth } from '../src/render/color.js';
+import { normalizeConfig } from '../src/index.js';
 import { displayWidth } from '../src/text.js';
 import { make } from './helpers.js';
 
@@ -130,4 +131,21 @@ test('the accent rule only appears under a tagline', () => {
   const rule = /│\s+───\s+│/; // the short accent line inside the frame, not the border
   assert.doesNotMatch(toPlain(layoutCard(make({ tagline: undefined }), 'en')), rule);
   assert.match(toPlain(layoutCard(make(), 'en')), rule);
+});
+
+test('letterSpacing sets the gap between the letters of the name', () => {
+  assert.match(toPlain(layoutCard(make({ card: { letterSpacing: 2 } }), 'en')), /J {2}A {2}N {2}E/);
+  assert.match(toPlain(layoutCard(make({ card: { nameStyle: 'plain', letterSpacing: 1 } }), 'en')), /J a n e/);
+  assert.match(toPlain(layoutCard(make({ card: { letterSpacing: 0 } }), 'en')), /JANE/);
+  assert.throws(() => normalizeConfig({ name: 'X', card: { letterSpacing: 4 } }), /letterSpacing/);
+});
+
+test('a card background fills the box, and default text becomes readable on it', () => {
+  const config = make({ theme: { preset: 'frost', background: '#f4f1ea' } });
+  assert.equal(config.theme.text, '#1c1c1c');
+  const lines = toAnsi(layoutCard(config, 'en'), config.theme, 16777216).split('\n');
+  assert.match(lines[0], /^ {2}\x1b\[[\d;]*48;2;244;241;234m╭/, 'the left margin stays unfilled');
+  assert.ok(lines.slice(0, -1).every((l) => l.includes('48;2;244;241;234')));
+  assert.equal(toAnsi(layoutCard(config, 'en'), config.theme, 0), toPlain(layoutCard(config, 'en')));
+  assert.equal(make().theme.background, 'default');
 });

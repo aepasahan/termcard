@@ -33,7 +33,7 @@ export function renderWebPage(config, { command }) {
 <meta property="og:description" content="${escapeHtml(description)}">
 <meta name="color-scheme" content="dark">
 <style>
-:root{--bg:#0e0e0e;--window:#161616;--line:#262626;--text:${theme.text === 'default' ? '#eeeeee' : theme.text};--muted:${theme.muted};--faint:${theme.faint};--accent:${theme.accent}}
+:root{--bg:#0e0e0e;--window:#161616;--line:#262626;--text:${theme.text === 'default' ? '#eeeeee' : theme.text};--muted:${theme.muted};--faint:${theme.faint};--accent:${theme.accent};--card-bg:${theme.background === 'default' ? 'transparent' : theme.background}}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--text)}
 body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px;
@@ -44,7 +44,7 @@ body{min-height:100vh;display:flex;align-items:center;justify-content:center;pad
 .lang button{all:unset;cursor:pointer;padding:2px 8px;border-radius:4px;color:var(--faint)}
 .lang button[aria-pressed="true"]{color:var(--accent)}
 .lang button:focus-visible,.btn:focus-visible,a:focus-visible{outline:1px solid var(--accent);outline-offset:2px}
-pre{unicode-bidi:plaintext;margin:20px;padding:1.6em 2.4em;border:1px solid var(--line);border-radius:6px;font:inherit;line-height:1.45;white-space:pre;overflow-x:auto}
+pre{unicode-bidi:plaintext;background:var(--card-bg);margin:20px;padding:1.6em 2.4em;border:1px solid var(--line);border-radius:6px;font:inherit;line-height:1.45;white-space:pre;overflow-x:auto}
 a{color:inherit;text-decoration:none}
 a:hover span{text-decoration:underline;text-underline-offset:3px}
 .name{color:var(--text);font-weight:700}.text{color:var(--text)}.muted{color:var(--muted)}.faint{color:var(--faint)}.accent{color:var(--accent)}

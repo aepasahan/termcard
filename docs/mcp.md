@@ -4,7 +4,7 @@ Termcard includes a [Model Context Protocol](https://modelcontextprotocol.io) se
 Install it once in your AI assistant and you can ask about anyone who has a Termcard
 business card — by the same name you'd use with `npx`:
 
-> *"Who is aepasahan and how can I reach him?"*
+> *"Who is aepasahan and how can I reach them?"*
 > *"Draft a short email to aepasahan about a design project."*
 > *"Add aepasahan to my contacts."*
 
@@ -13,46 +13,13 @@ you ask for — instead of guessing or searching the web.
 
 ## Install
 
-### Claude on the web, desktop and mobile (remote connector)
+Termcard works with any AI assistant or agent that supports MCP. Pick the way your app
+connects to MCP servers.
 
-Termcard also runs as a remote MCP server, so it works in regular Claude chats everywhere:
+### Any MCP client (local server)
 
-1. In Claude, open **Settings › Connectors › Add custom connector**.
-2. Name: `termcard` · URL: `https://mcp.termcard.dev/mcp`
-3. Enable it in a chat from the tools menu and ask *"Who is aepasahan?"* or
-   *"Create my terminal business card."*
-
-No sign-in is needed. The remote server can't write files to your computer, so when you
-create a card it hands you `card.config.json` (`export_card_config`) together with the
-commands to publish it. See [remote/](../remote/).
-
-### Claude plugin (chat, Cowork, Claude Code)
-
-The Termcard plugin bundles the hosted MCP server with a skill that teaches Claude the workflow:
-
-```
-/plugin install termcard --marketplace aepasahan/termcard
-```
-
-In the Claude app, add the marketplace `aepasahan/termcard` under **Customize › Plugins**. The
-plugin uses the remote server, so it works everywhere without installing anything.
-
-### Claude Desktop
-
-Download **termcard.mcpb** from the
-[latest release](https://github.com/aepasahan/termcard/releases) and open it — Claude
-Desktop installs the extension in one click. No Node.js installation is needed.
-
-### Claude Code
-
-```bash
-claude mcp add termcard -- npx -y termcard mcp
-```
-
-### Cursor, VS Code, Windsurf and other MCP clients
-
-Add this server to the client's MCP configuration (`.cursor/mcp.json`, VS Code's
-`mcp.json`, …):
+Most clients, including Cursor, Windsurf, Claude Desktop and Gemini CLI, use the same
+`mcpServers` entry. Add it to the client's MCP settings (for example `.cursor/mcp.json`):
 
 ```json
 {
@@ -62,11 +29,40 @@ Add this server to the client's MCP configuration (`.cursor/mcp.json`, VS Code's
 }
 ```
 
-VS Code can also add it from the command line:
+From the command line:
 
-```bash
-code --add-mcp '{"name":"termcard","command":"npx","args":["-y","termcard","mcp"]}'
-```
+| App | Command |
+| --- | --- |
+| VS Code | `code --add-mcp '{"name":"termcard","command":"npx","args":["-y","termcard","mcp"]}'` |
+| Claude Code | `claude mcp add termcard -- npx -y termcard mcp` |
+
+Clients with another format need the same command: `npx -y termcard mcp` (stdio).
+
+### Hosted server (no install)
+
+Apps that connect to remote MCP servers, such as custom connectors in ChatGPT or Claude,
+can use the hosted server:
+
+- URL: `https://mcp.termcard.dev/mcp` (Streamable HTTP)
+- No sign-in needed.
+
+Then ask *"Who is aepasahan?"* or *"Create my terminal business card."* The hosted server
+can't write files to your computer, so when you create a card it hands you
+`card.config.json` (`export_card_config`) together with the commands to publish it. See
+[remote/](../remote/).
+
+### Claude
+
+Claude has a few extra options:
+
+- **Connector:** in Claude on the web, desktop or mobile, open **Settings › Connectors ›
+  Add custom connector**, name it `termcard` and use the hosted URL above.
+- **Plugin** (chat, Cowork, Claude Code): the hosted server plus a skill that knows the
+  card-creation workflow. `/plugin install termcard --marketplace aepasahan/termcard`, or add
+  the marketplace `aepasahan/termcard` under **Customize › Plugins**.
+- **Desktop extension:** download **termcard.mcpb** from the
+  [latest release](https://github.com/aepasahan/termcard/releases) and open it. No Node.js
+  installation is needed.
 
 Termcard is listed in the official [MCP Registry](https://registry.modelcontextprotocol.io)
 as `io.github.aepasahan/termcard`.
@@ -94,7 +90,7 @@ through creating your own card:
 
 > *"Create my terminal business card."*
 
-Claude asks for your details a few at a time, shows the preview, offers a template, a
+The assistant asks for your details a few at a time, shows the preview, offers a template, a
 seasonal theme and icons, finds a free name and — after you confirm the details, the name
 and the folder — writes the project. You publish it yourself:
 
@@ -110,8 +106,8 @@ anything else on your behalf.
 
 Any card can also run as its own MCP server, with no network access at all:
 
-```bash
-claude mcp add aepasahan -- npx -y aepasahan --mcp
+```json
+{ "mcpServers": { "aepasahan": { "command": "npx", "args": ["-y", "aepasahan", "--mcp"] } } }
 ```
 
 ## For card owners

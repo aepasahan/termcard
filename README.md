@@ -55,24 +55,26 @@ on npm and publishes the card for you.
 - **Fourteen languages built in** — the world's most spoken languages plus Turkish, German and French, including right-to-left Arabic and Urdu — and you can add your own.
 - **Eight seasonal color themes**, from *thaw* to *midwinter*, designed to look calm on both dark and light terminals.
 - **Three layouts, optional icons and a short description**; choose which details appear, in what order, or show only the menu.
-- **Ready for AI assistants.** A built-in MCP server lets Claude and other assistants read cards and draft emails.
+- **Ready for AI assistants and agents.** A built-in MCP server lets any MCP-capable assistant read cards, save contacts and draft emails.
 - **Updates reach everyone.** Cards depend on Termcard, so improvements arrive without republishing your card.
 - **Private and safe by design.** Zero dependencies, no tracking, and every value in a card is validated and sanitized before it reaches anyone's terminal.
 
 ## Ask your AI assistant
 
-Termcard also speaks the [Model Context Protocol](https://modelcontextprotocol.io). In Claude
-or any MCP client you can **create your card just by chatting** — *"Create my terminal
-business card"* — and look up anyone's card by name, save them as a contact or draft an email.
+Termcard speaks the [Model Context Protocol](https://modelcontextprotocol.io), so it works
+with any AI assistant or agent that supports MCP: Cursor, VS Code, Windsurf, Claude, ChatGPT,
+Gemini CLI and more. **Create your card just by chatting** (*"Create my terminal business
+card"*), or look up anyone's card by name, save them as a contact or draft an email.
 Nothing is ever published or sent on your behalf.
 
-```
-/plugin install termcard --marketplace aepasahan/termcard
+Add the local server to your client's MCP settings:
+
+```json
+{ "mcpServers": { "termcard": { "command": "npx", "args": ["-y", "termcard", "mcp"] } } }
 ```
 
-In Claude on the web, desktop or mobile, add the remote connector
-`https://mcp.termcard.dev/mcp` under **Settings › Connectors**.
-There's also a one-click Claude Desktop extension, and any MCP client works — see
+Or connect to the hosted server, no install needed: `https://mcp.termcard.dev/mcp`.
+Per-app steps, including a Claude plugin and a desktop extension, are in
 [Termcard for AI assistants](docs/mcp.md). Card owners can opt out with `"mcp": false`.
 
 ## Customizing your card
@@ -103,6 +105,7 @@ Termcard also ships a small tool for card owners. Visitors never see or need it.
 
 | Command | What it does |
 | ------- | ------------ |
+| `npx termcard demo` | Opens a sample card, so you can see what Termcard does. |
 | `npx termcard preview` | Opens your card locally, exactly as visitors will see it. |
 | `npx termcard validate` | Checks your config and explains any mistakes. |
 | `npx termcard mcp` | Runs the MCP server for AI assistants (see [docs/mcp.md](docs/mcp.md)). |

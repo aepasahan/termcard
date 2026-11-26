@@ -16,15 +16,16 @@ const seg = (text, role, href) => ({ text, role, href });
 const frame = (text, role) => ({ text, role, frame: true });
 const widthOf = (segments) => segments.reduce((n, s) => n + displayWidth(s.text), 0);
 
-function nameLines(name, { nameStyle, splitName }, lang) {
+function nameLines(name, { nameStyle, splitName, letterSpacing }, lang) {
   const words = name.split(/\s+/);
   const parts = splitName && words.length > 1 ? [words.slice(0, -1).join(' '), words.at(-1)] : [name];
+  // "spaced" is uppercase with one space between letters; letterSpacing (0–3) overrides the gap.
+  const gap = ' '.repeat(letterSpacing ?? (nameStyle === 'spaced' ? 1 : 0));
   return parts.map((part) => {
     // Scripts without case (Arabic, Devanagari, CJK, …) are shown as written: spacing would break them.
     if (!hasCase(part)) return part;
-    if (nameStyle === 'spaced') return [...upper(part, lang)].join(' ');
-    if (nameStyle === 'uppercase') return upper(part, lang);
-    return part;
+    const text = nameStyle === 'plain' ? part : upper(part, lang);
+    return gap ? [...text].join(gap) : text;
   });
 }
 

@@ -19,7 +19,7 @@ See [`examples/full.json`](../examples/full.json) for a config that uses every o
 ### Editor support
 
 Add the schema to get autocompletion and inline errors in VS Code and other editors.
-Cards created with `npm create termcard` or by Claude already include it:
+Cards created with `npm create termcard` or by an AI assistant already include it:
 
 ```json
 {
@@ -136,6 +136,14 @@ hex color, or `"default"` for the terminal's own color:
 "theme": { "preset": "frost", "accent": "#ff8700" }
 ```
 
+Give the card a background of its own with `background`. It fills the box from border
+to border, in the terminal and on the web page. When `text` is `"default"`, a readable
+text color is picked for you:
+
+```json
+"theme": { "preset": "solstice", "background": "#1d1b16" }
+```
+
 Terminals without 24-bit color get the closest of the 256 standard colors. `NO_COLOR`
 is respected.
 
@@ -163,7 +171,8 @@ Otherwise, every option below overrides the template's value.
 | --------------- | ------ | --- |
 | `fields`        | array of field ids | What the card shows, in order: `website`, `email`, `phone`, link ids, `location`. Defaults to everything you filled in. |
 | `border`        | `rounded` `square` `double` `heavy` `none` | |
-| `nameStyle`     | `spaced` `uppercase` `plain` | |
+| `nameStyle`     | `spaced` `uppercase` `plain` | `spaced` is uppercase with a space between letters. |
+| `letterSpacing` | 0–3 | Spaces between the letters of your name, with any `nameStyle` (`spaced`: 1, others: 0). |
 | `splitName`     | boolean | Last name on its own line. |
 | `spacing`       | `relaxed` `compact` | |
 | `accentRule`    | boolean | Short accent line under the tagline (shown only when there is a tagline). |

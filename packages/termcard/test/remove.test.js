@@ -64,3 +64,9 @@ test('termcard remove reads the card name from package.json in the current folde
     process.chdir(cwd);
   }
 });
+
+test('termcard demo opens a sample card', async () => {
+  const io = { stdout: sink(), stderr: sink() };
+  assert.equal(await cli(['demo', '--lang', 'de'], io), 0);
+  assert.match(io.stdout.output, /A D A[\s\S]*Mathematikerin/);
+});

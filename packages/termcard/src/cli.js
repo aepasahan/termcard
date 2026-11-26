@@ -9,6 +9,8 @@ import { run } from './run.js';
 import { buildCard, UnsafeOutputError } from './build/index.js';
 import { serveMcp } from './mcp/server.js';
 import { removeCard } from './project/remove.js';
+import { normalizeConfig } from './config/schema.js';
+import { DEMO_CARD } from './demo.js';
 
 const VERSION = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
 const DEFAULT_CONFIG = 'card.config.json';
@@ -16,6 +18,7 @@ const DEFAULT_CONFIG = 'card.config.json';
 const HELP = `Termcard ${VERSION} — terminal business cards
 
 Usage:
+  termcard demo                      Open a sample card to see what Termcard does
   termcard preview [config]          Show the card (accepts the same flags as the card itself)
   termcard validate [config]         Check a config and list any problems
   termcard build [config] [--out d]  Write terminal, web, vCard and curl files (default: dist)
@@ -70,6 +73,7 @@ export async function cli(argv, io = { stdout: process.stdout, stderr: process.s
   if (command === '--version' || command === '-v') return io.stdout.write(`${VERSION}\n`), 0;
   if (command === 'mcp') return await serveMcp(), 0;
   if (command === 'remove') return removeCommand(rest, io);
+  if (command === 'demo') return run(normalizeConfig(DEMO_CARD), { argv: rest, ...io });
 
   const positional = rest[0] && !rest[0].startsWith('-') ? rest[0] : undefined;
   const configPath = positional ?? DEFAULT_CONFIG;

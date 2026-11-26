@@ -54,15 +54,16 @@ Flags such as `--lang tr`, `--card` (no menu) and `--vcard` work on every card.
 
 ## Ask your AI assistant
 
-Termcard includes an MCP server, so in Claude and other AI assistants you can **create your
-card by chatting** and look up anyone's card by name, save them as a contact or draft an
-email. Nothing is ever published or sent on your behalf.
+Termcard includes an MCP server, so in any AI assistant or agent that supports MCP you can
+**create your card by chatting** and look up anyone's card by name, save them as a contact
+or draft an email. Nothing is ever published or sent on your behalf.
 
-```bash
-claude mcp add termcard -- npx -y termcard mcp
+```json
+{ "mcpServers": { "termcard": { "command": "npx", "args": ["-y", "termcard", "mcp"] } } }
 ```
 
-Claude Desktop extension and setup for Cursor, VS Code and other clients:
+Or use the hosted server at `https://mcp.termcard.dev/mcp`. Setup for Cursor, VS Code,
+Claude, ChatGPT and other clients:
 [Termcard for AI assistants](https://github.com/aepasahan/termcard/blob/main/docs/mcp.md).
 
 ## For card owners
@@ -72,6 +73,7 @@ npx termcard preview     # see your card exactly as visitors will
 npx termcard validate    # check card.config.json and explain any mistakes
 npx termcard build       # optional: web page, vCards and curl files for your own website
 npx termcard mcp         # MCP server for AI assistants
+npx termcard demo        # open a sample card
 npx termcard remove      # take your published card off npm
 ```
 

@@ -33,6 +33,12 @@ export function colorDepth(stream, env = {}) {
   return 256;
 }
 
+/** SGR parameters for a background hex color at the given depth. */
+export function background(hex, depth) {
+  if (depth >= 16777216) return `48;2;${hexToRgb(hex).join(';')}`;
+  return `48;5;${hexTo256(hex)}`;
+}
+
 /** SGR parameters for a foreground hex color at the given depth. */
 export function foreground(hex, depth) {
   if (depth >= 16777216) return `38;2;${hexToRgb(hex).join(';')}`;

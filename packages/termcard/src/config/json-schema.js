@@ -111,6 +111,7 @@ export function buildJsonSchema() {
               accentRule: { type: 'boolean' },
               labels: { type: 'boolean' },
               padding: { type: 'integer', minimum: 0, maximum: 8 },
+              letterSpacing: { type: 'integer', minimum: 0, maximum: 3, description: 'Spaces between the letters of your name (spaced: 1, others: 0).' },
               width: { anyOf: [{ const: 'auto' }, { type: 'integer', minimum: 20, maximum: 120 }] },
               fields: { type: 'array', items: { type: 'string' }, description: 'website, email, phone, link ids and location, in display order.' },
             },
