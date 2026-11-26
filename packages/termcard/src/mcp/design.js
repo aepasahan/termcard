@@ -31,6 +31,7 @@ const OPTIONS = {
     email: 'Email address. Enables "Get in touch".',
     phone: 'Phone number: digits, spaces and + ( ) - .',
     website: 'https://… URL.',
+    logo: 'Optional small text art at the top of the card: up to 8 lines, 40 columns. Array of lines.',
     address: 'Street address, mostly for organizations (max 80 characters). Localizable. Goes into the vCard.',
     hours: 'Opening or office hours, e.g. "Mon–Fri 09:00–18:00" (max 60 characters). Localizable.',
     location: 'e.g. "Berlin · Germany". Localizable.',

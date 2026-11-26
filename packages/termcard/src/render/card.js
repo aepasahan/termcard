@@ -69,6 +69,7 @@ export function layoutCard(config, lang, { iconSet = config.icons } = {}) {
 
   // Content sections; blank lines are inserted between them.
   const sections = [];
+  if (config.logo) sections.push(config.logo.map((line) => [seg(line, 'accent')]));
   // A name is spelled the same in every language: if the card is in Turkish or Azerbaijani,
   // capitalize it with those rules everywhere (Elif → ELİF, not ELIF).
   const nameLocale = ['tr', 'az'].find((l) => config.language.available.includes(l)) ?? lang;

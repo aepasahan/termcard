@@ -5,7 +5,7 @@
  * termcard/schema/card.schema.json. `npm run schema` rewrites the file; a test keeps it in sync.
  */
 
-import { LANG_CODE, PHONE, NAME_LIMIT, TEXT_LIMIT, DESCRIPTION_LIMIT, ICON_SETS, CARD_TYPES, ADDRESS_LIMIT, HOURS_LIMIT } from './schema.js';
+import { LANG_CODE, PHONE, NAME_LIMIT, TEXT_LIMIT, DESCRIPTION_LIMIT, ICON_SETS, CARD_TYPES, ADDRESS_LIMIT, HOURS_LIMIT, LOGO_LINES, LOGO_WIDTH } from './schema.js';
 import { themes, THEME_ROLES } from './themes.js';
 import { templates, CARD_OPTIONS, MENU_ACTIONS } from './templates.js';
 import { BUILT_IN_LANGUAGES } from '../i18n/index.js';
@@ -48,6 +48,10 @@ export function buildJsonSchema() {
       address: localized(ADDRESS_LIMIT, 'Street address, shown on the card and saved in the vCard.'),
       hours: localized(HOURS_LIMIT, 'Opening or office hours, e.g. "Mon–Fri 09:00–18:00".'),
       location: localized(TEXT_LIMIT, 'Shown at the bottom of the card, e.g. "Berlin · Germany".'),
+      logo: {
+        description: `Small text art shown at the top of the card in the accent color: up to ${LOGO_LINES} lines, ${LOGO_WIDTH} columns wide. Text with line breaks, or an array of lines.`,
+        anyOf: [{ type: 'string' }, { type: 'array', maxItems: LOGO_LINES, items: { type: 'string' } }],
+      },
       links: {
         type: 'array',
         description: 'Profile links. Well-known services (LinkedIn, GitHub, X, …) get their label and id automatically.',

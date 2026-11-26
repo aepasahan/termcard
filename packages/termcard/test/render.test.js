@@ -198,3 +198,21 @@ test('type, address and hours are validated and sanitized', () => {
   assert.equal(normalizeConfig({ name: 'X', hours: '9–5\u001b[31m‮' }).hours, '9–5[31m');
   assert.equal(normalizeConfig({ name: 'X' }).type, 'person');
 });
+
+test('a logo sits at the top of the card, aligned, in the accent color', () => {
+  const logo = ['  /\\  ', ' /  \\ ', '/____\\'];
+  const config = make({ type: 'organization', name: 'Acme', logo });
+  const lines = toPlain(layoutCard(config, 'en')).split('\n');
+  const start = lines.findIndex((l) => l.includes('/\\'));
+  assert.ok(start > 0 && start < lines.findIndex((l) => l.includes('Acme')), 'above the name');
+  assert.equal(lines[start].indexOf('/\\') - lines[start + 2].indexOf('/____'), 2, 'leading spaces kept');
+  assert.equal(new Set(widths(toPlain(layoutCard(config, 'en')))).size, 1);
+  assert.match(toAnsi(layoutCard(config, 'en'), config.theme, 256), /\x1b\[38;5;\d+m {2}\/\\/);
+});
+
+test('logos are limited and sanitized', () => {
+  assert.deepEqual(normalizeConfig({ name: 'X', logo: '\n  ab\u001b[2J\tc  \n\n' }).logo, ['  ab[2J  c']);
+  assert.throws(() => normalizeConfig({ name: 'X', logo: Array(9).fill('x') }), /logo: must be at most 8 lines/);
+  assert.throws(() => normalizeConfig({ name: 'X', logo: ['x'.repeat(41)] }), /logo\[0\]: must be at most 40 columns/);
+  assert.throws(() => normalizeConfig({ name: 'X', logo: [1] }), /logo: must be text or an array of lines/);
+});

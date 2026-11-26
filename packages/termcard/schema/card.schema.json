@@ -178,6 +178,21 @@
         }
       ]
     },
+    "logo": {
+      "description": "Small text art shown at the top of the card in the accent color: up to 8 lines, 40 columns wide. Text with line breaks, or an array of lines.",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
     "links": {
       "type": "array",
       "description": "Profile links. Well-known services (LinkedIn, GitHub, X, …) get their label and id automatically.",

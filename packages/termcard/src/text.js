@@ -9,6 +9,9 @@ const UNSAFE = /[\u0000-\u001f\u007f-\u009f‪-‮⁦-⁩]/g;
 
 export const sanitize = (value) => String(value).replace(UNSAFE, '').trim();
 
+/** Like `sanitize`, but keeps leading spaces (tabs become two spaces): for ASCII art. */
+export const sanitizeLine = (value) => String(value).replace(/\t/g, '  ').replace(UNSAFE, '').trimEnd();
+
 // Non-spacing combining marks: they attach to the previous letter and take no column.
 const COMBINING = [
   [0x0300, 0x036f], // Latin, Greek, Cyrillic diacritics
