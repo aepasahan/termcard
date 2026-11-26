@@ -17,9 +17,16 @@ jobs:
       - name: MCP endpoint answers
         run: |
           set -euo pipefail
-          init=$(curl -fsS --max-time 20 -H 'content-type: application/json' \
+          # Without -f, so a failure shows who answered (the server or Cloudflare) and why.
+          code=$(curl -sS --max-time 20 -o body.txt -w '%{http_code}' -H 'content-type: application/json' \
             -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25"}}' \
             https://mcp.termcard.dev/mcp)
+          if [ "$code" != 200 ]; then
+            echo "::error::HTTP $code from mcp.termcard.dev"
+            head -c 2000 body.txt; echo
+            exit 1
+          fi
+          init=$(cat body.txt)
           echo "$init" | jq -e '.result.serverInfo.name == "termcard"' > /dev/null
           echo "Server: $(echo "$init" | jq -c '.result.serverInfo | {name, version}')"
       - name: A card can be looked up on npm
