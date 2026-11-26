@@ -169,12 +169,15 @@ test('menu entries can have their own symbols', async () => {
   assert.throws(() => normalizeConfig({ name: 'X', menu: { icons: { save: 'abc' } } }), /single symbol/);
 });
 
-test('an organization card keeps its name whole and shows address and hours', () => {
-  const org = make({ type: 'organization', name: 'Acme Labs', address: { en: '1 Main St, Berlin', tr: '1 Main St, Berlin' }, hours: { en: 'Mon–Fri 9–18', tr: 'Pzt–Cum 9–18' } });
+test('an organization card keeps its name whole and shows its hours (the address is in the menu)', () => {
+  const raw = { type: 'organization', name: 'Acme Labs', address: { en: '1 Main St, Berlin', tr: '1 Main St, Berlin' }, hours: { en: 'Mon–Fri 9–18', tr: 'Pzt–Cum 9–18' } };
+  const org = make(raw);
   const plain = toPlain(layoutCard(org, 'en'));
   assert.match(plain, /Acme Labs/, 'not letter-spaced or split');
   assert.doesNotMatch(plain, /A C M E/);
-  assert.match(plain, /Address\s+1 Main St, Berlin/);
+  assert.doesNotMatch(plain, /Address/);
+  assert.match(toPlain(layoutCard(make({ ...raw, card: { fields: ['address', 'hours'] } }), 'en')), /Address\s+1 Main St, Berlin/);
+  assert.match(toPlain(layoutCard(make({ address: '1 Main St' }), 'en')), /Address\s+1 Main St/, 'people keep it on the card');
   assert.match(plain, /Hours\s+Mon–Fri 9–18/);
   assert.match(toPlain(layoutCard(org, 'tr')), /Çalışma saatleri\s+Pzt–Cum 9–18/);
   assert.equal(new Set(widths(plain)).size, 1, plain);
@@ -231,17 +234,24 @@ test('QR codes match the reference encoder', async () => {
   assert.equal(encodeQr('x'.repeat(200)).version, 9);
 });
 
-test('the QR entry holds the contact, or the website when the contact is too long', async () => {
-  const { cardQr } = await import('../src/tui/actions.js');
-  assert.equal(cardQr(make(), 'en').kind, 'contact');
-  const long = { name: 'N'.repeat(80), title: 'T'.repeat(120), organization: 'O'.repeat(120), address: 'A'.repeat(80) };
-  assert.equal(cardQr(make(long), 'en').kind, 'website');
-  assert.equal(cardQr(make({ ...long, website: undefined }), 'en'), null);
+test('QR codes: the contact (shortened when needed) and the website', async () => {
+  const { cardQrCodes } = await import('../src/tui/actions.js');
+  const kinds = (config) => cardQrCodes(config, 'en').map((q) => q.kind);
+  assert.deepEqual(kinds(make()), ['contact', 'website']);
+  // Too long for a full contact: the minimal one (name, phone, email, website) still fits.
+  const long = { title: 'T'.repeat(120), organization: 'O'.repeat(120), address: 'A'.repeat(120) };
+  assert.deepEqual(kinds(make(long)), ['contact', 'website']);
+  const minimal = createVCard(make(long), 'en', { minimal: true });
+  assert.doesNotMatch(minimal, /TITLE|ADR|NOTE|X-SOCIALPROFILE/);
+  assert.match(minimal, /EMAIL/);
+  const huge = { name: 'N'.repeat(80), organization: 'O'.repeat(120), email: `${'e'.repeat(60)}@example.com` };
+  assert.deepEqual(kinds(make({ ...long, ...huge })), ['website']);
+  assert.deepEqual(kinds(make({ ...long, ...huge, website: undefined })), []);
 });
 
 test('a long address wraps under its value and keeps the frame aligned', () => {
   const address = 'Mecidiyeköy Mah. Selahattin Pınar Aralığı Sk. Hüseyin Özer İş Merkezi No: 3 Kat:4, D: 8 Şişli-Istanbul, 34387';
-  const plain = toPlain(layoutCard(make({ type: 'organization', name: 'Creetivelab', icons: 'symbols', address }), 'en'));
+  const plain = toPlain(layoutCard(make({ type: 'organization', name: 'Creetivelab', icons: 'symbols', address, card: { fields: ['address'] } }), 'en'));
   const lines = plain.split('\n');
   const first = lines.findIndex((l) => l.includes('Address'));
   const valueColumn = lines[first].indexOf('Mecidiyeköy');

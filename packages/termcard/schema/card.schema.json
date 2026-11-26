@@ -688,7 +688,15 @@
                   "type": "string",
                   "maxLength": 8
                 },
+                "links": {
+                  "type": "string",
+                  "maxLength": 8
+                },
                 "sections": {
+                  "type": "string",
+                  "maxLength": 8
+                },
+                "address": {
                   "type": "string",
                   "maxLength": 8
                 },
@@ -710,6 +718,13 @@
                 }
               }
             },
+            "links": {
+              "enum": [
+                "inline",
+                "list"
+              ],
+              "description": "inline: one menu entry per profile. list: one entry that opens them all (the default for organizations)."
+            },
             "items": {
               "type": "array",
               "minItems": 1,
@@ -723,6 +738,7 @@
                       "website",
                       "links",
                       "sections",
+                      "address",
                       "copy-email",
                       "copy-phone",
                       "language",

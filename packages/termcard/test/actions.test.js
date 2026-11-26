@@ -4,6 +4,7 @@ import { buildMenu } from '../src/tui/actions.js';
 import { createTranslator } from '../src/i18n/index.js';
 import { openExternal } from '../src/system.js';
 import { make } from './helpers.js';
+import { normalizeConfig } from '../src/index.js';
 
 const fakeSystem = ({ open = true, copy = true } = {}) => {
   const calls = [];
@@ -93,4 +94,41 @@ test('sections are validated, limited and sanitized', async () => {
   assert.throws(bad([{ title: 'A', items: [{ label: 'x', url: 'javascript:alert(1)' }] }]), /must start with https:\/\/ or http:\/\//);
   assert.equal(normalizeConfig({ name: 'X', sections: [{ title: 'A\u001b[2J', items: ['b‮'] }] }).sections[0].title, 'A[2J');
   assert.deepEqual(normalizeConfig({ name: 'X' }).sections, []);
+});
+
+test('organizations group their profiles and show the address in its own view', async () => {
+  const sys = fakeSystem();
+  const config = make({ type: 'organization', address: 'Main St 1, Berlin', links: ['https://github.com/acme', 'https://x.com/acme'] });
+  const entries = menu(config, sys);
+  assert.ok(!entries.some((e) => e.id.startsWith('link:')), 'no entry per profile');
+  const links = entries.find((e) => e.id === 'links');
+  assert.equal(links.hint, 'GitHub · X');
+  const list = (await links.run()).view;
+  assert.deepEqual(list.items.map((i) => i.label), ['GitHub', 'X']);
+  await list.items[1].run();
+  assert.deepEqual(sys.calls.at(-1), ['open', 'https://x.com/acme']);
+
+  const address = (await entries.find((e) => e.id === 'address').run()).view;
+  assert.equal(address.text, 'Main St 1, Berlin');
+  await address.items[0].run();
+  assert.deepEqual(sys.calls.at(-1), ['open', 'https://www.google.com/maps/search/?api=1&query=Main%20St%201%2C%20Berlin']);
+  await address.items[1].run();
+  assert.deepEqual(sys.calls.at(-1), ['copy', 'Main St 1, Berlin']);
+
+  // People keep one entry per profile unless they ask for the list; one profile is never grouped.
+  assert.ok(menu(make({ links: ['https://github.com/a', 'https://x.com/a'] }), sys).some((e) => e.id === 'link:github'));
+  assert.ok(menu(make({ links: ['https://github.com/a', 'https://x.com/a'], menu: { links: 'list' } }), sys).some((e) => e.id === 'links'));
+  assert.ok(menu(make({ type: 'organization', links: ['https://github.com/a'] }), sys).some((e) => e.id === 'link:github'));
+  assert.throws(() => normalizeConfig({ name: 'X', menu: { links: 'grid' } }), /menu\.links/);
+});
+
+test('the QR entry lets the visitor pick the contact or the website', async () => {
+  const entries = menu(make({ type: 'organization' }), fakeSystem());
+  const qr = entries.find((e) => e.id === 'qr');
+  const pick = (await qr.run()).view;
+  assert.equal(pick.kind, 'list');
+  assert.deepEqual(pick.items.map((i) => i.label), ['Contact card', 'Website']);
+  const shown = (await pick.items[1].run()).view;
+  assert.equal(shown.kind, 'qr');
+  assert.match(shown.title, /Website/);
 });

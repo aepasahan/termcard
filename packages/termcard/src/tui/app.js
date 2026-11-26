@@ -5,6 +5,7 @@
  * entry may open another view on top (the language picker, a section's list, a QR code), and
  * esc / ← / backspace goes back one view. Every view is the same shape:
  *   { title?, lines?, entries: [{ icon?, label, hint, run? }], index }
+ * (a list's `text`, such as an address, is wrapped into `lines`)
  * so a new kind of screen needs a view builder here, not a new code path through the keys.
  */
 
@@ -14,7 +15,7 @@ import { layoutCard, layoutHeader } from '../render/card.js';
 import { toAnsi, createPainter } from '../render/format.js';
 import { CREDIT_TEXT } from '../render/credit.js';
 import { qrLines } from '../render/qr.js';
-import { displayWidth, stripAnsi } from '../text.js';
+import { displayWidth, stripAnsi, wrap } from '../text.js';
 import { buildMenu } from './actions.js';
 import * as system from '../system.js';
 import { Screen } from './screen.js';
@@ -54,7 +55,12 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
         index: Math.max(0, config.language.available.indexOf(state.lang)),
       };
     }
-    if (spec.kind === 'list') return { kind: 'list', title: spec.title, entries: [...spec.items, backEntry()], index: 0 };
+    if (spec.kind === 'list') {
+      // A list may open with a paragraph (an address), wrapped to the terminal.
+      const width = Math.min(60, (stdout.columns || 80) - 6);
+      const lines = spec.text ? wrap(spec.text, width).map((line) => paint('strong', line)) : [];
+      return { kind: 'list', title: spec.title, lines, entries: [...spec.items, backEntry()], index: 0 };
+    }
     if (spec.kind === 'qr') return { kind: 'qr', title: spec.title, lines: qrLines({ modules: spec.modules }, { depth }), entries: [backEntry()], index: 0, hint: spec.hint };
     throw new Error(`Unknown view: ${spec.kind}`);
   };

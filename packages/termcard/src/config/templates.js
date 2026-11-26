@@ -54,5 +54,7 @@ export const CARD_OPTIONS = {
 /** Default menu: every action that has the data it needs is shown, in this order. */
 export const DEFAULT_MENU = ['contact', 'save', 'website', 'links', 'sections', 'copy-email', 'language', 'exit'];
 /** Organizations lead with how to reach them and what they offer. */
-export const ORGANIZATION_MENU = ['contact', 'save', 'qr', 'website', 'sections', 'links', 'copy-email', 'copy-phone', 'language', 'exit'];
-export const MENU_ACTIONS = ['contact', 'save', 'qr', 'website', 'links', 'sections', 'copy-email', 'copy-phone', 'language', 'exit'];
+export const ORGANIZATION_MENU = ['contact', 'save', 'qr', 'website', 'sections', 'address', 'links', 'copy-email', 'copy-phone', 'language', 'exit'];
+export const MENU_ACTIONS = ['contact', 'save', 'qr', 'website', 'links', 'sections', 'address', 'copy-email', 'copy-phone', 'language', 'exit'];
+/** How profile links appear in the menu: one entry each, or one entry that opens the list. */
+export const LINK_DISPLAY = ['inline', 'list'];

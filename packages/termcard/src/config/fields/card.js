@@ -24,7 +24,8 @@ export function normalizeCard(c, raw, template, fieldIds, type = 'person') {
     else c.fail('card.width', 'must be "auto" or an integer between 20 and 120');
   }
 
-  card.fields = fieldIds;
+  // An organization's address can be long: by default it lives in the menu ("address"), not on the card.
+  card.fields = type === 'organization' ? fieldIds.filter((f) => f !== 'address') : fieldIds;
   if (value.fields !== undefined) {
     if (!Array.isArray(value.fields)) c.fail('card.fields', 'must be an array');
     else {
