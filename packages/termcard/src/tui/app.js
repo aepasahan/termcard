@@ -13,6 +13,7 @@ import { createTranslator, languageName } from '../i18n/index.js';
 import { layoutCard, layoutHeader } from '../render/card.js';
 import { toAnsi, createPainter } from '../render/format.js';
 import { CREDIT_TEXT } from '../render/credit.js';
+import { qrLines } from '../render/qr.js';
 import { displayWidth, stripAnsi } from '../text.js';
 import { buildMenu } from './actions.js';
 import * as system from '../system.js';
@@ -54,7 +55,7 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
       };
     }
     if (spec.kind === 'list') return { kind: 'list', title: spec.title, entries: [...spec.items, backEntry()], index: 0 };
-    if (spec.kind === 'qr') return { kind: 'qr', title: spec.title, lines: spec.lines, entries: [backEntry()], index: 0, hint: spec.hint };
+    if (spec.kind === 'qr') return { kind: 'qr', title: spec.title, lines: qrLines({ modules: spec.modules }, { depth }), entries: [backEntry()], index: 0, hint: spec.hint };
     throw new Error(`Unknown view: ${spec.kind}`);
   };
 

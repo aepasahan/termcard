@@ -10,6 +10,15 @@
 import { localize, slugify } from '../text.js';
 import { createVCard } from '../vcard.js';
 import { iconFor } from '../render/icons.js';
+import { encodeQr } from '../render/qr.js';
+
+/** What a QR code for this card holds: the contact itself, or else the website. */
+export function cardQr(config, lang) {
+  const contact = encodeQr(createVCard(config, lang, { compact: true }));
+  if (contact) return { code: contact, kind: 'contact' };
+  const website = config.website && encodeQr(config.website);
+  return website ? { code: website, kind: 'website' } : null;
+}
 
 const unavailable = async () => false;
 const offline = { openExternal: unavailable, copyToClipboard: unavailable, writeTempFile: () => { throw new Error('unavailable'); } };
@@ -56,6 +65,12 @@ export function buildMenu(config, lang, t, sys = offline) {
         hint: t('hint.website', { host: host(config.website) }),
         run: browse(config.website),
       },
+    qr: () => {
+      const qr = cardQr(config, lang);
+      if (!qr) return null;
+      const hint = qr.kind === 'contact' ? t('hint.qr') : t('hint.qrWebsite', { host: host(config.website) });
+      return { icon: icon('qr'), label: t('action.qr'), hint, run: async () => ({ view: { kind: 'qr', title: t('action.qr'), modules: qr.code.modules, hint } }) };
+    },
     'copy-email': () => config.email && { icon: icon('email'), label: t('action.copyEmail'), hint: t('hint.copyEmail'), run: copy(config.email) },
     'copy-phone': () => config.phone && { icon: icon('phone'), label: t('action.copyPhone'), hint: t('hint.copyPhone'), run: copy(config.phone) },
     language: () =>

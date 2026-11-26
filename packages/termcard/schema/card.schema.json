@@ -680,6 +680,10 @@
                   "type": "string",
                   "maxLength": 8
                 },
+                "qr": {
+                  "type": "string",
+                  "maxLength": 8
+                },
                 "website": {
                   "type": "string",
                   "maxLength": 8
@@ -715,6 +719,7 @@
                     "enum": [
                       "contact",
                       "save",
+                      "qr",
                       "website",
                       "links",
                       "sections",

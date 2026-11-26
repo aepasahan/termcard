@@ -5,7 +5,8 @@ import { localize } from './text.js';
 // Escape per RFC 2426 §5: backslash, comma, semicolon and newlines.
 const esc = (value) => String(value).replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;').replace(/\r?\n/g, '\\n');
 
-export function createVCard(config, lang) {
+/** @param {{ compact?: boolean }} options compact leaves out the note and profile links (for QR codes). */
+export function createVCard(config, lang, { compact = false } = {}) {
   const organization = config.type === 'organization';
   const words = config.name.split(/\s+/);
   const family = words.length > 1 ? words.at(-1) : '';
@@ -25,8 +26,8 @@ export function createVCard(config, lang) {
     config.email && `EMAIL;TYPE=INTERNET:${esc(config.email)}`,
     config.phone && `TEL;TYPE=${organization ? 'WORK' : 'CELL'}:${esc(config.phone)}`,
     config.website && `URL:${esc(config.website)}`,
-    ...config.links.map((l) => `X-SOCIALPROFILE;TYPE=${esc(l.id)}:${esc(l.url)}`),
-    config.description && `NOTE:${esc(localize(config.description, lang))}`,
+    ...(compact ? [] : config.links.map((l) => `X-SOCIALPROFILE;TYPE=${esc(l.id)}:${esc(l.url)}`)),
+    !compact && config.description && `NOTE:${esc(localize(config.description, lang))}`,
     'END:VCARD',
     '',
   ];

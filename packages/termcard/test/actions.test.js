@@ -79,8 +79,8 @@ test('sections become menu entries that open their list', async () => {
   const { view } = await products.run();
   assert.equal(view.kind, 'list');
   assert.deepEqual(view.items.map((i) => [i.label, i.hint, typeof i.run]), [['Cloud', 'Hosting', 'function'], ['Consulting', '', 'undefined']]);
-  // Organizations lead with contact, save, website and their sections.
-  assert.deepEqual(entries.map((e) => e.id).slice(0, 4), ['contact', 'save', 'section:0', 'section:1']);
+  // Organizations lead with contact, save, the QR code, website and their sections.
+  assert.deepEqual(entries.map((e) => e.id).slice(0, 5), ['contact', 'save', 'qr', 'section:0', 'section:1']);
 });
 
 test('sections are validated, limited and sanitized', async () => {

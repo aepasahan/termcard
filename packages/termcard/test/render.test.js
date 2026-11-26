@@ -216,3 +216,25 @@ test('logos are limited and sanitized', () => {
   assert.throws(() => normalizeConfig({ name: 'X', logo: ['x'.repeat(41)] }), /logo\[0\]: must be at most 40 columns/);
   assert.throws(() => normalizeConfig({ name: 'X', logo: [1] }), /logo: must be text or an array of lines/);
 });
+
+test('QR codes match the reference encoder', async () => {
+  const { encodeQr } = await import('../src/render/qr.js');
+  // Version 1-L, mask 0, "termcard", as produced by python-qrcode (byte mode).
+  const expected = [
+    '111111100010101111111', '100000100000101000001', '101110101010001011101', '101110100000101011101',
+    '101110100101101011101', '100000100111001000001', '111111101010101111111', '000000001010000000000',
+  ];
+  const qr = encodeQr('termcard', { mask: 0 });
+  assert.equal(qr.version, 1);
+  assert.deepEqual(qr.modules.slice(0, 8).map((r) => r.map((d) => (d ? 1 : 0)).join('')), expected);
+  assert.equal(encodeQr('x'.repeat(300)), null, 'beyond version 10');
+  assert.equal(encodeQr('x'.repeat(200)).version, 9);
+});
+
+test('the QR entry holds the contact, or the website when the contact is too long', async () => {
+  const { cardQr } = await import('../src/tui/actions.js');
+  assert.equal(cardQr(make(), 'en').kind, 'contact');
+  const long = { name: 'N'.repeat(80), title: 'T'.repeat(120), organization: 'O'.repeat(120), address: 'A'.repeat(80) };
+  assert.equal(cardQr(make(long), 'en').kind, 'website');
+  assert.equal(cardQr(make({ ...long, website: undefined }), 'en'), null);
+});
