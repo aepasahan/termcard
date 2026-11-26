@@ -13,7 +13,7 @@ Created by [Ahmet Erkan Paşahan](https://aepasahan.dev)
 [![JavaScript](https://img.shields.io/badge/JavaScript-ES%20modules-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/docs/Web/JavaScript/Guide/Modules)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](https://www.npmjs.com/package/termcard?activeTab=dependencies)
 
-<img src="https://raw.githubusercontent.com/aepasahan/termcard/main/docs/demo.gif" width="560" alt="Animated demo: running npx aepasahan shows a business card with a menu, then switches the card to Turkish">
+<img src="https://raw.githubusercontent.com/aepasahan/termcard/main/docs/demo.gif" width="560" alt="Animated demo: npx termcard demo opens a sample business card for John Doe, moves through the menu and switches the card to Turkish">
 
 </div>
 

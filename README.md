@@ -14,7 +14,7 @@ Created by [Ahmet Erkan Paşahan](https://aepasahan.dev)
 [![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](packages/termcard/package.json)
 [![Platforms](https://img.shields.io/badge/platforms-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey)](#requirements)
 
-<img src="docs/demo.gif" width="560" alt="Animated demo: running npx aepasahan shows a business card with a menu, then switches the card to Turkish">
+<img src="docs/demo.gif" width="560" alt="Animated demo: npx termcard demo opens a sample business card for John Doe, moves through the menu and switches the card to Turkish">
 
 </div>
 
