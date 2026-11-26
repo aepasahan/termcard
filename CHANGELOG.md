@@ -4,6 +4,12 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org): from 1.0.0 on, a config that works keeps working
 until the next major version.
 
+## termcard 1.3.0, create-termcard 1.3.0 — 2026-11-26
+
+### termcard
+- **Your own menu icons:** `"menu": { "icons": { "contact": "✦", "save": "★" } }` sets the
+  symbol for any built-in menu entry, and custom menu entries take an `icon` too.
+
 ## termcard 1.2.0, create-termcard 1.2.0 — 2026-11-26
 
 ### termcard

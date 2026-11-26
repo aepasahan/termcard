@@ -158,3 +158,13 @@ test('a two-color background paints a gradient across the box', () => {
   assert.equal(toAnsi(layoutCard(config, 'en'), config.theme, 0), toPlain(layoutCard(config, 'en')));
   assert.throws(() => normalizeConfig({ name: 'X', theme: { background: ['#000000'] } }), /two hex colors/);
 });
+
+test('menu entries can have their own symbols', async () => {
+  const { buildMenu } = await import('../src/tui/actions.js');
+  const { createTranslator } = await import('../src/i18n/index.js');
+  const config = make({ menu: { icons: { contact: '✦', exit: '←' }, items: ['contact', 'exit', { label: 'Blog', url: 'https://jane.dev/blog', icon: '¶' }] } });
+  const entries = buildMenu(config, 'en', createTranslator('en'));
+  assert.deepEqual(entries.map((e) => e.icon), ['✦', '←', '¶']);
+  assert.throws(() => normalizeConfig({ name: 'X', menu: { icons: { nope: '✦' } } }), /menu\.icons\.nope/);
+  assert.throws(() => normalizeConfig({ name: 'X', menu: { icons: { save: 'abc' } } }), /single symbol/);
+});

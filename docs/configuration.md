@@ -208,7 +208,15 @@ menu. Set `"menu": false` to always print the card only.
 | `copy-phone`  | Copies the phone number. |
 | `language`    | Language picker (only with 2+ languages). |
 | `exit`        | Closes the card. |
-| `{ "label", "url", "hint"? }` | Custom entry that opens a URL. `label` and `hint` can be localized. |
+| `{ "label", "url", "hint"?, "icon"? }` | Custom entry that opens a URL. `label` and `hint` can be localized. |
+
+Pick your own symbol for any built-in entry with `icons` (it overrides the icon set):
+
+```json
+"menu": { "icons": { "contact": "✦", "save": "★", "exit": "←" } }
+```
+
+Links take theirs from the link itself: `{ "url": "https://example.com", "icon": "★" }`.
 
 ## AI assistants
 

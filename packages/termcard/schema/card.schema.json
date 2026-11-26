@@ -489,6 +489,41 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
+            "icons": {
+              "type": "object",
+              "description": "A symbol for each built-in entry, e.g. { \"contact\": \"✉\", \"save\": \"★\" }.",
+              "additionalProperties": false,
+              "properties": {
+                "contact": {
+                  "type": "string",
+                  "maxLength": 8
+                },
+                "save": {
+                  "type": "string",
+                  "maxLength": 8
+                },
+                "website": {
+                  "type": "string",
+                  "maxLength": 8
+                },
+                "copy-email": {
+                  "type": "string",
+                  "maxLength": 8
+                },
+                "copy-phone": {
+                  "type": "string",
+                  "maxLength": 8
+                },
+                "language": {
+                  "type": "string",
+                  "maxLength": 8
+                },
+                "exit": {
+                  "type": "string",
+                  "maxLength": 8
+                }
+              }
+            },
             "items": {
               "type": "array",
               "minItems": 1,
@@ -566,6 +601,11 @@
                             }
                           }
                         ]
+                      },
+                      "icon": {
+                        "type": "string",
+                        "maxLength": 8,
+                        "description": "A single symbol shown before the entry."
                       }
                     }
                   }

@@ -249,12 +249,29 @@ function normalizeCard(c, raw, template, fieldIds) {
 }
 
 function normalizeMenu(c, raw, linkIds) {
-  if (raw === false) return { enabled: false, items: [] };
+  if (raw === false) return { enabled: false, items: [], icons: {} };
   const value = raw === undefined || raw === true ? {} : raw;
-  if (!isObject(value)) return c.fail('menu', 'must be false or { items }'), { enabled: true, items: DEFAULT_MENU };
-  c.unknownKeys('menu', value, ['items']);
-  if (value.items === undefined) return { enabled: true, items: DEFAULT_MENU };
-  if (!Array.isArray(value.items)) return c.fail('menu.items', 'must be an array'), { enabled: true, items: DEFAULT_MENU };
+  if (!isObject(value)) return c.fail('menu', 'must be false or { items, icons }'), { enabled: true, items: DEFAULT_MENU, icons: {} };
+  c.unknownKeys('menu', value, ['items', 'icons']);
+  const symbol = (path, v) => {
+    const icon = c.text(path, v, { max: 8 });
+    if (icon && displayWidth(icon) > 2) return c.fail(path, 'must be a single symbol (at most 2 columns wide)'), undefined;
+    return icon;
+  };
+  // "icons": { "contact": "✉", "save": "★" } picks the symbol for built-in menu entries.
+  const icons = {};
+  if (value.icons !== undefined) {
+    if (!isObject(value.icons)) c.fail('menu.icons', 'must be an object like { "contact": "✉" }');
+    else {
+      for (const [key, v] of Object.entries(value.icons)) {
+        if (!MENU_ACTIONS.includes(key) || key === 'links') { c.fail(`menu.icons.${key}`, `unknown entry (use ${MENU_ACTIONS.filter((a) => a !== 'links').join(', ')})`); continue; }
+        const icon = symbol(`menu.icons.${key}`, v);
+        if (icon) icons[key] = icon;
+      }
+    }
+  }
+  if (value.items === undefined) return { enabled: true, items: DEFAULT_MENU, icons };
+  if (!Array.isArray(value.items)) return c.fail('menu.items', 'must be an array'), { enabled: true, items: DEFAULT_MENU, icons };
 
   const items = value.items.flatMap((item, i) => {
     const path = `menu.items[${i}]`;
@@ -266,14 +283,15 @@ function normalizeMenu(c, raw, linkIds) {
       return [];
     }
     if (!isObject(item)) return c.fail(path, 'must be an action name or { label, url, hint? }'), [];
-    c.unknownKeys(path, item, ['label', 'url', 'hint']);
+    c.unknownKeys(path, item, ['label', 'url', 'hint', 'icon']);
     const label = c.localized(`${path}.label`, item.label);
     const href = c.url(`${path}.url`, item.url, { required: true });
     if (!label) c.fail(`${path}.label`, 'is required');
-    return label && href ? [{ label, url: href, hint: c.localized(`${path}.hint`, item.hint) }] : [];
+    const icon = symbol(`${path}.icon`, item.icon);
+    return label && href ? [{ label, url: href, hint: c.localized(`${path}.hint`, item.hint), ...(icon && { icon }) }] : [];
   });
   if (!items.length) c.fail('menu.items', 'must contain at least one item (or set "menu": false)');
-  return { enabled: true, items };
+  return { enabled: true, items, icons };
 }
 
 export function normalizeConfig(raw) {

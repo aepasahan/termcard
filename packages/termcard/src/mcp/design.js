@@ -37,7 +37,7 @@ const OPTIONS = {
     theme: `Theme name (default "${DEFAULT_THEME}"), or { "preset", "accent", "background", … } with hex colors; background may be two colors for a gradient.`,
     icons: ICON_SETS.join(' | '),
     card: 'false for a menu-only card, or { "border", "nameStyle", "letterSpacing" (0-3), "fields", … } to fine-tune.',
-    menu: 'false for no menu, or { "items": [...] }.',
+    menu: 'false for no menu, or { "items": [...], "icons": { "contact": "✦", … } }.',
     mcp: 'true (default) lets AI assistants read the card; false opts out.',
   },
   limits: { text: TEXT_LIMIT, description: DESCRIPTION_LIMIT, name: 80 },

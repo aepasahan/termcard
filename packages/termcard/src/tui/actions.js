@@ -78,11 +78,13 @@ export function buildMenu(config, lang, t, sys = offline) {
 
   return config.menu.items.flatMap((item) => {
     if (typeof item === 'object') {
-      return [{ id: `custom:${item.url}`, icon: icon('link'), label: localize(item.label, lang), hint: localize(item.hint, lang) || t('hint.link', { host: host(item.url) }), run: browse(item.url) }];
+      return [{ id: `custom:${item.url}`, icon: item.icon ?? icon('link'), label: localize(item.label, lang), hint: localize(item.hint, lang) || t('hint.link', { host: host(item.url) }), run: browse(item.url) }];
     }
     if (item === 'links') return config.links.map(linkEntry);
     if (item.startsWith('link:')) return config.links.filter((l) => l.id === item.slice(5)).map(linkEntry);
     const entry = factories[item]?.();
-    return entry ? [{ id: item, ...entry }] : [];
+    // The owner can pick the symbol for any built-in entry ("menu": { "icons": { … } }).
+    const own = config.menu.icons?.[item];
+    return entry ? [{ id: item, ...entry, ...(own && { icon: own }) }] : [];
   });
 }

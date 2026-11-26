@@ -126,6 +126,12 @@ export function buildJsonSchema() {
             type: 'object',
             additionalProperties: false,
             properties: {
+              icons: {
+                type: 'object',
+                description: 'A symbol for each built-in entry, e.g. { "contact": "✉", "save": "★" }.',
+                additionalProperties: false,
+                properties: Object.fromEntries(MENU_ACTIONS.filter((a) => a !== 'links').map((a) => [a, { type: 'string', maxLength: 8 }])),
+              },
               items: {
                 type: 'array',
                 minItems: 1,
@@ -137,7 +143,7 @@ export function buildJsonSchema() {
                       type: 'object',
                       required: ['label', 'url'],
                       additionalProperties: false,
-                      properties: { label: localized(TEXT_LIMIT, 'Menu label.'), url: webUrl('Opened when chosen.'), hint: localized(TEXT_LIMIT, 'Shown under the menu.') },
+                      properties: { label: localized(TEXT_LIMIT, 'Menu label.'), url: webUrl('Opened when chosen.'), hint: localized(TEXT_LIMIT, 'Shown under the menu.'), icon: { type: 'string', maxLength: 8, description: 'A single symbol shown before the entry.' } },
                     },
                   ],
                 },
