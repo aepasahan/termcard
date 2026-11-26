@@ -35,6 +35,7 @@ The schema is generated from Termcard's own validation rules and also ships in t
 
 | Key            | Type               | Notes |
 | -------------- | ------------------ | ----- |
+| `type`         | `person` `organization` | Default `person`. See [Organizations](#organizations). |
 | `name`         | string             | **Required.** At most 80 characters. |
 | `title`        | localized string   | Role, shown under the name. |
 | `tagline`      | localized string   | Company, handle or slogan, shown in the accent color. |
@@ -43,8 +44,12 @@ The schema is generated from Termcard's own validation rules and also ships in t
 | `email`        | string             | Enables the *Get in touch* and *Copy email* actions. Characters that would change a `mailto:` link (`? & # % /`) are not allowed. |
 | `phone`        | string             | Digits, spaces and `+ ( ) - .` only. |
 | `website`      | URL                | `https://` or `http://`. |
+| `address`      | localized string   | Street address, up to 120 characters. Wraps on the card; saved in the vCard. |
+| `hours`        | localized string   | Opening or office hours, e.g. `"Mon–Fri 09:00–18:00"`. |
 | `location`     | localized string   | Shown at the bottom of the card. |
 | `links`        | array              | URLs, or `{ "url", "label"?, "id"?, "icon"? }`. |
+| `logo`         | text or array      | Small text art at the top of the card. See [Logo](#logo). |
+| `sections`     | array              | Lists the menu opens. See [Sections](#sections). |
 
 A **localized string** is either plain text or an object keyed by language:
 `{ "en": "Designer", "tr": "Tasarımcı" }`. Missing languages fall back to English,
@@ -57,6 +62,50 @@ how you refer to the link in `card.fields` and `menu.items`.
 
 Text is limited to 120 characters per field (280 for `description`). Control characters and
 text-direction overrides are removed automatically.
+
+## Organizations
+
+```json
+{ "type": "organization", "name": "Acme Labs", "address": "Main St 1, Berlin", "hours": "Mon–Fri 9–18" }
+```
+
+A card can introduce a company, studio, team or project instead of a person:
+
+- The name reads as one unit: it is not split over two lines or letter-spaced (set
+  `card.nameStyle` to bring that back).
+- *Save contact* creates a company card in the address book (`ORG`, a work address and phone).
+- The default menu leads with *Get in touch*, *Save contact*, the **QR code** and the
+  organization's sections.
+
+See [examples/organization.json](../examples/organization.json).
+
+## Logo
+
+```json
+"logo": ["▄▀▀▀▀ █", "█     █", "▀▄▄▄▄ █▄▄▄▄"]
+```
+
+Up to 8 lines, 40 columns wide, shown above the name in the accent color. Leading spaces are
+kept so the art stays aligned. A single string with line breaks works too.
+
+## Sections
+
+```json
+"sections": [
+  {
+    "title": { "en": "Services", "tr": "Hizmetler" },
+    "items": [
+      { "label": "Web platforms", "description": "Fast, multilingual websites.", "url": "https://example.com/web" },
+      "Consulting"
+    ]
+  }
+]
+```
+
+Each section becomes a menu entry that opens its list; an entry shows its `description` when
+selected and opens its `url`, if it has one. Use them for products, services, projects, talks,
+publications or open roles. Up to 6 sections of 12 entries; titles up to 40 characters, labels
+60 and descriptions 120, all localizable. Give a section its own menu symbol with `"icon"`.
 
 ## Languages
 
@@ -206,6 +255,8 @@ menu. Set `"menu": false` to always print the card only.
 | `link:<id>`   | A single link, e.g. `link:github`. |
 | `copy-email`  | Copies the email address. |
 | `copy-phone`  | Copies the phone number. |
+| `sections`    | One entry per section, each opening its list. |
+| `qr`          | Shows a QR code that saves the contact (or opens the website when the contact is too long). Default for organizations. |
 | `language`    | Language picker (only with 2+ languages). |
 | `exit`        | Closes the card. |
 | `{ "label", "url", "hint"?, "icon"? }` | Custom entry that opens a URL. `label` and `hint` can be localized. |

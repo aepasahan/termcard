@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "test": "npm test --workspaces",
-    "check": "npm test && node packages/termcard/bin/termcard.js validate examples/full.json && node packages/termcard/bin/termcard.js validate examples/minimal.json"
+    "check": "npm test && node packages/termcard/bin/termcard.js validate examples/full.json && node packages/termcard/bin/termcard.js validate examples/minimal.json && node packages/termcard/bin/termcard.js validate examples/organization.json"
   },
   "engines": {
     "node": ">=18.18"

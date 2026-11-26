@@ -1,0 +1,86 @@
+{
+  "$schema": "https://termcard.dev/schema.json",
+  "type": "organization",
+  "name": "Acme Labs",
+  "logo": [
+    "  ▲  ",
+    " ▲ ▲ ",
+    "▲ ▲ ▲"
+  ],
+  "title": {
+    "en": "Product studio",
+    "tr": "Ürün stüdyosu"
+  },
+  "tagline": "@acmelabs",
+  "description": {
+    "en": "We design and build calm software for small teams.",
+    "tr": "Küçük ekipler için sakin yazılımlar tasarlıyor ve geliştiriyoruz."
+  },
+  "email": "hello@example.com",
+  "phone": "+49 30 1234 5678",
+  "website": "https://example.com",
+  "address": "Example Street 1, 10115 Berlin",
+  "hours": {
+    "en": "Mon–Fri 09:00–18:00",
+    "tr": "Pzt–Cum 09:00–18:00"
+  },
+  "location": {
+    "en": "Berlin · Germany",
+    "tr": "Berlin · Almanya"
+  },
+  "links": [
+    "https://github.com/example"
+  ],
+  "sections": [
+    {
+      "title": {
+        "en": "Services",
+        "tr": "Hizmetler"
+      },
+      "items": [
+        {
+          "label": {
+            "en": "Product design",
+            "tr": "Ürün tasarımı"
+          },
+          "description": {
+            "en": "Research, UX and interface design.",
+            "tr": "Araştırma, UX ve arayüz tasarımı."
+          }
+        },
+        {
+          "label": {
+            "en": "Web platforms",
+            "tr": "Web platformları"
+          },
+          "url": "https://example.com/web"
+        }
+      ]
+    },
+    {
+      "title": {
+        "en": "Open roles",
+        "tr": "Açık pozisyonlar"
+      },
+      "icon": "★",
+      "items": [
+        {
+          "label": {
+            "en": "Frontend engineer",
+            "tr": "Frontend mühendisi"
+          },
+          "url": "https://example.com/jobs/frontend"
+        }
+      ]
+    }
+  ],
+  "language": {
+    "available": [
+      "en",
+      "tr"
+    ]
+  },
+  "theme": "thaw",
+  "icons": "symbols",
+  "credit": true
+}

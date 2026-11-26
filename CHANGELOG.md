@@ -4,6 +4,22 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org): from 1.0.0 on, a config that works keeps working
 until the next major version.
 
+## termcard 1.5.0, create-termcard 1.5.0 — 2026-11-27
+
+### termcard
+- **Organization cards.** `"type": "organization"` introduces a company, studio, team or
+  project: the name reads as one unit, *Save contact* creates a company card, and the default
+  menu leads with contact, the QR code and the organization's sections.
+- **Address and hours**, localizable rows; a long address wraps on the card and goes into the vCard.
+- **Logo:** up to 8 lines of text art above the name, in the accent color.
+- **Sections:** lists the menu opens, such as Services, Products, Projects, Talks or Open roles,
+  with descriptions and links.
+- **QR code:** a menu entry that shows the contact as a QR code, black on white in any terminal,
+  from a small dependency-free encoder. On by default for organizations; people can add `"qr"`
+  to `menu.items`. Existing cards look the same.
+- The interactive menu keeps a stack of views (language picker, section lists, QR code); esc goes back.
+- Under the hood: config validation is split into one module per part of the config.
+
 ## termcard 1.4.0, create-termcard 1.4.0 — 2026-11-26
 
 ### termcard

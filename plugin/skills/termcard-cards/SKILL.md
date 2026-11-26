@@ -22,9 +22,11 @@ When the user names a card (for example "aepasahan" or "npx aepasahan"):
 ## Creating the user's own card
 
 1. Call `list_card_options` to see the fields, themes, icons and languages.
-2. Ask for the details a few at a time: name, role, a short description (max 280 characters),
-   email, website, profile links, location and languages. Only the name is required. Never
-   invent personal details.
+2. Ask whether the card is for a person or an organization (`"type": "organization"` for a
+   company, studio, team or project). Then ask for the details a few at a time: name, role, a
+   short description (max 280 characters), email, website, profile links, location and
+   languages; for organizations also the address, hours, a small text logo and sections such
+   as services or open roles. Only the name is required. Never invent details.
 3. Draft the config and call `preview_card`. Show the preview, fix any listed problems, and offer
    a template (`classic`, `compact`, `minimal`), a seasonal theme and icons.
 4. Suggest a short package name and call `check_name` until one is free.

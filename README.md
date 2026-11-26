@@ -55,6 +55,7 @@ on npm and publishes the card for you.
 - **Fourteen languages built in** — the world's most spoken languages plus Turkish, German and French, including right-to-left Arabic and Urdu — and you can add your own.
 - **Eight seasonal color themes**, from *thaw* to *midwinter*, designed to look calm on both dark and light terminals.
 - **Three layouts, optional icons and a short description**; choose which details appear, in what order, or show only the menu.
+- **Cards for people and organizations.** Companies, studios and teams get a logo, address and hours, lists such as *Services* or *Open roles*, and a QR code that saves the contact.
 - **Ready for AI assistants and agents.** A built-in MCP server lets any MCP-capable assistant read cards, save contacts and draft emails.
 - **Updates reach everyone.** Cards depend on Termcard, so improvements arrive without republishing your card.
 - **Private and safe by design.** Zero dependencies, no tracking, and every value in a card is validated and sanitized before it reaches anyone's terminal.
