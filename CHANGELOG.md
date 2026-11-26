@@ -4,6 +4,13 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org): from 1.0.0 on, a config that works keeps working
 until the next major version.
 
+## termcard 1.4.0, create-termcard 1.4.0 — 2026-11-26
+
+### termcard
+- **`"credit": true`** shows a small "Made with Termcard · termcard.dev" line under the card,
+  in the terminal and on the web page. It is off unless set, so existing cards look the same;
+  new cards from the wizard and from AI assistants start with it on, and anyone can turn it off.
+
 ## termcard 1.3.0, create-termcard 1.3.0 — 2026-11-26
 
 ### termcard

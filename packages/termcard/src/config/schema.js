@@ -22,7 +22,7 @@ export class ConfigError extends Error {
 
 export const TOP_LEVEL_KEYS = [
   '$schema', 'name', 'title', 'tagline', 'description', 'organization', 'email', 'phone', 'website',
-  'location', 'links', 'language', 'strings', 'template', 'theme', 'icons', 'card', 'menu', 'mcp',
+  'location', 'links', 'language', 'strings', 'template', 'theme', 'icons', 'card', 'menu', 'mcp', 'credit',
 ];
 export const LANG_CODE = /^[a-z]{2,3}(-[a-z0-9]{2,8})?$/i;
 // Deliberately stricter than RFC 5322: no characters that change the meaning of a mailto: URL (? & # % /).
@@ -321,6 +321,8 @@ export function normalizeConfig(raw) {
   config.icons = c.oneOf('icons', raw.icons, ICON_SETS, 'none');
   // AI assistants may read the card through MCP unless the owner turns it off.
   config.mcp = c.oneOf('mcp', raw.mcp, [true, false], true);
+  // A small "Made with Termcard" line under the card. New cards turn it on; anyone can turn it off.
+  config.credit = c.oneOf('credit', raw.credit, [true, false], false);
 
   const fieldIds = [
     ...(config.website ? ['website'] : []),

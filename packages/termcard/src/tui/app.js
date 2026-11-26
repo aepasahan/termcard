@@ -4,6 +4,7 @@ import readline from 'node:readline';
 import { createTranslator, languageName } from '../i18n/index.js';
 import { layoutCard, layoutHeader } from '../render/card.js';
 import { toAnsi, createPainter } from '../render/format.js';
+import { CREDIT_TEXT } from '../render/credit.js';
 import { displayWidth, stripAnsi } from '../text.js';
 import { buildMenu } from './actions.js';
 import * as system from '../system.js';
@@ -71,6 +72,7 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
       `  ${paint('faint', '─'.repeat(ruleWidth()))}`,
       `  ${status}`,
       `  ${keys}`,
+      ...(config.credit ? [`  ${paint('faint', CREDIT_TEXT)}`] : []),
     ];
   };
 

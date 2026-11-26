@@ -9,6 +9,7 @@ import { ConfigError } from './config/schema.js';
 import { detectLanguage, createTranslator } from './i18n/index.js';
 import { layoutCard } from './render/card.js';
 import { toAnsi } from './render/format.js';
+import { CREDIT_TEXT } from './render/credit.js';
 import { colorDepth } from './render/color.js';
 import { createVCard } from './vcard.js';
 import { runInteractive } from './tui/app.js';
@@ -71,7 +72,8 @@ export async function run(config, { argv = process.argv.slice(2), env = process.
   const hasMenu = config.menu.enabled && buildMenu(config, lang, createTranslator(lang, config.strings)).length > 0;
   const interactive = hasMenu && !flags.card && stdin.isTTY && stdout.isTTY && typeof stdin.setRawMode === 'function';
   if (!interactive) {
-    stdout.write(`\n${toAnsi(layoutCard(config, lang), config.theme, depth)}\n\n`);
+    const credit = config.credit ? `${toAnsi([[{ text: `  ${CREDIT_TEXT}`, role: 'faint' }]], config.theme, depth)}\n\n` : '';
+    stdout.write(`\n${toAnsi(layoutCard(config, lang), config.theme, depth)}\n\n${credit}`);
     return 0;
   }
   await runInteractive(config, { lang, depth, stdin, stdout });

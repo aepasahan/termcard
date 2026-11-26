@@ -12,6 +12,7 @@ export { BUILT_IN_LANGUAGES, createTranslator, detectLanguage, languageFromHeade
 export { layoutCard, layoutHeader } from './render/card.js';
 export { toPlain, toHtml, escapeHtml } from './render/format.js';
 export { webIconSet } from './render/icons.js';
+export { CREDIT_TEXT, CREDIT_URL } from './render/credit.js';
 export { buildMenu } from './tui/actions.js';
 export { createVCard } from './vcard.js';
 export { slugify } from './text.js';

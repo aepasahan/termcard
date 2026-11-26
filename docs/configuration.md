@@ -228,6 +228,17 @@ Cards can be read by AI assistants through Termcard's MCP server (see [mcp.md](m
 This is on by default and shares only what the card already shows. Set `"mcp": false` to
 opt out.
 
+## Credit
+
+```json
+"credit": true
+```
+
+Shows a small "Made with Termcard · termcard.dev" line under the card, in the terminal and on
+the web page. Cards created with `npm create termcard`, the builder or an AI assistant start
+with it on; set `"credit": false` (or remove it) to hide it. Thank you for leaving it on: it is
+how other people find Termcard.
+
 ## Command-line flags
 
 Everyone running your card can use:

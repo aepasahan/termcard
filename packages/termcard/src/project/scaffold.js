@@ -144,7 +144,7 @@ export function createProject({ dir, packageName, config, termcardVersion = TERM
       license: 'SEE LICENSE IN LICENSE',
     }),
     // $schema gives editors autocompletion and inline errors for the config.
-    'card.config.json': json({ $schema: SCHEMA_URL, ...config }),
+    'card.config.json': json({ $schema: SCHEMA_URL, ...config, ...(config.credit === undefined && { credit: true }) }),
     'bin/card.js': binScript,
     'README.md': publicReadme(packageName, config),
     '.github/README.md': ownerReadme(packageName),

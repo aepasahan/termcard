@@ -153,6 +153,7 @@ export function buildJsonSchema() {
         ],
       },
       mcp: { type: 'boolean', default: true, description: 'Let AI assistants read the card through MCP.' },
+      credit: { type: 'boolean', default: false, description: 'Show a small "Made with Termcard" line under the card.' },
     },
   };
 }

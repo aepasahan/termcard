@@ -1,5 +1,6 @@
 /** Standalone, dependency-free web version of the card (one HTML file). */
 
+import { CREDIT_TEXT, CREDIT_URL } from '../render/credit.js';
 import { layoutCard } from '../render/card.js';
 import { webIconSet } from '../render/icons.js';
 import { toHtml, escapeHtml } from '../render/format.js';
@@ -48,6 +49,7 @@ pre{unicode-bidi:plaintext;background:var(--card-bg);margin:20px;padding:1.6em 2
 a{color:inherit;text-decoration:none}
 a:hover span{text-decoration:underline;text-underline-offset:3px}
 .name{color:var(--text);font-weight:700}.text{color:var(--text)}.muted{color:var(--muted)}.faint{color:var(--faint)}.accent{color:var(--accent)}
+.credit{margin:0;padding:0 20px 16px;font-size:12px}.credit a{color:var(--faint);text-decoration:none}.credit a:hover{color:var(--accent)}
 .foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:0 20px 20px}
 .cmd{display:flex;align-items:center;gap:10px}
 .cmd code::before{content:"$ ";color:var(--faint)}
@@ -67,7 +69,8 @@ a:hover span{text-decoration:underline;text-underline-offset:3px}
   <div class="foot">
     <span class="cmd"><code>${escapeHtml(command)}</code><button class="btn" type="button" id="copy">Copy</button></span>
     <a class="btn" id="vcf" href="${data[fallback].vcf}" download>${escapeHtml(data[fallback].save)}</a>
-  </div>
+  </div>${config.credit ? `
+  <p class="credit"><a href="${CREDIT_URL}">${escapeHtml(CREDIT_TEXT)}</a></p>` : ''}
 </main>
 <script>
 (() => {

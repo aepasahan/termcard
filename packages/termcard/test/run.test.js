@@ -37,3 +37,12 @@ test('a menu whose items all lack data falls back to the plain card', async () =
   assert.equal(await run(make({ email: undefined, menu: { items: ['contact', 'copy-email'] } }), options), 0);
   assert.match(options.stdout.output, /J A N E/);
 });
+
+test('credit: true adds the "Made with Termcard" line; it is off by default', async () => {
+  const on = io(['--card']);
+  await run(make({ credit: true }), on);
+  assert.match(on.stdout.output, /Made with Termcard · termcard\.dev/);
+  const off = io(['--card']);
+  await run(make(), off);
+  assert.doesNotMatch(off.stdout.output, /Made with Termcard/);
+});
