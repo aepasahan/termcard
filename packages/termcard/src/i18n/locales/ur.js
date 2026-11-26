@@ -35,5 +35,11 @@ export default {
   'keys.select': 'منتخب',
   'keys.quit': 'باہر',
   'keys.back': 'واپس',
+  'label.address': "پتہ",
+  'label.hours': "اوقات کار",
+  'action.qr': "QR کوڈ دکھائیں",
+  'hint.qr': "رابطہ محفوظ کرنے کے لیے فون سے اسکین کریں۔",
+  'hint.qrWebsite': "{host} کھولنے کے لیے فون سے اسکین کریں۔",
+  'hint.section': "فہرست کھولتا ہے۔",
   'mail.subject': 'سلام',
 };

@@ -35,5 +35,11 @@ export default {
   'keys.select': '选择',
   'keys.quit': '退出',
   'keys.back': '返回',
+  'label.address': "地址",
+  'label.hours': "营业时间",
+  'action.qr': "显示二维码",
+  'hint.qr': "用手机扫描以保存联系人。",
+  'hint.qrWebsite': "用手机扫描以打开 {host}。",
+  'hint.section': "打开列表。",
   'mail.subject': '你好',
 };

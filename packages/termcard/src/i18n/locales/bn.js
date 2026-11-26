@@ -35,5 +35,11 @@ export default {
   'keys.select': 'বাছুন',
   'keys.quit': 'প্রস্থান',
   'keys.back': 'ফিরুন',
+  'label.address': "ঠিকানা",
+  'label.hours': "সময়সূচি",
+  'action.qr': "QR কোড দেখান",
+  'hint.qr': "পরিচিতি সংরক্ষণ করতে ফোন দিয়ে স্ক্যান করুন।",
+  'hint.qrWebsite': "{host} খুলতে ফোন দিয়ে স্ক্যান করুন।",
+  'hint.section': "তালিকাটি খোলে।",
   'mail.subject': 'হ্যালো',
 };

@@ -5,7 +5,7 @@
  * termcard/schema/card.schema.json. `npm run schema` rewrites the file; a test keeps it in sync.
  */
 
-import { LANG_CODE, PHONE, NAME_LIMIT, TEXT_LIMIT, DESCRIPTION_LIMIT, ICON_SETS } from './schema.js';
+import { LANG_CODE, PHONE, NAME_LIMIT, TEXT_LIMIT, DESCRIPTION_LIMIT, ICON_SETS, CARD_TYPES, ADDRESS_LIMIT, HOURS_LIMIT } from './schema.js';
 import { themes, THEME_ROLES } from './themes.js';
 import { templates, CARD_OPTIONS, MENU_ACTIONS } from './templates.js';
 import { BUILT_IN_LANGUAGES } from '../i18n/index.js';
@@ -36,7 +36,8 @@ export function buildJsonSchema() {
     additionalProperties: false,
     properties: {
       $schema: { type: 'string', description: 'URL of this schema, for editor support.' },
-      name: text(NAME_LIMIT, 'Full name. Required.'),
+      type: { enum: CARD_TYPES, default: 'person', description: '"organization" for a company, studio, team or project: the name reads as one unit and the vCard is a company.' },
+      name: text(NAME_LIMIT, 'Full name, or the organization\'s name. Required.'),
       title: localized(TEXT_LIMIT, 'Role, shown under the name.'),
       tagline: localized(TEXT_LIMIT, 'Company, @handle or slogan, shown in the accent color.'),
       description: localized(DESCRIPTION_LIMIT, 'A few sentences about you, wrapped to the card width.'),
@@ -44,6 +45,8 @@ export function buildJsonSchema() {
       email: { type: 'string', format: 'email', maxLength: 254, pattern: "^[A-Za-z0-9.!$'*+=^_`{|}~-]+@[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*\\.[A-Za-z]{2,}$", description: 'Enables "Get in touch" and "Copy email".' },
       phone: { type: 'string', pattern: pattern(PHONE), description: 'Digits, spaces and + ( ) - . only.' },
       website: webUrl('Your website.'),
+      address: localized(ADDRESS_LIMIT, 'Street address, shown on the card and saved in the vCard.'),
+      hours: localized(HOURS_LIMIT, 'Opening or office hours, e.g. "Mon–Fri 09:00–18:00".'),
       location: localized(TEXT_LIMIT, 'Shown at the bottom of the card, e.g. "Berlin · Germany".'),
       links: {
         type: 'array',

@@ -35,5 +35,11 @@ export default {
   'keys.select': 'pilih',
   'keys.quit': 'keluar',
   'keys.back': 'kembali',
+  'label.address': "Alamat",
+  'label.hours': "Jam buka",
+  'action.qr': "Tampilkan kode QR",
+  'hint.qr': "Pindai dengan ponsel untuk menyimpan kontak.",
+  'hint.qrWebsite': "Pindai dengan ponsel untuk membuka {host}.",
+  'hint.section': "Membuka daftar.",
   'mail.subject': 'Halo',
 };

@@ -35,5 +35,11 @@ export default {
   'keys.select': '選択',
   'keys.quit': '終了',
   'keys.back': '戻る',
+  'label.address': "住所",
+  'label.hours': "営業時間",
+  'action.qr': "QRコードを表示",
+  'hint.qr': "スマートフォンで読み取って連絡先を保存します。",
+  'hint.qrWebsite': "スマートフォンで読み取って {host} を開きます。",
+  'hint.section': "一覧を開きます。",
   'mail.subject': 'こんにちは',
 };

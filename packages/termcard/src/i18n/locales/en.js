@@ -35,5 +35,11 @@ export default {
   'keys.select': 'select',
   'keys.quit': 'quit',
   'keys.back': 'back',
+  'label.address': "Address",
+  'label.hours': "Hours",
+  'action.qr': "Show QR code",
+  'hint.qr': "Scan it with your phone to save the contact.",
+  'hint.qrWebsite': "Scan it with your phone to open {host}.",
+  'hint.section': "Opens the list.",
   'mail.subject': 'Hello',
 };

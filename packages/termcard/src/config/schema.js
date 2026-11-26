@@ -21,10 +21,14 @@ import { normalizeMenu } from './fields/menu.js';
 export { ConfigError, LANG_CODE, PHONE, TEXT_LIMIT, NAME_LIMIT, DESCRIPTION_LIMIT, isEmail, urlProblem } from './checker.js';
 
 export const TOP_LEVEL_KEYS = [
-  '$schema', 'name', 'title', 'tagline', 'description', 'organization', 'email', 'phone', 'website',
-  'location', 'links', 'language', 'strings', 'template', 'theme', 'icons', 'card', 'menu', 'mcp', 'credit',
+  '$schema', 'type', 'name', 'title', 'tagline', 'description', 'organization', 'email', 'phone', 'website',
+  'address', 'hours', 'location', 'links', 'language', 'strings', 'template', 'theme', 'icons', 'card', 'menu', 'mcp', 'credit',
 ];
 export const ICON_SETS = ['none', 'symbols', 'emoji', 'nerd'];
+// A card introduces a person (default) or an organization: a company, studio, team or project.
+export const CARD_TYPES = ['person', 'organization'];
+export const ADDRESS_LIMIT = 80;
+export const HOURS_LIMIT = 60;
 
 export function normalizeConfig(raw) {
   if (!isObject(raw)) throw new ConfigError(['config must be a JSON object']);
@@ -32,6 +36,7 @@ export function normalizeConfig(raw) {
   c.unknownKeys('', raw, TOP_LEVEL_KEYS);
 
   const config = {
+    type: c.oneOf('type', raw.type, CARD_TYPES, 'person'),
     name: c.text('name', raw.name, { required: true, max: NAME_LIMIT }),
     title: c.localized('title', raw.title),
     tagline: c.localized('tagline', raw.tagline),
@@ -40,6 +45,8 @@ export function normalizeConfig(raw) {
     email: c.text('email', raw.email, { max: 254 }),
     phone: c.text('phone', raw.phone, { max: 30 }),
     website: c.url('website', raw.website),
+    address: c.localized('address', raw.address, { max: ADDRESS_LIMIT }),
+    hours: c.localized('hours', raw.hours, { max: HOURS_LIMIT }),
     location: c.localized('location', raw.location),
     links: normalizeLinks(c, raw.links),
   };
@@ -62,9 +69,11 @@ export function normalizeConfig(raw) {
     ...(config.email ? ['email'] : []),
     ...(config.phone ? ['phone'] : []),
     ...config.links.map((l) => l.id),
+    ...(config.address ? ['address'] : []),
+    ...(config.hours ? ['hours'] : []),
     ...(config.location ? ['location'] : []),
   ];
-  config.card = normalizeCard(c, raw.card, config.template, fieldIds);
+  config.card = normalizeCard(c, raw.card, config.template, fieldIds, config.type);
   config.menu = normalizeMenu(c, raw.menu, config.links.map((l) => l.id));
   if (!config.card.enabled && !config.menu.enabled) c.fail('card', 'cannot be false while the menu is off too');
 

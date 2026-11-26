@@ -6,18 +6,24 @@ import { localize } from './text.js';
 const esc = (value) => String(value).replace(/\\/g, '\\\\').replace(/,/g, '\\,').replace(/;/g, '\\;').replace(/\r?\n/g, '\\n');
 
 export function createVCard(config, lang) {
+  const organization = config.type === 'organization';
   const words = config.name.split(/\s+/);
   const family = words.length > 1 ? words.at(-1) : '';
   const given = words.length > 1 ? words.slice(0, -1).join(' ') : words[0];
+  const address = config.address && localize(config.address, lang);
   const lines = [
     'BEGIN:VCARD',
     'VERSION:3.0',
-    `N:${esc(family)};${esc(given)};;;`,
+    // An organization has no personal name; address books show it as a company.
+    organization ? 'N:;;;;' : `N:${esc(family)};${esc(given)};;;`,
     `FN:${esc(config.name)}`,
-    config.organization && `ORG:${esc(config.organization)}`,
+    organization ? `ORG:${esc(config.name)}` : config.organization && `ORG:${esc(config.organization)}`,
+    organization && 'X-ABShowAs:COMPANY',
+    // The whole address goes in the street part: Termcard does not split it into fields.
+    address && `ADR;TYPE=WORK:;;${esc(address)};;;;`,
     config.title && `TITLE:${esc(localize(config.title, lang))}`,
     config.email && `EMAIL;TYPE=INTERNET:${esc(config.email)}`,
-    config.phone && `TEL;TYPE=CELL:${esc(config.phone)}`,
+    config.phone && `TEL;TYPE=${organization ? 'WORK' : 'CELL'}:${esc(config.phone)}`,
     config.website && `URL:${esc(config.website)}`,
     ...config.links.map((l) => `X-SOCIALPROFILE;TYPE=${esc(l.id)}:${esc(l.url)}`),
     config.description && `NOTE:${esc(localize(config.description, lang))}`,

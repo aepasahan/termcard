@@ -30,12 +30,15 @@ function nameLines(name, { nameStyle, splitName, letterSpacing }, lang) {
 }
 
 /** The contact rows the card shows, in the configured order. */
-export function contactRows(config, t, iconSet = config.icons) {
+export function contactRows(config, t, iconSet = config.icons, lang = config.language.available[0]) {
   const rows = {
     website: config.website && { label: t('label.website'), value: stripProtocol(config.website), href: config.website, icon: iconFor(iconSet, 'website') },
     email: config.email && { label: t('label.email'), value: config.email, href: `mailto:${config.email}`, icon: iconFor(iconSet, 'email') },
     phone: config.phone && { label: t('label.phone'), value: config.phone, href: `tel:${config.phone.replace(/[^\d+]/g, '')}`, icon: iconFor(iconSet, 'phone') },
   };
+  // Address and hours are plain text, not links.
+  if (config.address) rows.address = { label: t('label.address'), value: localize(config.address, lang), icon: iconFor(iconSet, 'address') };
+  if (config.hours) rows.hours = { label: t('label.hours'), value: localize(config.hours, lang), icon: iconFor(iconSet, 'hours') };
   for (const link of config.links) {
     rows[link.id] = { label: link.label, value: stripProtocol(link.url), href: link.url, icon: iconFor(iconSet, 'link', link) };
   }
@@ -82,7 +85,7 @@ export function layoutCard(config, lang, { iconSet = config.icons } = {}) {
   if (relaxed) sections.push(head, brand);
   else sections.push([...head, ...brand]);
 
-  const rows = contactRows(config, t, iconSet);
+  const rows = contactRows(config, t, iconSet, lang);
   const labelWidth = Math.max(0, ...rows.map((r) => displayWidth(r.label))) + 2;
   const iconWidth = Math.max(0, ...rows.map((r) => displayWidth(r.icon)), displayWidth(iconFor(iconSet, 'location')));
   const icon = (glyph) => (iconWidth ? [seg(glyph + ' '.repeat(iconWidth - displayWidth(glyph) + 1), 'accent')] : []);

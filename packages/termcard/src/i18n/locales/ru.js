@@ -35,5 +35,11 @@ export default {
   'keys.select': 'выбрать',
   'keys.quit': 'выход',
   'keys.back': 'назад',
+  'label.address': "Адрес",
+  'label.hours': "Часы работы",
+  'action.qr': "Показать QR-код",
+  'hint.qr': "Отсканируйте телефоном, чтобы сохранить контакт.",
+  'hint.qrWebsite': "Отсканируйте телефоном, чтобы открыть {host}.",
+  'hint.section': "Открывает список.",
   'mail.subject': 'Здравствуйте',
 };

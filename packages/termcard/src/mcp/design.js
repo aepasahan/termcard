@@ -22,7 +22,8 @@ const GUIDE = 'https://github.com/aepasahan/termcard/blob/main/docs/configuratio
 const OPTIONS = {
   required: ['name'],
   fields: {
-    name: `Full name (max 80 characters). Required.`,
+    type: '"person" (default) or "organization" for a company, studio, team or project.',
+    name: `Full name, or the organization's name (max 80 characters). Required.`,
     title: 'Role, shown under the name. Text or { "en": "…", "tr": "…" }.',
     tagline: 'Company, @handle or slogan, shown in the accent color. Localizable.',
     description: `A few sentences about the person, max ${DESCRIPTION_LIMIT} characters. Localizable.`,
@@ -30,6 +31,8 @@ const OPTIONS = {
     email: 'Email address. Enables "Get in touch".',
     phone: 'Phone number: digits, spaces and + ( ) - .',
     website: 'https://… URL.',
+    address: 'Street address, mostly for organizations (max 80 characters). Localizable. Goes into the vCard.',
+    hours: 'Opening or office hours, e.g. "Mon–Fri 09:00–18:00" (max 60 characters). Localizable.',
     location: 'e.g. "Berlin · Germany". Localizable.',
     links: 'Array of profile URLs (LinkedIn, GitHub, X, Behance, …) or { "url", "label"?, "icon"? }.',
     language: '{ "default": "auto" | code, "available": [codes] }.',

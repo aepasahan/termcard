@@ -35,5 +35,11 @@ export default {
   'keys.select': 'चुनें',
   'keys.quit': 'बाहर',
   'keys.back': 'वापस',
+  'label.address': "पता",
+  'label.hours': "समय",
+  'action.qr': "QR कोड दिखाएँ",
+  'hint.qr': "संपर्क सहेजने के लिए फ़ोन से स्कैन करें।",
+  'hint.qrWebsite': "{host} खोलने के लिए फ़ोन से स्कैन करें।",
+  'hint.section': "सूची खोलता है।",
   'mail.subject': 'नमस्ते',
 };

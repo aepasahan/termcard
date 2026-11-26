@@ -35,5 +35,11 @@ export default {
   'keys.select': 'اختيار',
   'keys.quit': 'خروج',
   'keys.back': 'رجوع',
+  'label.address': "العنوان",
+  'label.hours': "ساعات العمل",
+  'action.qr': "عرض رمز QR",
+  'hint.qr': "امسحه بهاتفك لحفظ جهة الاتصال.",
+  'hint.qrWebsite': "امسحه بهاتفك لفتح {host}.",
+  'hint.section': "يفتح القائمة.",
   'mail.subject': 'مرحبًا',
 };

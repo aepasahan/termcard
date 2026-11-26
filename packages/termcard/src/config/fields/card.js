@@ -3,14 +3,18 @@
 import { isObject } from '../checker.js';
 import { templates, CARD_OPTIONS } from '../templates.js';
 
-export function normalizeCard(c, raw, template, fieldIds) {
+// An organization's name reads as one unit: "Acme Labs", not "A C M E" over "L A B S".
+const ORGANIZATION_DEFAULTS = { nameStyle: 'plain', splitName: false };
+
+export function normalizeCard(c, raw, template, fieldIds, type = 'person') {
+  const base = { ...templates[template], ...(type === 'organization' && ORGANIZATION_DEFAULTS) };
   // "card": false shows only the menu (with a one-line header).
-  if (raw === false) return { ...templates[template], enabled: false, fields: fieldIds };
+  if (raw === false) return { ...base, enabled: false, fields: fieldIds };
   const value = raw === undefined || raw === true ? {} : raw;
-  if (!isObject(value)) return c.fail('card', 'must be false or an object'), { ...templates[template], enabled: true, fields: fieldIds };
+  if (!isObject(value)) return c.fail('card', 'must be false or an object'), { ...base, enabled: true, fields: fieldIds };
   c.unknownKeys('card', value, [...Object.keys(templates.classic), 'fields', 'letterSpacing']);
 
-  const card = { ...templates[template], enabled: true };
+  const card = { ...base, enabled: true };
   for (const [key, allowed] of Object.entries(CARD_OPTIONS)) card[key] = c.oneOf(`card.${key}`, value[key], allowed, card[key]);
   for (const key of ['splitName', 'accentRule', 'labels']) card[key] = c.boolean(`card.${key}`, value[key], card[key]);
   card.padding = c.integer('card.padding', value.padding, { min: 0, max: 8, fallback: card.padding });

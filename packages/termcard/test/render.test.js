@@ -168,3 +168,33 @@ test('menu entries can have their own symbols', async () => {
   assert.throws(() => normalizeConfig({ name: 'X', menu: { icons: { nope: '✦' } } }), /menu\.icons\.nope/);
   assert.throws(() => normalizeConfig({ name: 'X', menu: { icons: { save: 'abc' } } }), /single symbol/);
 });
+
+test('an organization card keeps its name whole and shows address and hours', () => {
+  const org = make({ type: 'organization', name: 'Acme Labs', address: { en: '1 Main St, Berlin', tr: '1 Main St, Berlin' }, hours: { en: 'Mon–Fri 9–18', tr: 'Pzt–Cum 9–18' } });
+  const plain = toPlain(layoutCard(org, 'en'));
+  assert.match(plain, /Acme Labs/, 'not letter-spaced or split');
+  assert.doesNotMatch(plain, /A C M E/);
+  assert.match(plain, /Address\s+1 Main St, Berlin/);
+  assert.match(plain, /Hours\s+Mon–Fri 9–18/);
+  assert.match(toPlain(layoutCard(org, 'tr')), /Çalışma saatleri\s+Pzt–Cum 9–18/);
+  assert.equal(new Set(widths(plain)).size, 1, plain);
+  // The author can still ask for the classic look.
+  assert.match(toPlain(layoutCard(make({ type: 'organization', name: 'Acme Labs', card: { nameStyle: 'spaced' } }), 'en')), /A C M E {3}L A B S/);
+});
+
+test('an organization vCard is a company card with a work address', () => {
+  const vcard = createVCard(make({ type: 'organization', name: 'Acme; Labs', organization: undefined, address: 'Main St 1, Berlin', phone: '+49 30 1234' }), 'en');
+  assert.match(vcard, /\r\nN:;;;;\r\n/);
+  assert.ok(vcard.includes('\r\nORG:Acme\\; Labs\r\n'), vcard);
+  assert.match(vcard, /\r\nX-ABShowAs:COMPANY\r\n/);
+  assert.ok(vcard.includes('\r\nADR;TYPE=WORK:;;Main St 1\\, Berlin;;;;\r\n'), vcard);
+  assert.match(vcard, /\r\nTEL;TYPE=WORK:\+49 30 1234\r\n/);
+  assert.doesNotMatch(createVCard(make(), 'en'), /X-ABShowAs|ADR/, 'people are unchanged');
+});
+
+test('type, address and hours are validated and sanitized', () => {
+  assert.throws(() => normalizeConfig({ name: 'X', type: 'company' }), /type: must be one of: person, organization/);
+  assert.throws(() => normalizeConfig({ name: 'X', address: 'a'.repeat(81) }), /address: must be at most 80/);
+  assert.equal(normalizeConfig({ name: 'X', hours: '9–5\u001b[31m‮' }).hours, '9–5[31m');
+  assert.equal(normalizeConfig({ name: 'X' }).type, 'person');
+});

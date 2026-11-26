@@ -35,5 +35,11 @@ export default {
   'keys.select': 'seç',
   'keys.quit': 'çıkış',
   'keys.back': 'geri',
+  'label.address': "Adres",
+  'label.hours': "Çalışma saatleri",
+  'action.qr': "QR kodu göster",
+  'hint.qr': "Telefonunuzla okutup kişiyi rehbere ekleyin.",
+  'hint.qrWebsite': "Telefonunuzla okutup {host} adresini açın.",
+  'hint.section': "Listeyi açar.",
   'mail.subject': 'Merhaba',
 };

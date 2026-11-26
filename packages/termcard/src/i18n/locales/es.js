@@ -35,5 +35,11 @@ export default {
   'keys.select': 'seleccionar',
   'keys.quit': 'salir',
   'keys.back': 'volver',
+  'label.address': "Dirección",
+  'label.hours': "Horario",
+  'action.qr': "Mostrar código QR",
+  'hint.qr': "Escanéalo con el móvil para guardar el contacto.",
+  'hint.qrWebsite': "Escanéalo con el móvil para abrir {host}.",
+  'hint.section': "Abre la lista.",
   'mail.subject': 'Hola',
 };

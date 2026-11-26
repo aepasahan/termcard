@@ -29,8 +29,8 @@ Options:
 
 /** Public, display-only view of the config (what the card already shows). */
 const publicProfile = (config) => {
-  const { name, title, tagline, description, organization, email, phone, website, location, links } = config;
-  return JSON.parse(JSON.stringify({ name, title, tagline, description, organization, email, phone, website, location, links }));
+  const { type, name, title, tagline, description, organization, email, phone, website, address, hours, location, links } = config;
+  return JSON.parse(JSON.stringify({ type, name, title, tagline, description, organization, email, phone, website, address, hours, location, links }));
 };
 
 /**
