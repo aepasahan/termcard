@@ -4,6 +4,16 @@ All notable changes are documented here. This project follows
 [Semantic Versioning](https://semver.org): from 1.0.0 on, a config that works keeps working
 until the next major version.
 
+## termcard 1.6.2, create-termcard 1.6.2 — 2026-11-27
+
+### termcard
+- **Fix:** opening a QR code in a window shorter than the code and going back left parts of the
+  code and the menu under the card. QR codes now open on the terminal's alternate screen (as
+  `less` does) and going back restores the card and menu exactly. A window too small for the code
+  shows how big it needs to be instead of a cut-off code, and the code appears once the window
+  is resized.
+- A menu taller than the window is redrawn cleanly instead of leaving lines behind.
+
 ## termcard 1.6.1, create-termcard 1.6.1 — 2026-11-27
 
 ### termcard
