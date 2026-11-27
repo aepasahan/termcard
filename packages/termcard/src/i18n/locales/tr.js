@@ -50,5 +50,6 @@ export default {
   'hint.maps': "Adresi tarayıcınızda Google Haritalar'da açar.",
   'action.copyAddress': "Adresi kopyala",
   'hint.copyAddress': "Adresi panoya kopyalar.",
+  'hint.qrTooSmall': "QR kodunu görmek için pencereyi büyütün: {size} karakter gerekiyor.",
   'mail.subject': 'Merhaba',
 };

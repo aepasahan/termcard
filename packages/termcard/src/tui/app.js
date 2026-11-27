@@ -5,7 +5,8 @@
  * entry may open another view on top (the language picker, a section's list, a QR code), and
  * esc / ← / backspace goes back one view. Every view is the same shape:
  *   { title?, lines?, entries: [{ icon?, label, hint, run? }], index }
- * (a list's `text`, such as an address, is wrapped into `lines`)
+ * (a list's `text`, such as an address, is wrapped into `lines`). A `fullscreen` view (the QR code)
+ * is shown on the terminal's alternate screen, so it never scrolls the card and menu away.
  * so a new kind of screen needs a view builder here, not a new code path through the keys.
  */
 
@@ -18,7 +19,7 @@ import { qrLines } from '../render/qr.js';
 import { displayWidth, stripAnsi, wrap } from '../text.js';
 import { buildMenu } from './actions.js';
 import * as system from '../system.js';
-import { Screen } from './screen.js';
+import { Screen, rowsFor } from './screen.js';
 
 export function runInteractive(config, { lang: initialLang, depth, stdin, stdout }) {
   const paint = createPainter(config.theme, depth);
@@ -61,7 +62,7 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
       const lines = spec.text ? wrap(spec.text, width).map((line) => paint('strong', line)) : [];
       return { kind: 'list', title: spec.title, lines, entries: [...spec.items, backEntry()], index: 0 };
     }
-    if (spec.kind === 'qr') return { kind: 'qr', title: spec.title, lines: qrLines({ modules: spec.modules }, { depth }), entries: [backEntry()], index: 0, hint: spec.hint };
+    if (spec.kind === 'qr') return { kind: 'qr', fullscreen: true, title: spec.title, lines: qrLines({ modules: spec.modules }, { depth }), entries: [backEntry()], index: 0, hint: spec.hint };
     throw new Error(`Unknown view: ${spec.kind}`);
   };
 
@@ -79,8 +80,20 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
     return `${out}…`;
   };
 
+  /** The view's lines, or, when a full-window view does not fit, a note asking for a bigger window. */
   const menuLines = () => {
-    const { entries, index, title, lines = [], hint } = view();
+    const out = viewLines(view().lines ?? []);
+    const { columns, rows } = stdout;
+    if (!view().fullscreen || !rows || !columns) return out;
+    const width = Math.max(0, ...(view().lines ?? []).map((l) => displayWidth(stripAnsi(l)) + 2));
+    if (width <= columns && rowsFor(out, columns) <= rows) return out;
+    // A QR code that wraps or is cut off cannot be scanned: say what size it needs instead.
+    const size = `${width}×${rowsFor(out, Infinity)}`;
+    return viewLines([paint('muted', fit(t('hint.qrTooSmall', { size })))]);
+  };
+
+  const viewLines = (lines) => {
+    const { entries, index, title, hint } = view();
     const current = entries[index];
     const iconWidth = Math.max(0, ...entries.map((e) => displayWidth(e.icon ?? '')));
     const keys = [['↑↓', t('keys.navigate')], ['enter', t('keys.select')], ...(state.stack.length > 1 ? [['esc', t('keys.back')]] : []), ['q', t('keys.quit')]]
@@ -109,7 +122,7 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
   const render = () => screen.paint(menuLines());
 
   const back = () => {
-    if (state.stack.length > 1) state.stack.pop();
+    if (state.stack.length > 1 && state.stack.pop().fullscreen) screen.leaveAlternate();
     state.status = null;
   };
 
@@ -130,7 +143,10 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
     let busy = false;
     let closed = false;
 
+    // A full-window view is redrawn to the new size (a QR code may fit now, or no longer).
+    const onResize = () => { if (!closed && view()?.fullscreen) render(); };
     const cleanup = () => {
+      stdout.off?.('resize', onResize);
       stdin.off('keypress', onKey);
       if (stdin.isTTY) stdin.setRawMode(false);
       stdin.pause();
@@ -160,7 +176,9 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
       if (closed) return;
       if (outcome.quit) return quit();
       if (outcome.view) {
-        state.stack.push(openView(outcome.view));
+        const next = openView(outcome.view);
+        if (next.fullscreen) screen.enterAlternate();
+        state.stack.push(next);
         state.status = null;
         return render();
       }
@@ -193,9 +211,10 @@ export function runInteractive(config, { lang: initialLang, depth, stdin, stdout
     stdin.setRawMode(true);
     stdin.resume();
     screen.hideCursor();
-    process.once('exit', () => screen.showCursor());
+    process.once('exit', () => { screen.leaveAlternate(); screen.showCursor(); });
     cardRows = screen.print(card);
     render();
     stdin.on('keypress', onKey);
+    stdout.on?.('resize', onResize);
   });
 }

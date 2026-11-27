@@ -50,5 +50,6 @@ export default {
   'hint.maps': "ঠিকানাটি ব্রাউজারে Google Maps-এ খোলে।",
   'action.copyAddress': "ঠিকানা কপি করুন",
   'hint.copyAddress': "ঠিকানাটি ক্লিপবোর্ডে কপি করে।",
+  'hint.qrTooSmall': "QR কোড দেখতে উইন্ডোটি বড় করুন: এর জন্য {size} অক্ষর দরকার।",
   'mail.subject': 'হ্যালো',
 };

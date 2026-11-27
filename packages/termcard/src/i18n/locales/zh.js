@@ -50,5 +50,6 @@ export default {
   'hint.maps': "在浏览器中用 Google 地图打开该地址。",
   'action.copyAddress': "复制地址",
   'hint.copyAddress': "将地址复制到剪贴板。",
+  'hint.qrTooSmall': "请放大窗口以显示二维码：需要 {size} 个字符。",
   'mail.subject': '你好',
 };

@@ -50,5 +50,6 @@ export default {
   'hint.maps': "Abre la dirección en Google Maps en tu navegador.",
   'action.copyAddress': "Copiar dirección",
   'hint.copyAddress': "Copia la dirección al portapapeles.",
+  'hint.qrTooSmall': "Agranda la ventana para ver el código QR: necesita {size} caracteres.",
   'mail.subject': 'Hola',
 };

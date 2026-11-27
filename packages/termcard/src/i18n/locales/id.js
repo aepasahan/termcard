@@ -50,5 +50,6 @@ export default {
   'hint.maps': "Membuka alamat di Google Maps pada browser.",
   'action.copyAddress': "Salin alamat",
   'hint.copyAddress': "Menyalin alamat ke papan klip.",
+  'hint.qrTooSmall': "Perbesar jendela untuk melihat kode QR: dibutuhkan {size} karakter.",
   'mail.subject': 'Halo',
 };

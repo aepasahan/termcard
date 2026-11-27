@@ -16,6 +16,7 @@ export class Screen {
   constructor(stream) {
     this.stream = stream;
     this.height = 0;
+    this.alternate = null; // the main screen's block height while the alternate screen is shown
   }
 
   rows(lines) {
@@ -28,15 +29,38 @@ export class Screen {
     return this.rows(lines);
   }
 
-  /** Replaces the previously painted block with `lines`. */
+  /**
+   * Replaces the previously painted block with `lines`. A block taller than the window has
+   * partly scrolled away and cannot be reached with the cursor, so the window is redrawn instead.
+   */
   paint(lines) {
-    const up = this.height ? `\x1b[${this.height}A` : '';
-    this.stream.write(`${up}\r\x1b[J${lines.join('\n')}\n`);
+    const unreachable = this.alternate !== null || (this.stream.rows && this.height >= this.stream.rows);
+    const start = unreachable ? '\x1b[H\x1b[2J' : `${this.height ? `\x1b[${this.height}A` : ''}\r\x1b[J`;
+    this.stream.write(`${start}${lines.join('\n')}\n`);
     this.height = this.rows(lines);
+  }
+
+  /**
+   * Shows a full-window view (a QR code) on the terminal's alternate screen, like `less` or an
+   * editor does, so it never scrolls the card away; leaving restores the card and menu untouched.
+   */
+  enterAlternate() {
+    if (this.alternate !== null) return;
+    this.alternate = this.height;
+    this.stream.write('\x1b[?1049h\x1b[H\x1b[2J');
+    this.height = 0;
+  }
+
+  leaveAlternate() {
+    if (this.alternate === null) return;
+    this.stream.write('\x1b[?1049l');
+    this.height = this.alternate;
+    this.alternate = null;
   }
 
   /** Erases the painted block plus `extra` rows above it (or the whole screen if they scrolled away). */
   clear(extra = 0) {
+    this.leaveAlternate();
     const total = this.height + extra;
     if (!total) return;
     const visible = !this.stream.rows || total < this.stream.rows;

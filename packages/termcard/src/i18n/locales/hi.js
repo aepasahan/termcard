@@ -50,5 +50,6 @@ export default {
   'hint.maps': "पते को ब्राउज़र में Google Maps पर खोलता है।",
   'action.copyAddress': "पता कॉपी करें",
   'hint.copyAddress': "पते को क्लिपबोर्ड पर कॉपी करता है।",
+  'hint.qrTooSmall': "QR कोड देखने के लिए विंडो बड़ी करें: इसे {size} अक्षर चाहिए।",
   'mail.subject': 'नमस्ते',
 };

@@ -50,5 +50,6 @@ export default {
   'hint.maps': "يفتح العنوان في خرائط Google في المتصفح.",
   'action.copyAddress': "نسخ العنوان",
   'hint.copyAddress': "ينسخ العنوان إلى الحافظة.",
+  'hint.qrTooSmall': "كبّر النافذة لرؤية رمز QR: يحتاج إلى {size} حرفًا.",
   'mail.subject': 'مرحبًا',
 };

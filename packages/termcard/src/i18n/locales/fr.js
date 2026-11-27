@@ -50,5 +50,6 @@ export default {
   'hint.maps': "Ouvre l'adresse dans Google Maps dans votre navigateur.",
   'action.copyAddress': "Copier l'adresse",
   'hint.copyAddress': "Copie l'adresse dans le presse-papiers.",
+  'hint.qrTooSmall': "Agrandissez la fenêtre pour voir le QR code : il lui faut {size} caractères.",
   'mail.subject': 'Bonjour',
 };

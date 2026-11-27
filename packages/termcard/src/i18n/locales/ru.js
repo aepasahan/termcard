@@ -50,5 +50,6 @@ export default {
   'hint.maps': "Открывает адрес в Google Картах в браузере.",
   'action.copyAddress': "Скопировать адрес",
   'hint.copyAddress': "Копирует адрес в буфер обмена.",
+  'hint.qrTooSmall': "Увеличьте окно, чтобы увидеть QR-код: нужно {size} символов.",
   'mail.subject': 'Здравствуйте',
 };

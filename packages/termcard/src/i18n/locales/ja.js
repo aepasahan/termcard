@@ -50,5 +50,6 @@ export default {
   'hint.maps': "ブラウザのGoogleマップで住所を開きます。",
   'action.copyAddress': "住所をコピー",
   'hint.copyAddress': "住所をクリップボードにコピーします。",
+  'hint.qrTooSmall': "QRコードを表示するにはウィンドウを大きくしてください（{size} 文字分が必要です）。",
   'mail.subject': 'こんにちは',
 };
